@@ -389,6 +389,10 @@
       <input type="checkbox" id="toutCharger" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer" />
       Tout charger <span style="color:#bbb;font-size:.7rem">(multi-requêtes)</span>
     </label>
+    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:normal;color:var(--muted);font-size:.8rem;white-space:nowrap" title="Par défaut, seuls les établissements de France métropolitaine sont affichés. Cochez pour inclure les DOM-TOM (971-976, 98x).">
+      <input type="checkbox" id="inclureDomTom" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer" />
+      Inclure DOM-TOM
+    </label>
   </div>
 
   <button class="btn-search" id="searchBtn" onclick="doSearch()">⌕ Rechercher</button>
@@ -535,6 +539,13 @@ function buildQuery(nafRaw, cp) {
     } else {
       parts.push('codePostalEtablissement:' + cpTrim);
     }
+  }
+
+  // Filter metropolitan France by default (exclude DOM-TOM: 97*, 98*)
+  const inclureDomTom = document.getElementById('inclureDomTom')?.checked;
+  if (!inclureDomTom && !cpTrim) {
+    parts.push('-codePostalEtablissement:97*');
+    parts.push('-codePostalEtablissement:98*');
   }
 
   return { q: parts.join(' AND '), nafCode };
