@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIRENE Explorer — INSEE</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #f5f3ef;
+      --surface:  #ffffff;
+      --card:     #fafaf8;
+      --border:   #ddd9d0;
+      --accent:   #1a3a6b;
+      --accent2:  #c8342a;
+      --text:     #1a1a1a;
+      --muted:    #6b6760;
+      --radius:   6px;
+      --mono:     'IBM Plex Mono', monospace;
+      --sans:     'IBM Plex Sans', sans-serif;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .topbar {
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 0 24px;
+      height: 52px;
+      flex-shrink: 0;
+    }
+    .topbar-logo {
+      font-family: var(--mono);
+      font-weight: 600;
+      font-size: .95rem;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+    .topbar-logo span { color: #a8c4f5; }
+    .topbar-sep { width: 1px; height: 24px; background: rgba(255,255,255,.25); }
+    .topbar-sub { font-size: .78rem; color: rgba(255,255,255,.65); }
+
+    .toolbar {
+      background: var(--surface);
+      border-bottom: 2px solid var(--accent);
+      padding: 12px 20px;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .field-group label {
+      font-family: var(--mono);
+      font-size: .62rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    input, select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: .85rem;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    input:focus, select:focus { border-color: var(--accent); }
+    input::placeholder { color: #bbb; }
+
+    .input-key { width: 300px; font-family: var(--mono); font-size: .78rem; }
+    .input-naf { width: 230px; }
+    .input-cp  { width: 140px; }
+
+    .btn-search {
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      cursor: pointer;
+      font-family: var(--sans);
+      font-size: .85rem;
+      font-weight: 500;
+      padding: 9px 20px;
+      transition: background .15s, transform .1s;
+      white-space: nowrap;
+      align-self: flex-end;
+    }
+    .btn-search:hover { background: #0f2a55; }
+    .btn-search:active { transform: scale(.97); }
+    .btn-search:disabled { opacity: .4; cursor: default; }
+
+    .chips-row {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 20px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .chips-label {
+      font-family: var(--mono);
+      font-size: .62rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-right: 4px;
+    }
+    .chip {
+      background: #eef2f9;
+      border: 1px solid #c5d2e8;
+      border-radius: 20px;
+      color: var(--accent);
+      cursor: pointer;
+      font-family: var(--sans);
+      font-size: .72rem;
+      padding: 3px 10px;
+      transition: background .12s;
+    }
+    .chip:hover { background: #d7e2f5; }
+
+    .app-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 360px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .sidebar-header {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      background: var(--bg);
+    }
+    .sidebar-header h2 {
+      font-family: var(--mono);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      color: var(--text);
+    }
+    .count-pill {
+      background: var(--accent);
+      color: #fff;
+      border-radius: 20px;
+      font-family: var(--mono);
+      font-size: .65rem;
+      padding: 2px 8px;
+    }
+
+    .geo-progress {
+      padding: 6px 16px;
+      font-size: .7rem;
+      color: var(--muted);
+      font-family: var(--mono);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      display: none;
+    }
+    .geo-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 4px; }
+    .geo-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #4a7bd4); border-radius: 2px; transition: width .3s; }
+
+    .results-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .results-list::-webkit-scrollbar { width: 4px; }
+    .results-list::-webkit-scrollbar-track { background: transparent; }
+    .results-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+      background: var(--bg);
+      font-size: .75rem;
+      color: var(--muted);
+    }
+    .pag-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      cursor: pointer;
+      font-family: var(--sans);
+      font-size: .72rem;
+      padding: 4px 10px;
+    }
+    .pag-btn:hover { background: #eef2f9; }
+    .pag-btn:disabled { opacity: .35; cursor: default; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: border-color .15s, box-shadow .15s;
+      animation: slideIn .25s ease both;
+    }
+    .card:hover { border-left-color: var(--accent); box-shadow: 0 2px 8px rgba(26,58,107,.08); }
+    .card.active { border-left-color: var(--accent2); background: #fff8f7; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .card-name {
+      font-weight: 600;
+      font-size: .85rem;
+      color: var(--text);
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-siret {
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 5px; }
+    .tag {
+      border-radius: 3px;
+      font-family: var(--mono);
+      font-size: .63rem;
+      padding: 2px 6px;
+    }
+    .tag-naf   { background: #e8f0fe; color: #1a3a6b; border: 1px solid #c5d2e8; }
+    .tag-actif { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .tag-ferme { background: #fce4e4; color: #c8342a; border: 1px solid #f5b8b8; }
+    .card-addr { font-size: .75rem; color: var(--muted); display: flex; gap: 4px; align-items: flex-start; }
+    .no-geo    { font-size: .65rem; color: #ccc; font-style: italic; margin-top: 4px; }
+
+    .state-msg {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+    .state-msg .big { font-size: 2rem; }
+    .state-msg code {
+      font-family: var(--mono);
+      font-size: .75rem;
+      background: var(--bg);
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      display: inline-block;
+      margin-top: 4px;
+    }
+    .spinner {
+      width: 26px; height: 26px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .65s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #map { flex: 1; }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: var(--radius) !important;
+      font-family: var(--sans) !important;
+      box-shadow: 0 4px 20px rgba(0,0,0,.12) !important;
+      border: 1px solid var(--border) !important;
+    }
+    .leaflet-popup-content { margin: 12px 14px !important; }
+    .popup-name { font-weight: 600; font-size: .85rem; margin-bottom: 3px; }
+    .popup-naf  { font-family: monospace; font-size: .72rem; color: var(--accent); margin-bottom: 4px; }
+    .popup-addr { font-size: .75rem; color: var(--muted); }
+
+    .toast {
+      position: fixed;
+      bottom: 20px; left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      border: 1px solid #f5b8b8;
+      border-left: 4px solid var(--accent2);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: .82rem;
+      padding: 10px 18px;
+      z-index: 9999;
+      box-shadow: 0 4px 16px rgba(0,0,0,.1);
+      max-width: 500px;
+    }
+    .toast strong { color: var(--accent2); }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">SIRENE<span>.explorer</span></div>
+  <div class="topbar-sep"></div>
+  <div class="topbar-sub">API INSEE — Répertoire des entreprises et établissements</div>
+</div>
+
+<div class="toolbar">
+  <div class="field-group">
+    <label>Clé API INSEE</label>
+    <input class="input-key" id="apiKey" type="password" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" oninput="saveKey(this.value)" />
+  </div>
+  <div class="field-group">
+    <label>Code NAF / Activité</label>
+    <input class="input-naf" id="nafInput" type="text" placeholder="ex: 11.05Z  ou  brasserie" list="nafSuggestions" />
+    <datalist id="nafSuggestions"></datalist>
+  </div>
+
+  <div class="field-group">
+    <label>Code postal / Dép.</label>
+    <input class="input-cp" id="cpInput" type="text" placeholder="ex: 38, 69, 75013" />
+  </div>
+
+  <div class="field-group">
+    <label>Résultats</label>
+    <select id="nbInput">
+      <option value="20">20</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="200">200</option>
+    </select>
+  </div>
+
+  <div class="field-group" style="justify-content:flex-end">
+    <label>&nbsp;</label>
+    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:normal;color:var(--muted);font-size:.8rem;white-space:nowrap">
+      <input type="checkbox" id="inclureFermes" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer" />
+      Inclure les fermés
+    </label>
+    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:normal;color:var(--muted);font-size:.8rem;white-space:nowrap" title="Enchaîne plusieurs requêtes pour dépasser la limite de 200 résultats">
+      <input type="checkbox" id="toutCharger" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer" />
+      Tout charger <span style="color:#bbb;font-size:.7rem">(multi-requêtes)</span>
+    </label>
+  </div>
+
+  <button class="btn-search" id="searchBtn" onclick="doSearch()">⌕ Rechercher</button>
+</div>
+
+<div class="chips-row">
+  <span class="chips-label">Raccourcis :</span>
+  <button class="chip" onclick="setNaf('11.05Z')">🍺 Brasseries</button>
+  <button class="chip" onclick="setNaf('56.30Z')">☕ Cafés &amp; bars</button>
+  <button class="chip" onclick="setNaf('56.10A')">🍽 Restaurants</button>
+  <button class="chip" onclick="setNaf('10.71C')">🥐 Boulangeries</button>
+  <button class="chip" onclick="setNaf('47.61Z')">📚 Librairies</button>
+  <button class="chip" onclick="setNaf('59.14Z')">🎬 Cinémas</button>
+  <button class="chip" onclick="setNaf('55.10Z')">🏨 Hôtels</button>
+  <button class="chip" onclick="setNaf('86.21Z')">🩺 Médecins généralistes</button>
+  <button class="chip" onclick="setNaf('96.02A')">✂️ Coiffeurs</button>
+  <button class="chip" onclick="setNaf('93.11Z')">⚽ Clubs sportifs</button>
+</div>
+
+<div class="app-body">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2 id="sidebarTitle">ÉTABLISSEMENTS</h2>
+      <span class="count-pill" id="countPill">—</span>
+      <button id="exportBtn" onclick="exportHtml()" disabled title="Exporter en page HTML autonome" style="
+        background:var(--accent2); border:none; border-radius:4px; color:#fff;
+        cursor:pointer; font-family:var(--sans); font-size:.72rem; font-weight:500;
+        padding:4px 10px; opacity:.4; transition:opacity .2s; white-space:nowrap;">
+        ⬇ Exporter HTML
+      </button>
+    </div>
+
+    <div class="geo-progress" id="geoProgress">
+      <span id="geoLabel">Géocodage…</span>
+      <div class="geo-bar"><div class="geo-bar-fill" id="geoFill" style="width:0%"></div></div>
+    </div>
+
+    <div class="results-list" id="resultsList">
+      <div class="state-msg">
+        <div class="big">🏢</div>
+        <div>Entrez votre clé API INSEE, sélectionnez une activité et lancez la recherche.</div>
+        <div style="margin-top:8px; font-size:.73rem; color:#bbb">
+          Clé disponible sur<br/><code>portail-api.insee.fr</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="pagination" id="paginationRow" style="display:none">
+      <button class="pag-btn" id="btnPrev" onclick="changePage(-1)">← Préc.</button>
+      <span id="pageInfo" style="font-family:var(--mono); font-size:.72rem">Page 1</span>
+      <button class="pag-btn" id="btnNext" onclick="changePage(1)">Suiv. →</button>
+    </div>
+  </div>
+
+  <div id="map"></div>
+</div>
+
+<script>
+const NAF_DICT = {
+  '11.05Z': 'Fabrication de bière',
+  '56.30Z': 'Débits de boissons',
+  '56.10A': 'Restauration traditionnelle',
+  '56.10B': 'Cafétérias et libres-services',
+  '56.10C': 'Restauration de type rapide',
+  '10.71C': 'Boulangerie-pâtisserie',
+  '47.61Z': 'Commerce de détail de livres',
+  '59.14Z': 'Projection de films cinématographiques',
+  '55.10Z': 'Hôtels et hébergement similaire',
+  '86.21Z': 'Médecine générale',
+  '96.02A': 'Coiffure',
+  '93.11Z': 'Gestion d\'installations sportives',
+  '47.71Z': 'Commerce de détail habillement',
+  '47.73Z': 'Commerce détail produits pharmaceutiques',
+  '45.20A': 'Entretien réparation véhicules légers',
+  '56.21Z': 'Services traiteurs',
+  '10.71A': 'Fab. industrielle pains et viennoiseries',
+  '86.90F': 'Activités de santé humaine NCA',
+  '85.10Z': 'Enseignement préprimaire',
+};
+
+// Populate datalist
+const dl = document.getElementById('nafSuggestions');
+Object.entries(NAF_DICT).forEach(([code, lib]) => {
+  const opt = document.createElement('option');
+  opt.value = code;
+  opt.label = lib;
+  dl.appendChild(opt);
+});
+
+// MAP
+const map = L.map('map').setView([46.6, 2.3], 6);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> · données <a href="https://www.insee.fr">INSEE SIRENE</a>',
+  maxZoom: 19,
+}).addTo(map);
+
+function makeIcon(active) {
+  const color = active ? '#c8342a' : '#1a3a6b';
+  const s = active ? 32 : 26;
+  return L.divIcon({
+    html: `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${Math.round(s*1.3)}" viewBox="0 0 26 34">
+      <path d="M13 0C5.8 0 0 5.8 0 13c0 9.75 13 21 13 21S26 22.75 26 13C26 5.8 20.2 0 13 0z" fill="${color}" stroke="white" stroke-width="2"/>
+      <circle cx="13" cy="13" r="5" fill="rgba(255,255,255,.85)"/>
+    </svg>`,
+    className: '', iconSize: [s, Math.round(s*1.3)], iconAnchor: [s/2, Math.round(s*1.3)], popupAnchor: [0, -Math.round(s*1.3)]
+  });
+}
+
+let markers = [];
+let activeCard = null;
+let activeMarker = null;
+let currentPage = 0;
+let totalResults = 0;
+let currentNb = 20;
+
+function clearMarkers() {
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+}
+
+function resolveNaf(raw) {
+  const trimmed = raw.trim();
+  if (/^\d{2}\.\d{2}[A-Z]?$/.test(trimmed)) return trimmed;
+  const lower = trimmed.toLowerCase();
+  const found = Object.entries(NAF_DICT).find(([, lib]) => lib.toLowerCase().includes(lower));
+  return found ? found[0] : trimmed;
+}
+
+function buildQuery(nafRaw, cp) {
+  const nafCode = resolveNaf(nafRaw);
+  // Historized fields must be inside periode()
+  const periodeParts = [];
+  if (nafCode) periodeParts.push('activitePrincipaleEtablissement:' + nafCode);
+  const inclureFermes = document.getElementById('inclureFermes')?.checked;
+  if (!inclureFermes) periodeParts.push('etatAdministratifEtablissement:A');
+
+  let parts = ['periode(' + periodeParts.join(' AND ') + ')'];
+
+  // codePostalEtablissement goes OUTSIDE periode() — wildcards work there
+  const cpTrim = cp.trim();
+  if (cpTrim) {
+    if (/^[0-9]{2,3}$/.test(cpTrim)) {
+      parts.push('codePostalEtablissement:' + cpTrim + '*');
+    } else {
+      parts.push('codePostalEtablissement:' + cpTrim);
+    }
+  }
+
+  return { q: parts.join(' AND '), nafCode };
+}
+
+function buildAddr(etab) {
+  const a = etab.adresseEtablissement || {};
+  const line1 = [a.numeroVoieEtablissement, a.typeVoieEtablissement, a.libelleVoieEtablissement].filter(Boolean).join(' ');
+  const line2 = [a.codePostalEtablissement, a.libelleCommuneEtablissement].filter(Boolean).join(' ');
+  return { line1, line2 };
+}
+
+function getName(etab) {
+  const ul = etab.uniteLegale || {};
+  return ul.denominationUniteLegale
+    || [ul.prenom1UniteLegale, ul.nomUniteLegale].filter(Boolean).join(' ')
+    || '(sans dénomination)';
+}
+
+async function geocode(etab) {
+  const { line1, line2 } = buildAddr(etab);
+  const q = [line1, line2].filter(Boolean).join(' ').trim();
+  if (!q) return null;
+  try {
+    const r = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=1`);
+    const d = await r.json();
+    if (d.features?.length) {
+      const [lon, lat] = d.features[0].geometry.coordinates;
+      return { lat, lon };
+    }
+  } catch {}
+  return null;
+}
+
+async function fetchSirene(q, debut, nombre, inseeKey) {
+  const url = "https://api.insee.fr/api-sirene/3.11/siret?q=" + encodeURIComponent(q) + "&nombre=" + nombre + "&debut=" + debut;
+  console.log('[Sirene] query:', q);
+
+  const res = await fetch(url, {
+    headers: {
+      'Accept': 'application/json',
+      'X-INSEE-Api-Key-Integration': inseeKey,
+    }
+  });
+
+  if (res.status === 401) throw new Error('Clé API INSEE invalide ou expirée (401).');
+  if (res.status === 403) throw new Error("Accès refusé (403). Vérifiez votre abonnement sur portail-api.insee.fr.");
+  if (res.status === 404) return { etablissements: [], header: { total: 0 } };
+  if (res.status === 429) throw new Error('Quota API INSEE dépassé (429). Attendez quelques secondes.');
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error('Erreur API INSEE ' + res.status + ' : ' + (body?.header?.message || res.statusText));
+  }
+  return res.json();
+}
+
+function filterEtabs(etabs) {
+  const inclureFermes = document.getElementById('inclureFermes')?.checked;
+  if (inclureFermes) return etabs;
+  return etabs.filter(et => et.periodesEtablissement?.[0]?.etatAdministratifEtablissement === 'A');
+}
+
+async function doSearch(page = 0) {
+  const apiKey    = document.getElementById('apiKey').value.trim();
+  const nafRaw    = document.getElementById('nafInput').value.trim();
+  const cp        = document.getElementById('cpInput').value.trim();
+  const nb        = parseInt(document.getElementById('nbInput').value, 10);
+  const toutCharger = document.getElementById('toutCharger')?.checked;
+
+  if (!apiKey) return showToast('<strong>Clé API manquante.</strong> Renseignez votre X-INSEE-Api-Key-Integration.');
+  if (!nafRaw && !cp) return showToast('Renseignez au moins un code NAF ou un code postal.');
+
+  const { q, nafCode } = buildQuery(nafRaw, cp);
+  currentNb = nb;
+  currentPage = page;
+
+  document.getElementById('searchBtn').disabled = true;
+  document.getElementById('paginationRow').style.display = 'none';
+  clearMarkers();
+
+  const setStatus = (msg) => {
+    document.getElementById('resultsList').innerHTML = `
+      <div class="state-msg">
+        <div class="spinner"></div>
+        <div>${msg}</div>
+        <div style="font-family:var(--mono);font-size:.65rem;color:#ccc;margin-top:6px;word-break:break-all">${q}</div>
+      </div>`;
+  };
+
+  try {
+    if (toutCharger) {
+      // ── Multi-fetch mode ───────────────────────────────────────────
+      setStatus('Chargement page 1…');
+      const first = await fetchSirene(q, 0, 200, apiKey);
+      totalResults = first.header?.total || 0;
+      const maxPages = Math.ceil(Math.min(totalResults, 10000) / 200);
+
+      let allEtabs = first.etablissements || [];
+      document.getElementById('countPill').textContent =
+        `${allEtabs.length} / ${totalResults.toLocaleString('fr-FR')}`;
+
+      for (let p = 1; p < maxPages; p++) {
+        setStatus(`Chargement page ${p + 1} / ${maxPages}… (${allEtabs.length} établissements récupérés)`);
+        // Small delay to avoid hammering the API
+        await new Promise(r => setTimeout(r, 300));
+        const data = await fetchSirene(q, p * 200, 200, apiKey);
+        allEtabs = allEtabs.concat(data.etablissements || []);
+        document.getElementById('countPill').textContent =
+          `${allEtabs.length} / ${totalResults.toLocaleString('fr-FR')}`;
+      }
+
+      allEtabs = filterEtabs(allEtabs);
+      document.getElementById('sidebarTitle').textContent = `ÉTABLISSEMENTS${nafCode ? ' · ' + nafCode : ''}`;
+      document.getElementById('countPill').textContent =
+        `${allEtabs.length} / ${totalResults.toLocaleString('fr-FR')}`;
+
+      if (!allEtabs.length) {
+        document.getElementById('resultsList').innerHTML = `<div class="state-msg"><div class="big">🔍</div><div>Aucun établissement trouvé.</div></div>`;
+        document.getElementById('searchBtn').disabled = false;
+        return;
+      }
+      renderResults(allEtabs, allEtabs.length);
+
+    } else {
+      // ── Single-fetch mode (paginated) ──────────────────────────────
+      setStatus('Interrogation de l\'API SIRENE…');
+      const data = await fetchSirene(q, page * nb, nb, apiKey);
+      let etabs = filterEtabs(data.etablissements || []);
+      totalResults = data.header?.total || 0;
+
+      document.getElementById('countPill').textContent = totalResults.toLocaleString('fr-FR');
+      document.getElementById('sidebarTitle').textContent = `ÉTABLISSEMENTS${nafCode ? ' · ' + nafCode : ''}`;
+
+      if (!etabs.length) {
+        document.getElementById('resultsList').innerHTML = `<div class="state-msg"><div class="big">🔍</div><div>Aucun établissement trouvé pour ces critères.</div></div>`;
+        document.getElementById('searchBtn').disabled = false;
+        return;
+      }
+      renderResults(etabs, nb);
+    }
+
+  } catch (err) {
+    document.getElementById('resultsList').innerHTML = `<div class="state-msg"><div class="big">⚠️</div><div>${err.message}</div></div>`;
+    document.getElementById('searchBtn').disabled = false;
+  }
+}
+
+function renderResults(etabs, nb) {
+  const list = document.getElementById('resultsList');
+  list.innerHTML = '';
+  activeCard = null;
+  activeMarker = null;
+
+  const cardRefs = etabs.map((etab, i) => {
+    const name = getName(etab);
+    const siret = etab.siret || '';
+    const periode = etab.periodesEtablissement?.[0] || {};
+    const naf  = periode.activitePrincipaleEtablissement || '—';
+    const etat = periode.etatAdministratifEtablissement || '—';
+    const addr = buildAddr(etab);
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.animationDelay = `${i * 0.02}s`;
+    card.innerHTML = `
+      <div class="card-name" title="${name}">${name}</div>
+      <div class="card-siret">SIRET ${siret}</div>
+      <div class="card-tags">
+        <span class="tag tag-naf">${naf} · ${NAF_DICT[naf] || naf}</span>
+        <span class="tag ${etat === 'A' ? 'tag-actif' : 'tag-ferme'}">${etat === 'A' ? 'Actif' : 'Fermé'}</span>
+      </div>
+      <div class="card-addr">
+        <svg width="10" height="13" viewBox="0 0 10 13" fill="none" stroke="#aaa" stroke-width="1.4">
+          <path d="M5 .5C2.5.5.5 2.5.5 5c0 3.5 4.5 7.5 4.5 7.5S9.5 8.5 9.5 5C9.5 2.5 7.5.5 5 .5z"/>
+          <circle cx="5" cy="5" r="1.5"/>
+        </svg>
+        ${[addr.line1, addr.line2].filter(Boolean).join(', ') || '—'}
+      </div>`;
+    list.appendChild(card);
+    return { card, etab, naf, name, addr };
+  });
+
+  // Geocode in background
+  const geoP = document.getElementById('geoProgress');
+  const geoL = document.getElementById('geoLabel');
+  const geoF = document.getElementById('geoFill');
+  geoP.style.display = 'block';
+  let done = 0;
+  window._exportData = []; // reset export dataset
+
+  (async () => {
+    for (const { card, etab, naf, name, addr } of cardRefs) {
+      const coords = await geocode(etab);
+      done++;
+      geoL.textContent = `Géocodage : ${done} / ${cardRefs.length}`;
+      geoF.style.width = `${(done / cardRefs.length) * 100}%`;
+
+      if (coords) {
+        window._exportData.push({ name, siret: etab.siret || '', naf, etat: etab.periodesEtablissement?.[0]?.etatAdministratifEtablissement || '', addr, lat: coords.lat, lon: coords.lon });
+        const marker = L.marker([coords.lat, coords.lon], { icon: makeIcon(false) }).addTo(map);
+        markers.push(marker);
+        marker.bindPopup(`
+          <div class="popup-name">${name}</div>
+          <div class="popup-naf">${naf} · ${NAF_DICT[naf] || ''}</div>
+          <div class="popup-addr">${[addr.line1, addr.line2].filter(Boolean).join('<br/>')}</div>
+        `);
+
+        card.onclick = () => {
+          if (activeCard) activeCard.classList.remove('active');
+          if (activeMarker) activeMarker.setIcon(makeIcon(false));
+          card.classList.add('active');
+          activeCard = card;
+          activeMarker = marker;
+          marker.setIcon(makeIcon(true));
+          map.setView([coords.lat, coords.lon], 15);
+          marker.openPopup();
+        };
+        marker.on('click', () => {
+          if (activeCard) activeCard.classList.remove('active');
+          if (activeMarker) activeMarker.setIcon(makeIcon(false));
+          card.classList.add('active');
+          activeCard = card;
+          activeMarker = marker;
+          card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      } else {
+        const ng = document.createElement('div');
+        ng.className = 'no-geo';
+        ng.textContent = '📍 adresse non géolocalisable';
+        card.appendChild(ng);
+        card.style.cursor = 'default';
+      }
+
+      await new Promise(r => setTimeout(r, 70));
+    }
+
+    geoP.style.display = 'none';
+    document.getElementById('searchBtn').disabled = false;
+    const expBtn = document.getElementById('exportBtn');
+    if (expBtn) { expBtn.disabled = false; expBtn.style.opacity = '1'; }
+
+    if (markers.length) {
+      const grp = L.featureGroup(markers);
+      map.fitBounds(grp.getBounds().pad(0.12));
+    }
+
+    // Pagination
+    const totalPages = Math.ceil(totalResults / currentNb);
+    if (totalPages > 1) {
+      document.getElementById('paginationRow').style.display = 'flex';
+      document.getElementById('pageInfo').textContent = `Page ${currentPage + 1} / ${totalPages}`;
+      document.getElementById('btnPrev').disabled = currentPage === 0;
+      document.getElementById('btnNext').disabled = currentPage >= totalPages - 1;
+    }
+  })();
+}
+
+function changePage(dir) {
+  clearMarkers();
+  doSearch(currentPage + dir);
+}
+
+function setNaf(code) {
+  document.getElementById('nafInput').value = code;
+}
+
+function showToast(html) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = html;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+
+function exportHtml() {
+  const data = window._exportData || [];
+  if (!data.length) return showToast('Aucune donnée à exporter. Attendez la fin du géocodage.');
+
+  const nafCode = document.getElementById('nafInput').value.trim();
+  const cp      = document.getElementById('cpInput').value.trim();
+  const count   = data.length;
+  const title   = 'Sirene \u2014 ' + nafCode + (cp ? ' \u00b7 ' + cp : '') + ' \u2014 ' + count + ' \u00e9tablissements';
+  const now     = new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
+  const fname   = 'sirene-' + nafCode.replace(/[^a-z0-9]/gi,'-') + '-' + (cp||'france') + '-' + count + 'etabs.html';
+
+  // Encode all data as JSON — safe, no template literal nesting issues
+  const dataJson = JSON.stringify(data.map(d => ({
+    name: d.name, siret: d.siret, naf: d.naf, etat: d.etat,
+    a1: d.addr.line1 || '', a2: d.addr.line2 || '',
+    lat: d.lat, lon: d.lon
+  })));
+
+  const listHtml = data.map(function(d, i) {
+    const addr = [d.addr.line1, d.addr.line2].filter(Boolean).join(', ') || '\u2014';
+    const etatCls = d.etat === 'A' ? 'actif' : 'ferme';
+    const etatLbl = d.etat === 'A' ? 'Actif' : 'Ferm\u00e9';
+    return '<div class="card" data-i="' + i + '"><div class="name">' + d.name + '</div>'
+      + '<div class="siret">' + d.siret + '</div>'
+      + '<div class="tags"><span class="tnaf">' + d.naf + '</span>'
+      + '<span class="tetat ' + etatCls + '">' + etatLbl + '</span></div>'
+      + '<div class="addr">\uD83D\uDCCD ' + addr + '</div></div>';
+  }).join('');
+
+  const css = '*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}'
+    + 'body{font-family:system-ui,sans-serif;display:flex;flex-direction:column;height:100vh;overflow:hidden;background:#f5f3ef;color:#1a1a1a}'
+    + 'header{background:#1a3a6b;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}'
+    + 'h1{font-size:.95rem;font-weight:700} .meta{font-size:.72rem;opacity:.65;margin-left:auto}'
+    + '.body{display:flex;flex:1;overflow:hidden}'
+    + '.sb{width:320px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;overflow:hidden}'
+    + '.sbh{padding:9px 14px;border-bottom:1px solid #ddd;font-size:.72rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.05em}'
+    + '.list{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:6px}'
+    + '.list::-webkit-scrollbar{width:4px}.list::-webkit-scrollbar-thumb{background:#ddd;border-radius:2px}'
+    + '.card{background:#fafaf8;border:1px solid #e5e2d9;border-left:3px solid transparent;border-radius:6px;padding:10px 12px;cursor:pointer;transition:border-color .15s}'
+    + '.card:hover{border-left-color:#1a3a6b}.card.active{border-left-color:#c8342a;background:#fff8f7}'
+    + '.name{font-weight:600;font-size:.85rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+    + '.siret{font-family:monospace;font-size:.64rem;color:#aaa;margin-bottom:4px}'
+    + '.tags{display:flex;gap:4px;margin-bottom:5px}'
+    + '.tnaf{background:#e8eef8;color:#1a3a6b;border-radius:3px;font-size:.65rem;padding:2px 6px;font-weight:600}'
+    + '.tetat{border-radius:3px;font-size:.65rem;padding:2px 6px;font-weight:600}'
+    + '.actif{background:#e6f4ec;color:#2d7a50}.ferme{background:#fdecea;color:#c8342a}'
+    + '.addr{font-size:.75rem;color:#999}'
+    + '#map{flex:1}'
+    + '.leaflet-popup-content-wrapper{border-radius:6px!important;font-family:system-ui,sans-serif!important}'
+    + '.pname{font-weight:700;font-size:.85rem;margin-bottom:3px}'
+    + '.pnaf{font-family:monospace;font-size:.72rem;color:#1a3a6b;margin-bottom:4px}'
+    + '.paddr{font-size:.75rem;color:#999}';
+
+  const js = 'const D=' + dataJson + ';'
+    + 'const map=L.map("map");'
+    + 'L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"\\u00a9 OpenStreetMap",maxZoom:19}).addTo(map);'
+    + 'function mk(a){const c=a?"#c8342a":"#1a3a6b",s=\'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="\'+c+\'"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>\';return L.divIcon({html:s,className:"",iconSize:[24,32],iconAnchor:[12,32],popupAnchor:[0,-34]});}'
+    + 'let aC=null,aM=null;'
+    + 'const cards=document.querySelectorAll(".card"),ml=[];'
+    + 'D.forEach(function(d,i){'
+    + '  const m=L.marker([d.lat,d.lon],{icon:mk(false)}).addTo(map);'
+    + '  m.bindPopup(\'<div class="pname">\'+d.name+\'</div><div class="pnaf">\'+d.naf+\'</div><div class="paddr">\\uD83D\\uDCCD \'+(d.a1?d.a1+" ":"")+d.a2+\'</div>\');'
+    + '  ml.push(m);'
+    + '  function activate(ci,mi){if(aC)aC.classList.remove("active");if(aM)aM.setIcon(mk(false));ci.classList.add("active");aC=ci;mi.setIcon(mk(true));aM=mi;}'
+    + '  cards[i].addEventListener("click",function(){activate(cards[i],m);map.setView([d.lat,d.lon],15);m.openPopup();});'
+    + '  m.on("click",function(){activate(cards[i],m);cards[i].scrollIntoView({behavior:"smooth",block:"nearest"});});'
+    + '});'
+    + 'if(ml.length){const g=L.featureGroup(ml);map.fitBounds(g.getBounds().pad(0.12));}';
+
+  const parts = [
+    '<!DOCTYPE html><html lang="fr"><head>',
+    '<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>',
+    '<title>' + title + '</title>',
+    '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>',
+    '<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"><' + '/script>',
+    '<style>' + css + '</style></head><body>',
+    '<header><h1>&#128205; ' + title + '</h1><div class="meta">Export\u00e9 le ' + now + ' \u2014 API Sirene INSEE</div></header>',
+    '<div class="body"><div class="sb"><div class="sbh">' + count + ' \u00e9tablissements</div>',
+    '<div class="list">' + listHtml + '</div></div><div id="map"></div></div>',
+    '<script>' + js + '<' + '/script>',
+    '</body></html>'
+  ];
+
+  const blob = new Blob([parts.join('')], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.id !== 'apiKey') doSearch();
+});
+
+// Persist INSEE API key in localStorage
+function saveKey(val) {
+  if (val) localStorage.setItem('insee_api_key', val);
+  else localStorage.removeItem('insee_api_key');
+}
+
+// Restore key on load
+(function() {
+  const saved = localStorage.getItem('insee_api_key');
+  if (saved) document.getElementById('apiKey').value = saved;
+})();
+</script>
+</body>
+</html>
