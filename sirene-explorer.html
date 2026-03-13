@@ -343,6 +343,98 @@
       max-width: 500px;
     }
     .toast strong { color: var(--accent2); }
+
+    /* Settings panel */
+    .settings-toggle {
+      margin-left: auto;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: var(--radius);
+      color: #fff;
+      cursor: pointer;
+      font-family: var(--sans);
+      font-size: .78rem;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background .15s;
+    }
+    .settings-toggle:hover { background: rgba(255,255,255,.2); }
+    .settings-toggle .gear { font-size: .9rem; }
+    .settings-key-ok   { color: #7ddf92; font-size: .7rem; margin-left: 4px; }
+    .settings-key-none { color: #f5a6a0; font-size: .7rem; margin-left: 4px; }
+
+    .settings-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.35);
+      z-index: 8000;
+    }
+    .settings-overlay.open { display: flex; align-items: center; justify-content: center; }
+
+    .settings-panel {
+      background: var(--surface);
+      border-radius: 10px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.18);
+      width: 460px;
+      max-width: 95vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: settingsIn .2s ease;
+    }
+    @keyframes settingsIn {
+      from { opacity: 0; transform: scale(.95) translateY(8px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .settings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .settings-header h3 {
+      font-family: var(--mono);
+      font-size: .85rem;
+      font-weight: 600;
+      letter-spacing: .03em;
+    }
+    .settings-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: var(--muted);
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background .12s;
+    }
+    .settings-close:hover { background: var(--bg); }
+    .settings-body { padding: 20px; display: flex; flex-direction: column; gap: 18px; }
+    .settings-section-title {
+      font-family: var(--mono);
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .settings-field { display: flex; flex-direction: column; gap: 6px; }
+    .settings-field input[type="password"],
+    .settings-field input[type="text"] {
+      width: 100%;
+      font-family: var(--mono);
+      font-size: .78rem;
+    }
+    .settings-hint {
+      font-size: .7rem;
+      color: #aaa;
+      line-height: 1.4;
+    }
+    .settings-hint a { color: var(--accent); }
   </style>
 </head>
 <body>
@@ -351,13 +443,33 @@
   <div class="topbar-logo">SIRENE<span>.explorer</span></div>
   <div class="topbar-sep"></div>
   <div class="topbar-sub">API INSEE — Répertoire des entreprises et établissements</div>
+  <button class="settings-toggle" onclick="toggleSettings()">
+    <span class="gear">&#9881;</span> Paramètres
+    <span id="keyStatus" class="settings-key-none">&#x25CF; non configurée</span>
+  </button>
+</div>
+
+<!-- Settings modal -->
+<div class="settings-overlay" id="settingsOverlay" onclick="if(event.target===this)toggleSettings()">
+  <div class="settings-panel">
+    <div class="settings-header">
+      <h3>&#9881; Paramètres</h3>
+      <button class="settings-close" onclick="toggleSettings()">&#x2715;</button>
+    </div>
+    <div class="settings-body">
+      <div class="settings-field">
+        <div class="settings-section-title">Clé API INSEE</div>
+        <input id="apiKey" type="password" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" oninput="saveKey(this.value)" />
+        <div class="settings-hint">
+          Obtenez votre clé sur <a href="https://portail-api.insee.fr" target="_blank">portail-api.insee.fr</a>
+          — abonnement gratuit à l'API Sirene V3.
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="toolbar">
-  <div class="field-group">
-    <label>Clé API INSEE</label>
-    <input class="input-key" id="apiKey" type="password" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" oninput="saveKey(this.value)" />
-  </div>
   <div class="field-group">
     <label>Code NAF / Activité</label>
     <input class="input-naf" id="nafInput" type="text" placeholder="ex: 11.05Z  ou  brasserie" list="nafSuggestions" />
@@ -433,9 +545,9 @@
     <div class="results-list" id="resultsList">
       <div class="state-msg">
         <div class="big">🏢</div>
-        <div>Entrez votre clé API INSEE, sélectionnez une activité et lancez la recherche.</div>
+        <div>Configurez votre clé API dans <strong>Paramètres</strong>, sélectionnez une activité et lancez la recherche.</div>
         <div style="margin-top:8px; font-size:.73rem; color:#bbb">
-          Clé disponible sur<br/><code>portail-api.insee.fr</code>
+          Clé disponible sur <a href="https://portail-api.insee.fr" target="_blank" style="color:var(--accent)">portail-api.insee.fr</a>
         </div>
       </div>
     </div>
@@ -914,19 +1026,43 @@ function exportHtml() {
 
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && e.target.id !== 'apiKey') doSearch();
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('settingsOverlay');
+    if (overlay.classList.contains('open')) overlay.classList.remove('open');
+  }
+  if (e.key === 'Enter' && e.target.id !== 'apiKey' && !document.getElementById('settingsOverlay').classList.contains('open')) doSearch();
 });
+
+// Settings panel
+function toggleSettings() {
+  const overlay = document.getElementById('settingsOverlay');
+  overlay.classList.toggle('open');
+}
 
 // Persist INSEE API key in localStorage
 function saveKey(val) {
   if (val) localStorage.setItem('insee_api_key', val);
   else localStorage.removeItem('insee_api_key');
+  updateKeyStatus();
+}
+
+function updateKeyStatus() {
+  const el = document.getElementById('keyStatus');
+  const hasKey = !!document.getElementById('apiKey').value.trim();
+  if (hasKey) {
+    el.className = 'settings-key-ok';
+    el.innerHTML = '&#x25CF; configurée';
+  } else {
+    el.className = 'settings-key-none';
+    el.innerHTML = '&#x25CF; non configurée';
+  }
 }
 
 // Restore key on load
 (function() {
   const saved = localStorage.getItem('insee_api_key');
   if (saved) document.getElementById('apiKey').value = saved;
+  updateKeyStatus();
 })();
 </script>
 </body>
