@@ -483,7 +483,7 @@
       </div>
       <div class="settings-field">
         <label style="font-size:.75rem;color:var(--muted)">Dossier dans le dépôt</label>
-        <input id="ghPath" type="text" placeholder="ex: exports (vide = racine)" oninput="saveGhSettings()" />
+        <input id="ghPath" type="text" placeholder="ex: exports (vide = racine)" value="exports" oninput="saveGhSettings()" />
         <div class="settings-hint">
           Le fichier HTML sera poussé dans ce dossier. Laissez vide pour la racine du dépôt.
         </div>
@@ -1194,7 +1194,7 @@ function saveGhSettings() {
   const ghPath  = localStorage.getItem('gh_path');
   if (ghToken) document.getElementById('ghToken').value = ghToken;
   if (ghRepo)  document.getElementById('ghRepo').value = ghRepo;
-  if (ghPath)  document.getElementById('ghPath').value = ghPath;
+  if (ghPath !== null) document.getElementById('ghPath').value = ghPath;
 })();
 </script>
 </body>
