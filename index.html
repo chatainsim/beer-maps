@@ -94,25 +94,23 @@
       gap: 4px;
     }
 
-    .legend {
+    .scan-status {
       margin-left: auto;
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: .72rem;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: .7rem;
       color: var(--muted);
     }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
+    .scan-status .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
     }
-    .legend-dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 3px;
-      border: 1px solid rgba(0,0,0,.1);
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     #map { flex: 1; }
 
@@ -131,6 +129,11 @@
       color: var(--accent);
       margin-right: 4px;
     }
+    .dept-tooltip .tt-count {
+      font-family: var(--mono);
+      font-weight: 700;
+      color: var(--accent2);
+    }
     .dept-tooltip .status {
       font-size: .65rem;
       font-weight: 400;
@@ -145,6 +148,19 @@
       box-shadow: 0 4px 20px rgba(0,0,0,.12) !important;
       border: 1px solid var(--border) !important;
     }
+
+    /* Count labels on map */
+    .dept-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: #1a3a6b;
+      text-shadow: 0 0 3px #fff, 0 0 3px #fff, 1px 1px 0 #fff, -1px -1px 0 #fff;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .dept-label.has-data { color: #7a2520; }
+    .dept-label.no-data { color: #bbb; font-weight: 400; font-size: 9px; }
 
     .info-panel {
       position: absolute;
@@ -162,13 +178,47 @@
       line-height: 1.5;
     }
     .info-panel strong { color: var(--text); }
-    .info-panel .count {
+    .info-panel .total {
       font-family: var(--mono);
       font-size: 1.4rem;
       font-weight: 600;
       color: var(--accent);
       display: block;
       margin-bottom: 4px;
+    }
+
+    .color-scale {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.1);
+      font-size: .68rem;
+      color: var(--muted);
+    }
+    .color-scale-title {
+      font-family: var(--mono);
+      font-weight: 600;
+      font-size: .62rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .color-scale-bar {
+      width: 120px;
+      height: 12px;
+      border-radius: 3px;
+      margin-bottom: 4px;
+    }
+    .color-scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: .6rem;
     }
   </style>
 </head>
@@ -199,26 +249,30 @@
 
   <div class="field-group">
     <label>Dossier exports</label>
-    <input id="exportDir" type="text" value="exports" style="width:160px" oninput="updateNaf()" />
+    <input id="exportDir" type="text" value="exports" style="width:160px" />
   </div>
 
-  <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#e8f0fe"></div> Disponible</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#c8342a;opacity:.7"></div> Survolé</div>
-  </div>
+  <div class="scan-status" id="scanStatus"></div>
 </div>
 
 <div id="map"></div>
 
 <div class="info-panel" id="infoPanel">
-  <span class="count">96</span>
-  <strong>Départements métropolitains</strong><br/>
-  Cliquez sur un département pour ouvrir la carte des établissements correspondante.
+  <span class="total" id="totalCount">—</span>
+  <strong>Établissements trouvés</strong><br/>
+  <span id="infoDetails">Scan des fichiers d'export en cours…</span>
+</div>
+
+<div class="color-scale" id="colorScale" style="display:none">
+  <div class="color-scale-title">Établissements</div>
+  <div class="color-scale-bar" id="scaleBar"></div>
+  <div class="color-scale-labels">
+    <span id="scaleMin">0</span>
+    <span id="scaleMax">—</span>
+  </div>
 </div>
 
 <script>
-// Metropolitan departments (01-95 + 2A + 2B)
-const DEPTS = {};
 const DEPT_NAMES = {
   "01":"Ain","02":"Aisne","03":"Allier","04":"Alpes-de-Haute-Provence","05":"Hautes-Alpes",
   "06":"Alpes-Maritimes","07":"Ardèche","08":"Ardennes","09":"Ariège","10":"Aube",
@@ -244,14 +298,15 @@ const DEPT_NAMES = {
 
 let currentNaf = '11.05Z';
 let geoLayer = null;
+let deptCounts = {};   // { "38": 12, "69": 5, ... }
+let deptLabels = [];   // L.marker label references
+let cachedGeoJson = null;
 
 const map = L.map('map', { zoomSnap: 0.25 }).setView([46.6, 2.5], 6);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
   attribution: '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> · © <a href="https://carto.com/">CARTO</a>',
   maxZoom: 19,
 }).addTo(map);
-
-// Subtle label layer on top
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
   maxZoom: 19, pane: 'overlayPane'
 }).addTo(map);
@@ -266,77 +321,192 @@ function exportUrl(deptCode) {
   return prefix + 'sirene-' + nafSlug(currentNaf) + '-' + deptCode + '.html';
 }
 
-function styleDefault(feature) {
+// Color scale: light blue (0) → dark red (max)
+const COLORS = ['#eef3fb','#d0dff5','#a3c1ea','#6a9bd6','#d4845a','#c8572e','#a83220','#7a1a14'];
+
+function getColor(count, maxCount) {
+  if (count === null) return '#f0eeea';
+  if (count === 0) return '#f0eeea';
+  const ratio = Math.min(count / Math.max(maxCount, 1), 1);
+  const idx = Math.min(Math.floor(ratio * (COLORS.length - 1)), COLORS.length - 1);
+  return COLORS[idx];
+}
+
+function getMaxCount() {
+  const vals = Object.values(deptCounts).filter(v => v !== null && v > 0);
+  return vals.length ? Math.max(...vals) : 1;
+}
+
+function styleForDept(feature) {
+  const code = feature.properties.code;
+  const count = deptCounts[code] ?? null;
+  const maxC = getMaxCount();
   return {
-    fillColor: '#d0dff5',
-    fillOpacity: 0.55,
-    color: '#1a3a6b',
-    weight: 1.5,
-    opacity: 0.7,
+    fillColor: getColor(count, maxC),
+    fillOpacity: count > 0 ? 0.75 : 0.3,
+    color: count > 0 ? '#1a3a6b' : '#ccc',
+    weight: 1.2,
+    opacity: 0.6,
   };
 }
 
 function styleHover() {
   return {
     fillColor: '#c8342a',
-    fillOpacity: 0.5,
+    fillOpacity: 0.6,
     color: '#c8342a',
     weight: 2.5,
     opacity: 1,
   };
 }
 
-function onEachDept(feature, layer) {
-  const code = feature.properties.code;
-  const name = DEPT_NAMES[code] || feature.properties.nom || code;
-
-  layer.bindTooltip(
-    '<div class="dept-tooltip">' +
-    '<span class="code">' + code + '</span> ' + name +
-    '<span class="status">→ sirene-' + nafSlug(currentNaf) + '-' + code + '.html</span>' +
-    '</div>',
-    { sticky: true, direction: 'top', offset: [0, -10] }
-  );
-
-  layer.on('mouseover', function () {
-    this.setStyle(styleHover());
-    this.bringToFront();
-  });
-  layer.on('mouseout', function () {
-    geoLayer.resetStyle(this);
-  });
-  layer.on('click', function () {
-    window.open(exportUrl(code), '_blank');
-  });
+function tooltipHtml(code) {
+  const name = DEPT_NAMES[code] || code;
+  const count = deptCounts[code];
+  const countStr = count !== undefined && count !== null
+    ? '<span class="tt-count">' + count + ' établissement' + (count > 1 ? 's' : '') + '</span>'
+    : '<span style="color:#bbb">Pas d\'export</span>';
+  return '<div class="dept-tooltip">' +
+    '<span class="code">' + code + '</span> ' + name + '<br/>' +
+    countStr +
+    '<span class="status">→ ' + 'sirene-' + nafSlug(currentNaf) + '-' + code + '.html</span>' +
+    '</div>';
 }
 
-function updateNaf() {
-  currentNaf = document.getElementById('nafSelect').value;
-  // Refresh tooltips by reloading the layer
-  if (geoLayer && geoLayer._geojson) {
-    loadGeoJson(geoLayer._geojson);
-  }
+function onEachDept(feature, layer) {
+  const code = feature.properties.code;
+  layer.bindTooltip(tooltipHtml(code), { sticky: true, direction: 'top', offset: [0, -10] });
+  layer.on('mouseover', function () { this.setStyle(styleHover()); this.bringToFront(); });
+  layer.on('mouseout', function () { geoLayer.resetStyle(this); });
+  layer.on('click', function () { window.open(exportUrl(code), '_blank'); });
+}
+
+function clearLabels() {
+  deptLabels.forEach(m => map.removeLayer(m));
+  deptLabels = [];
+}
+
+function addLabels() {
+  clearLabels();
+  if (!geoLayer) return;
+  geoLayer.eachLayer(function (layer) {
+    const code = layer.feature.properties.code;
+    const count = deptCounts[code];
+    const center = layer.getBounds().getCenter();
+    let labelText, cssClass;
+    if (count !== undefined && count !== null && count > 0) {
+      labelText = String(count);
+      cssClass = 'dept-label has-data';
+    } else if (count === 0) {
+      labelText = '0';
+      cssClass = 'dept-label no-data';
+    } else {
+      labelText = '—';
+      cssClass = 'dept-label no-data';
+    }
+    const marker = L.marker(center, {
+      icon: L.divIcon({ className: cssClass, html: labelText, iconSize: [30, 14], iconAnchor: [15, 7] }),
+      interactive: false,
+    }).addTo(map);
+    deptLabels.push(marker);
+  });
 }
 
 function loadGeoJson(data) {
   if (geoLayer) map.removeLayer(geoLayer);
   geoLayer = L.geoJSON(data, {
-    style: styleDefault,
+    style: styleForDept,
     onEachFeature: onEachDept,
-    filter: function (feature) {
-      // Only metropolitan departments
-      const code = feature.properties.code;
-      return !!DEPT_NAMES[code];
-    }
+    filter: function (feature) { return !!DEPT_NAMES[feature.properties.code]; }
   }).addTo(map);
-  geoLayer._geojson = data;
+  addLabels();
 }
 
-// Load department boundaries from public GeoJSON
+function refreshMap() {
+  if (!cachedGeoJson) return;
+  loadGeoJson(cachedGeoJson);
+  updateInfoPanel();
+  updateColorScale();
+}
+
+function updateInfoPanel() {
+  const counts = Object.values(deptCounts).filter(v => v !== null && v > 0);
+  const total = counts.reduce((a, b) => a + b, 0);
+  const nbDepts = counts.length;
+  document.getElementById('totalCount').textContent = total.toLocaleString('fr-FR');
+  document.getElementById('infoDetails').innerHTML =
+    '<strong>' + nbDepts + '</strong> département' + (nbDepts > 1 ? 's' : '') + ' avec données<br/>' +
+    'Cliquez sur un département pour ouvrir sa carte.';
+}
+
+function updateColorScale() {
+  const maxC = getMaxCount();
+  if (maxC <= 0) return;
+  const scale = document.getElementById('colorScale');
+  scale.style.display = '';
+  document.getElementById('scaleBar').style.background =
+    'linear-gradient(90deg, ' + COLORS.join(', ') + ')';
+  document.getElementById('scaleMin').textContent = '0';
+  document.getElementById('scaleMax').textContent = maxC;
+}
+
+// Scan export files to extract establishment counts
+async function scanExports() {
+  const statusEl = document.getElementById('scanStatus');
+  const codes = Object.keys(DEPT_NAMES);
+  let scanned = 0;
+  deptCounts = {};
+
+  statusEl.innerHTML = '<div class="spinner"></div> Scan 0/' + codes.length;
+
+  // Scan in batches of 6 to avoid hammering
+  const BATCH = 6;
+  for (let i = 0; i < codes.length; i += BATCH) {
+    const batch = codes.slice(i, i + BATCH);
+    await Promise.all(batch.map(async (code) => {
+      const url = exportUrl(code);
+      try {
+        const res = await fetch(url);
+        if (!res.ok) { deptCounts[code] = null; return; }
+        const html = await res.text();
+        // Extract count from: const D=[...]; — count array items
+        const match = html.match(/const D=(\[[\s\S]*?\]);/);
+        if (match) {
+          try {
+            const arr = JSON.parse(match[1]);
+            deptCounts[code] = arr.length;
+          } catch { deptCounts[code] = null; }
+        } else {
+          // Fallback: extract from title "— X établissements"
+          const titleMatch = html.match(/(\d+)\s*[eé]tablissements/);
+          deptCounts[code] = titleMatch ? parseInt(titleMatch[1], 10) : null;
+        }
+      } catch {
+        deptCounts[code] = null;
+      }
+    }));
+    scanned += batch.length;
+    statusEl.innerHTML = '<div class="spinner"></div> Scan ' + Math.min(scanned, codes.length) + '/' + codes.length;
+    refreshMap();
+  }
+
+  const found = Object.values(deptCounts).filter(v => v !== null && v > 0).length;
+  statusEl.innerHTML = '&#x2714; ' + found + '/' + codes.length + ' fichiers trouvés';
+  refreshMap();
+}
+
+function updateNaf() {
+  currentNaf = document.getElementById('nafSelect').value;
+  scanExports();
+}
+
+// Init
 fetch('https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements-version-simplifiee.geojson')
   .then(r => r.json())
   .then(data => {
+    cachedGeoJson = data;
     loadGeoJson(data);
+    scanExports();
   })
   .catch(err => {
     console.error('Erreur chargement GeoJSON:', err);
