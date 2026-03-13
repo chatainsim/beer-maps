@@ -465,6 +465,29 @@
           — abonnement gratuit à l'API Sirene V3.
         </div>
       </div>
+
+      <hr style="border:none;border-top:1px solid var(--border)" />
+
+      <div class="settings-field">
+        <div class="settings-section-title">Export GitHub</div>
+        <label style="font-size:.75rem;color:var(--muted)">Token GitHub (PAT)</label>
+        <input id="ghToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" oninput="saveGhSettings()" />
+        <div class="settings-hint">
+          Token avec permission <strong>repo</strong> (ou <strong>public_repo</strong> pour les dépôts publics).
+          <a href="https://github.com/settings/tokens/new" target="_blank">Créer un token</a>
+        </div>
+      </div>
+      <div class="settings-field">
+        <label style="font-size:.75rem;color:var(--muted)">Dépôt (owner/repo)</label>
+        <input id="ghRepo" type="text" placeholder="ex: moncompte/sirene-exports" oninput="saveGhSettings()" />
+      </div>
+      <div class="settings-field">
+        <label style="font-size:.75rem;color:var(--muted)">Dossier dans le dépôt</label>
+        <input id="ghPath" type="text" placeholder="ex: exports (vide = racine)" oninput="saveGhSettings()" />
+        <div class="settings-hint">
+          Le fichier HTML sera poussé dans ce dossier. Laissez vide pour la racine du dépôt.
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -533,7 +556,14 @@
         background:var(--accent2); border:none; border-radius:4px; color:#fff;
         cursor:pointer; font-family:var(--sans); font-size:.72rem; font-weight:500;
         padding:4px 10px; opacity:.4; transition:opacity .2s; white-space:nowrap;">
-        ⬇ Exporter HTML
+        ⬇ Export HTML
+      </button>
+      <button id="ghPushBtn" onclick="pushToGithub()" disabled title="Pousser l'export sur un dépôt GitHub" style="
+        background:#24292f; border:none; border-radius:4px; color:#fff;
+        cursor:pointer; font-family:var(--sans); font-size:.72rem; font-weight:500;
+        padding:4px 10px; opacity:.4; transition:opacity .2s; white-space:nowrap; display:flex; align-items:center; gap:4px;">
+        <svg height="14" width="14" viewBox="0 0 16 16" fill="white"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Push GitHub
       </button>
     </div>
 
@@ -898,6 +928,10 @@ function renderResults(etabs, nb) {
     document.getElementById('searchBtn').disabled = false;
     const expBtn = document.getElementById('exportBtn');
     if (expBtn) { expBtn.disabled = false; expBtn.style.opacity = '1'; }
+    const ghBtn = document.getElementById('ghPushBtn');
+    if (ghBtn && document.getElementById('ghToken').value.trim() && document.getElementById('ghRepo').value.trim()) {
+      ghBtn.disabled = false; ghBtn.style.opacity = '1';
+    }
 
     if (markers.length) {
       const grp = L.featureGroup(markers);
@@ -940,11 +974,108 @@ function exportHtml() {
   const nafCode = document.getElementById('nafInput').value.trim();
   const cp      = document.getElementById('cpInput').value.trim();
   const count   = data.length;
-  const title   = 'Sirene \u2014 ' + nafCode + (cp ? ' \u00b7 ' + cp : '') + ' \u2014 ' + count + ' \u00e9tablissements';
-  const now     = new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
   const fname   = 'sirene-' + nafCode.replace(/[^a-z0-9]/gi,'-') + '-' + (cp||'france') + '-' + count + 'etabs.html';
 
-  // Encode all data as JSON — safe, no template literal nesting issues
+  const blob = new Blob([buildExportHtml()], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('settingsOverlay');
+    if (overlay.classList.contains('open')) overlay.classList.remove('open');
+  }
+  if (e.key === 'Enter' && e.target.id !== 'apiKey' && !document.getElementById('settingsOverlay').classList.contains('open')) doSearch();
+});
+
+// GitHub push
+async function pushToGithub() {
+  const data = window._exportData || [];
+  if (!data.length) return showToast('Aucune donnée à exporter. Attendez la fin du géocodage.');
+
+  const token = document.getElementById('ghToken').value.trim();
+  const repo  = document.getElementById('ghRepo').value.trim();
+  const dir   = document.getElementById('ghPath').value.trim();
+
+  if (!token) return showToast('<strong>Token GitHub manquant.</strong> Configurez-le dans Paramètres.');
+  if (!repo)  return showToast('<strong>Dépôt GitHub manquant.</strong> Configurez-le dans Paramètres.');
+
+  const ghBtn = document.getElementById('ghPushBtn');
+  ghBtn.disabled = true;
+  ghBtn.style.opacity = '.4';
+
+  try {
+    // Build the HTML content (reuse the same logic as exportHtml)
+    const htmlContent = buildExportHtml();
+    const nafCode = document.getElementById('nafInput').value.trim();
+    const cp      = document.getElementById('cpInput').value.trim();
+    const count   = data.length;
+    const fname   = 'sirene-' + nafCode.replace(/[^a-z0-9]/gi, '-') + '-' + (cp || 'france') + '-' + count + 'etabs.html';
+    const filePath = dir ? dir.replace(/\/+$/, '') + '/' + fname : fname;
+
+    // Check if file already exists (to get its SHA for update)
+    let sha = null;
+    try {
+      const checkRes = await fetch(`https://api.github.com/repos/${repo}/contents/${encodeURIComponent(filePath)}`, {
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (checkRes.ok) {
+        const existing = await checkRes.json();
+        sha = existing.sha;
+      }
+    } catch {}
+
+    // Base64 encode the content
+    const b64 = btoa(unescape(encodeURIComponent(htmlContent)));
+    const now = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+
+    const body = {
+      message: `Export Sirene ${nafCode}${cp ? ' · ' + cp : ''} — ${count} établissements (${now})`,
+      content: b64,
+    };
+    if (sha) body.sha = sha;
+
+    const res = await fetch(`https://api.github.com/repos/${repo}/contents/${encodeURIComponent(filePath)}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'token ' + token,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || 'Erreur ' + res.status);
+    }
+
+    const result = await res.json();
+    const htmlUrl = result.content?.html_url || `https://github.com/${repo}/blob/main/${filePath}`;
+    showToast(`<strong>Poussé sur GitHub !</strong><br/><a href="${htmlUrl}" target="_blank" style="color:var(--accent);font-size:.78rem">${filePath}</a>`);
+
+  } catch (err) {
+    showToast(`<strong>Erreur GitHub :</strong> ${err.message}`);
+  } finally {
+    ghBtn.disabled = false;
+    ghBtn.style.opacity = '1';
+  }
+}
+
+// Build export HTML string (shared by local export and GitHub push)
+function buildExportHtml() {
+  const data = window._exportData || [];
+  const nafCode = document.getElementById('nafInput').value.trim();
+  const cp      = document.getElementById('cpInput').value.trim();
+  const count   = data.length;
+  const title   = 'Sirene \u2014 ' + nafCode + (cp ? ' \u00b7 ' + cp : '') + ' \u2014 ' + count + ' \u00e9tablissements';
+  const now     = new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
+
   const dataJson = JSON.stringify(data.map(d => ({
     name: d.name, siret: d.siret, naf: d.naf, etat: d.etat,
     a1: d.addr.line1 || '', a2: d.addr.line2 || '',
@@ -1002,7 +1133,7 @@ function exportHtml() {
     + '});'
     + 'if(ml.length){const g=L.featureGroup(ml);map.fitBounds(g.getBounds().pad(0.12));}';
 
-  const parts = [
+  return [
     '<!DOCTYPE html><html lang="fr"><head>',
     '<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>',
     '<title>' + title + '</title>',
@@ -1014,24 +1145,8 @@ function exportHtml() {
     '<div class="list">' + listHtml + '</div></div><div id="map"></div></div>',
     '<script>' + js + '<' + '/script>',
     '</body></html>'
-  ];
-
-  const blob = new Blob([parts.join('')], { type: 'text/html;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = fname;
-  a.click();
-  URL.revokeObjectURL(a.href);
+  ].join('');
 }
-
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    const overlay = document.getElementById('settingsOverlay');
-    if (overlay.classList.contains('open')) overlay.classList.remove('open');
-  }
-  if (e.key === 'Enter' && e.target.id !== 'apiKey' && !document.getElementById('settingsOverlay').classList.contains('open')) doSearch();
-});
 
 // Settings panel
 function toggleSettings() {
@@ -1058,11 +1173,28 @@ function updateKeyStatus() {
   }
 }
 
-// Restore key on load
+// GitHub settings persistence
+function saveGhSettings() {
+  const token = document.getElementById('ghToken').value;
+  const repo  = document.getElementById('ghRepo').value;
+  const path  = document.getElementById('ghPath').value;
+  if (token) localStorage.setItem('gh_token', token); else localStorage.removeItem('gh_token');
+  if (repo)  localStorage.setItem('gh_repo', repo);   else localStorage.removeItem('gh_repo');
+  if (path)  localStorage.setItem('gh_path', path);   else localStorage.removeItem('gh_path');
+}
+
+// Restore all settings on load
 (function() {
-  const saved = localStorage.getItem('insee_api_key');
-  if (saved) document.getElementById('apiKey').value = saved;
+  const savedKey = localStorage.getItem('insee_api_key');
+  if (savedKey) document.getElementById('apiKey').value = savedKey;
   updateKeyStatus();
+
+  const ghToken = localStorage.getItem('gh_token');
+  const ghRepo  = localStorage.getItem('gh_repo');
+  const ghPath  = localStorage.getItem('gh_path');
+  if (ghToken) document.getElementById('ghToken').value = ghToken;
+  if (ghRepo)  document.getElementById('ghRepo').value = ghRepo;
+  if (ghPath)  document.getElementById('ghPath').value = ghPath;
 })();
 </script>
 </body>
