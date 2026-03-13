@@ -972,9 +972,8 @@ function exportHtml() {
   if (!data.length) return showToast('Aucune donnée à exporter. Attendez la fin du géocodage.');
 
   const nafCode = document.getElementById('nafInput').value.trim();
-  const cp      = document.getElementById('cpInput').value.trim();
   const count   = data.length;
-  const fname   = 'sirene-' + nafCode.replace(/[^a-z0-9]/gi,'-') + '-' + (cp||'france') + '-' + count + 'etabs.html';
+  const fname   = 'sirene-' + nafCode.replace(/[^a-z0-9]/gi,'-') + '-' + deptsLabel() + '-' + count + 'etabs.html';
 
   const blob = new Blob([buildExportHtml()], { type: 'text/html;charset=utf-8' });
   const a = document.createElement('a');
@@ -1013,9 +1012,8 @@ async function pushToGithub() {
     // Build the HTML content (reuse the same logic as exportHtml)
     const htmlContent = buildExportHtml();
     const nafCode = document.getElementById('nafInput').value.trim();
-    const cp      = document.getElementById('cpInput').value.trim();
     const count   = data.length;
-    const fname   = 'sirene-' + nafCode.replace(/[^a-z0-9]/gi, '-') + '-' + (cp || 'france') + '-' + count + 'etabs.html';
+    const fname   = 'sirene-' + nafCode.replace(/[^a-z0-9]/gi, '-') + '-' + deptsLabel() + '-' + count + 'etabs.html';
     const filePath = dir ? dir.replace(/\/+$/, '') + '/' + fname : fname;
 
     // Check if file already exists (to get its SHA for update)
@@ -1035,7 +1033,7 @@ async function pushToGithub() {
     const now = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
 
     const body = {
-      message: `Export Sirene ${nafCode}${cp ? ' · ' + cp : ''} — ${count} établissements (${now})`,
+      message: `Export Sirene ${nafCode} · ${deptsLabel()} — ${count} établissements (${now})`,
       content: b64,
     };
     if (sha) body.sha = sha;
@@ -1067,13 +1065,41 @@ async function pushToGithub() {
   }
 }
 
+// Extract unique department codes from export data
+function getExportDepts() {
+  const data = window._exportData || [];
+  const depts = new Set();
+  for (const d of data) {
+    const cp = d.addr?.line2?.match(/^(\d{2,3})\d*/);
+    if (cp) {
+      // Corsica: 201xx → 2A, 202xx → 2B; DOM: 97x
+      const raw = cp[1];
+      if (raw === '201') depts.add('2A');
+      else if (raw === '202') depts.add('2B');
+      else if (raw.length === 3 && raw.startsWith('97')) depts.add(raw);
+      else depts.add(raw.slice(0, 2));
+    }
+  }
+  return [...depts].sort();
+}
+
+// Build a label for departments to use in filenames/titles
+function deptsLabel() {
+  const cp = document.getElementById('cpInput').value.trim();
+  if (cp) return cp;
+  const depts = getExportDepts();
+  if (!depts.length) return 'france';
+  if (depts.length <= 6) return depts.join('-');
+  return depts.length + 'depts';
+}
+
 // Build export HTML string (shared by local export and GitHub push)
 function buildExportHtml() {
   const data = window._exportData || [];
   const nafCode = document.getElementById('nafInput').value.trim();
-  const cp      = document.getElementById('cpInput').value.trim();
   const count   = data.length;
-  const title   = 'Sirene \u2014 ' + nafCode + (cp ? ' \u00b7 ' + cp : '') + ' \u2014 ' + count + ' \u00e9tablissements';
+  const dLabel  = deptsLabel();
+  const title   = 'Sirene \u2014 ' + nafCode + ' \u00b7 ' + dLabel + ' \u2014 ' + count + ' \u00e9tablissements';
   const now     = new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
 
   const dataJson = JSON.stringify(data.map(d => ({
