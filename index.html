@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brasseries de France — Carte par département</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #f5f3ef;
+      --surface:  #ffffff;
+      --card:     #fafaf8;
+      --border:   #ddd9d0;
+      --accent:   #1a3a6b;
+      --accent2:  #c8342a;
+      --text:     #1a1a1a;
+      --muted:    #6b6760;
+      --radius:   6px;
+      --mono:     'IBM Plex Mono', monospace;
+      --sans:     'IBM Plex Sans', sans-serif;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .topbar {
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 0 24px;
+      height: 52px;
+      flex-shrink: 0;
+    }
+    .topbar-logo {
+      font-family: var(--mono);
+      font-weight: 600;
+      font-size: .95rem;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+    .topbar-logo span { color: #a8c4f5; }
+    .topbar-sep { width: 1px; height: 24px; background: rgba(255,255,255,.25); }
+    .topbar-sub { font-size: .78rem; color: rgba(255,255,255,.65); }
+
+    .toolbar {
+      background: var(--surface);
+      border-bottom: 2px solid var(--accent);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .toolbar label {
+      font-family: var(--mono);
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .toolbar select, .toolbar input {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: .82rem;
+      padding: 7px 12px;
+      outline: none;
+    }
+    .toolbar select:focus, .toolbar input:focus { border-color: var(--accent); }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .legend {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: .72rem;
+      color: var(--muted);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .legend-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(0,0,0,.1);
+    }
+
+    #map { flex: 1; }
+
+    .dept-tooltip {
+      font-family: var(--sans);
+      font-size: .82rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    }
+    .dept-tooltip .code {
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--accent);
+      margin-right: 4px;
+    }
+    .dept-tooltip .status {
+      font-size: .65rem;
+      font-weight: 400;
+      color: var(--muted);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: var(--radius) !important;
+      font-family: var(--sans) !important;
+      box-shadow: 0 4px 20px rgba(0,0,0,.12) !important;
+      border: 1px solid var(--border) !important;
+    }
+
+    .info-panel {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      z-index: 1000;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.1);
+      font-size: .78rem;
+      color: var(--muted);
+      max-width: 300px;
+      line-height: 1.5;
+    }
+    .info-panel strong { color: var(--text); }
+    .info-panel .count {
+      font-family: var(--mono);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">SIRENE<span>.explorer</span></div>
+  <div class="topbar-sep"></div>
+  <div class="topbar-sub">Carte des départements — Cliquez pour voir les établissements</div>
+</div>
+
+<div class="toolbar">
+  <div class="field-group">
+    <label>Code NAF</label>
+    <select id="nafSelect" onchange="updateNaf()">
+      <option value="11.05Z" selected>11.05Z — Fabrication de bière</option>
+      <option value="56.30Z">56.30Z — Débits de boissons</option>
+      <option value="56.10A">56.10A — Restauration traditionnelle</option>
+      <option value="10.71C">10.71C — Boulangerie-pâtisserie</option>
+      <option value="47.61Z">47.61Z — Commerce de détail de livres</option>
+      <option value="59.14Z">59.14Z — Projection de films</option>
+      <option value="55.10Z">55.10Z — Hôtels</option>
+      <option value="86.21Z">86.21Z — Médecine générale</option>
+      <option value="96.02A">96.02A — Coiffure</option>
+      <option value="93.11Z">93.11Z — Installations sportives</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label>Dossier exports</label>
+    <input id="exportDir" type="text" value="exports" style="width:160px" oninput="updateNaf()" />
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#e8f0fe"></div> Disponible</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#c8342a;opacity:.7"></div> Survolé</div>
+  </div>
+</div>
+
+<div id="map"></div>
+
+<div class="info-panel" id="infoPanel">
+  <span class="count">96</span>
+  <strong>Départements métropolitains</strong><br/>
+  Cliquez sur un département pour ouvrir la carte des établissements correspondante.
+</div>
+
+<script>
+// Metropolitan departments (01-95 + 2A + 2B)
+const DEPTS = {};
+const DEPT_NAMES = {
+  "01":"Ain","02":"Aisne","03":"Allier","04":"Alpes-de-Haute-Provence","05":"Hautes-Alpes",
+  "06":"Alpes-Maritimes","07":"Ardèche","08":"Ardennes","09":"Ariège","10":"Aube",
+  "11":"Aude","12":"Aveyron","13":"Bouches-du-Rhône","14":"Calvados","15":"Cantal",
+  "16":"Charente","17":"Charente-Maritime","18":"Cher","19":"Corrèze","2A":"Corse-du-Sud",
+  "2B":"Haute-Corse","21":"Côte-d'Or","22":"Côtes-d'Armor","23":"Creuse","24":"Dordogne",
+  "25":"Doubs","26":"Drôme","27":"Eure","28":"Eure-et-Loir","29":"Finistère",
+  "30":"Gard","31":"Haute-Garonne","32":"Gers","33":"Gironde","34":"Hérault",
+  "35":"Ille-et-Vilaine","36":"Indre","37":"Indre-et-Loire","38":"Isère","39":"Jura",
+  "40":"Landes","41":"Loir-et-Cher","42":"Loire","43":"Haute-Loire","44":"Loire-Atlantique",
+  "45":"Loiret","46":"Lot","47":"Lot-et-Garonne","48":"Lozère","49":"Maine-et-Loire",
+  "50":"Manche","51":"Marne","52":"Haute-Marne","53":"Mayenne","54":"Meurthe-et-Moselle",
+  "55":"Meuse","56":"Morbihan","57":"Moselle","58":"Nièvre","59":"Nord",
+  "60":"Oise","61":"Orne","62":"Pas-de-Calais","63":"Puy-de-Dôme","64":"Pyrénées-Atlantiques",
+  "65":"Hautes-Pyrénées","66":"Pyrénées-Orientales","67":"Bas-Rhin","68":"Haut-Rhin","69":"Rhône",
+  "70":"Haute-Saône","71":"Saône-et-Loire","72":"Sarthe","73":"Savoie","74":"Haute-Savoie",
+  "75":"Paris","76":"Seine-Maritime","77":"Seine-et-Marne","78":"Yvelines","79":"Deux-Sèvres",
+  "80":"Somme","81":"Tarn","82":"Tarn-et-Garonne","83":"Var","84":"Vaucluse",
+  "85":"Vendée","86":"Vienne","87":"Haute-Vienne","88":"Vosges","89":"Yonne",
+  "90":"Territoire de Belfort","91":"Essonne","92":"Hauts-de-Seine","93":"Seine-Saint-Denis",
+  "94":"Val-de-Marne","95":"Val-d'Oise"
+};
+
+let currentNaf = '11.05Z';
+let geoLayer = null;
+
+const map = L.map('map', { zoomSnap: 0.25 }).setView([46.6, 2.5], 6);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+  attribution: '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> · © <a href="https://carto.com/">CARTO</a>',
+  maxZoom: 19,
+}).addTo(map);
+
+// Subtle label layer on top
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+  maxZoom: 19, pane: 'overlayPane'
+}).addTo(map);
+
+function nafSlug(naf) {
+  return naf.replace(/[^a-z0-9]/gi, '-');
+}
+
+function exportUrl(deptCode) {
+  const dir = document.getElementById('exportDir').value.trim();
+  const prefix = dir ? dir.replace(/\/+$/, '') + '/' : '';
+  return prefix + 'sirene-' + nafSlug(currentNaf) + '-' + deptCode + '.html';
+}
+
+function styleDefault(feature) {
+  return {
+    fillColor: '#d0dff5',
+    fillOpacity: 0.55,
+    color: '#1a3a6b',
+    weight: 1.5,
+    opacity: 0.7,
+  };
+}
+
+function styleHover() {
+  return {
+    fillColor: '#c8342a',
+    fillOpacity: 0.5,
+    color: '#c8342a',
+    weight: 2.5,
+    opacity: 1,
+  };
+}
+
+function onEachDept(feature, layer) {
+  const code = feature.properties.code;
+  const name = DEPT_NAMES[code] || feature.properties.nom || code;
+
+  layer.bindTooltip(
+    '<div class="dept-tooltip">' +
+    '<span class="code">' + code + '</span> ' + name +
+    '<span class="status">→ sirene-' + nafSlug(currentNaf) + '-' + code + '.html</span>' +
+    '</div>',
+    { sticky: true, direction: 'top', offset: [0, -10] }
+  );
+
+  layer.on('mouseover', function () {
+    this.setStyle(styleHover());
+    this.bringToFront();
+  });
+  layer.on('mouseout', function () {
+    geoLayer.resetStyle(this);
+  });
+  layer.on('click', function () {
+    window.open(exportUrl(code), '_blank');
+  });
+}
+
+function updateNaf() {
+  currentNaf = document.getElementById('nafSelect').value;
+  // Refresh tooltips by reloading the layer
+  if (geoLayer && geoLayer._geojson) {
+    loadGeoJson(geoLayer._geojson);
+  }
+}
+
+function loadGeoJson(data) {
+  if (geoLayer) map.removeLayer(geoLayer);
+  geoLayer = L.geoJSON(data, {
+    style: styleDefault,
+    onEachFeature: onEachDept,
+    filter: function (feature) {
+      // Only metropolitan departments
+      const code = feature.properties.code;
+      return !!DEPT_NAMES[code];
+    }
+  }).addTo(map);
+  geoLayer._geojson = data;
+}
+
+// Load department boundaries from public GeoJSON
+fetch('https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements-version-simplifiee.geojson')
+  .then(r => r.json())
+  .then(data => {
+    loadGeoJson(data);
+  })
+  .catch(err => {
+    console.error('Erreur chargement GeoJSON:', err);
+    document.getElementById('infoPanel').innerHTML =
+      '<strong style="color:var(--accent2)">Erreur</strong><br/>Impossible de charger les contours des départements.';
+  });
+</script>
+</body>
+</html>
