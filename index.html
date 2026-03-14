@@ -310,9 +310,22 @@ function nafSlug(naf) {
   return naf.replace(/[^a-z0-9]/gi, '-');
 }
 
-function normalizeCode(code) {
-  if (code === '2A' || code === '2B') return '20';
-  return code;
+// Fusionne les features 2A et 2B en un seul MultiPolygon "20"
+function preprocessGeoJson(data) {
+  function toPolygons(feat) {
+    if (!feat) return [];
+    const g = feat.geometry;
+    return g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
+  }
+  const f2A = data.features.find(f => f.properties.code === '2A');
+  const f2B = data.features.find(f => f.properties.code === '2B');
+  const corseFeat = {
+    type: 'Feature',
+    properties: { code: '20', nom: 'Corse' },
+    geometry: { type: 'MultiPolygon', coordinates: [...toPolygons(f2A), ...toPolygons(f2B)] }
+  };
+  const others = data.features.filter(f => f.properties.code !== '2A' && f.properties.code !== '2B');
+  return { ...data, features: [...others, corseFeat] };
 }
 
 function exportUrl(deptCode) {
@@ -337,7 +350,7 @@ function getMaxCount() {
 }
 
 function styleForDept(feature) {
-  const code = normalizeCode(feature.properties.code);
+  const code = feature.properties.code;
   const count = deptCounts[code] ?? null;
   const maxC = getMaxCount();
   return {
@@ -373,7 +386,7 @@ function tooltipHtml(code) {
 }
 
 function onEachDept(feature, layer) {
-  const code = normalizeCode(feature.properties.code);
+  const code = feature.properties.code;
   layer.bindTooltip(tooltipHtml(code), { sticky: true, direction: 'top', offset: [0, -10] });
   layer.on('mouseover', function () { this.setStyle(styleHover()); this.bringToFront(); });
   layer.on('mouseout', function () { geoLayer.resetStyle(this); });
@@ -388,13 +401,11 @@ function clearLabels() {
 function addLabels() {
   clearLabels();
   if (!geoLayer) return;
-  const labeledCodes = new Set();
   geoLayer.eachLayer(function (layer) {
-    const code = normalizeCode(layer.feature.properties.code);
-    if (labeledCodes.has(code)) return;
-    labeledCodes.add(code);
+    const code = layer.feature.properties.code;
     const count = deptCounts[code];
-    const center = layer.getBounds().getCenter();
+    // Pour la Corse (MultiPolygon), le centre de la bbox tombe en mer — on fixe manuellement
+    const center = code === '20' ? L.latLng(42.1, 9.1) : layer.getBounds().getCenter();
     let labelText, cssClass;
     if (count !== undefined && count !== null && count > 0) {
       labelText = String(count);
@@ -419,7 +430,7 @@ function loadGeoJson(data) {
   geoLayer = L.geoJSON(data, {
     style: styleForDept,
     onEachFeature: onEachDept,
-    filter: function (feature) { return !!DEPT_NAMES[normalizeCode(feature.properties.code)]; }
+    filter: function (feature) { return !!DEPT_NAMES[feature.properties.code]; }
   }).addTo(map);
   addLabels();
 }
@@ -503,7 +514,7 @@ function updateNaf() {
 fetch('https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements-version-simplifiee.geojson')
   .then(r => r.json())
   .then(data => {
-    cachedGeoJson = data;
+    cachedGeoJson = preprocessGeoJson(data);
     loadGeoJson(data);
     scanExports();
   })
