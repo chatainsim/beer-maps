@@ -220,6 +220,38 @@
       font-family: var(--mono);
       font-size: .6rem;
     }
+
+    .gh-group {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .gh-group input {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: .75rem;
+      padding: 7px 10px;
+      width: 220px;
+      outline: none;
+    }
+    .gh-group input:focus { border-color: var(--accent); }
+    .btn-gh {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--mono);
+      font-size: .75rem;
+      font-weight: 600;
+      padding: 7px 14px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-gh:hover { background: #122c52; }
+    .btn-gh:disabled { background: #999; cursor: default; }
   </style>
 </head>
 <body>
@@ -245,6 +277,11 @@
       <option value="96.02A">96.02A — Coiffure</option>
       <option value="93.11Z">93.11Z — Installations sportives</option>
     </select>
+  </div>
+
+  <div class="gh-group">
+    <input id="ghToken" type="password" placeholder="GitHub token (repo scope)" />
+    <button class="btn-gh" id="btnGh" onclick="pushToGithub()">↑ GitHub</button>
   </div>
 
   <div class="scan-status" id="scanStatus"></div>
@@ -503,6 +540,64 @@ async function scanExports() {
   const found = Object.values(deptCounts).filter(v => v !== null && v > 0).length;
   statusEl.innerHTML = '&#x2714; ' + found + '/' + codes.length + ' fichiers trouvés';
   refreshMap();
+}
+
+async function pushToGithub() {
+  const token = document.getElementById('ghToken').value.trim();
+  if (!token) { alert('Entrez un token GitHub avec le scope "repo".'); return; }
+
+  const OWNER = 'chatainsim';
+  const REPO  = 'beer-maps';
+  const BRANCH = 'main';
+  const codes = Object.keys(DEPT_NAMES);
+  const statusEl = document.getElementById('scanStatus');
+  const btn = document.getElementById('btnGh');
+  btn.disabled = true;
+
+  let pushed = 0, skipped = 0, errors = 0;
+
+  for (let i = 0; i < codes.length; i++) {
+    const code = codes[i];
+    const filePath = 'exports/sirene-' + nafSlug(currentNaf) + '-' + code + '.html';
+    statusEl.innerHTML = '<div class="spinner"></div> GitHub ' + (i + 1) + '/' + codes.length + ' — ' + code;
+
+    // 1. Lire le fichier local
+    let localContent;
+    try {
+      const res = await fetch(filePath);
+      if (!res.ok) { skipped++; continue; }
+      localContent = await res.text();
+    } catch { skipped++; continue; }
+
+    // 2. Récupérer le SHA existant sur GitHub (nécessaire pour mettre à jour)
+    let sha = null;
+    try {
+      const r = await fetch(
+        'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + filePath + '?ref=' + BRANCH,
+        { headers: { Authorization: 'Bearer ' + token } }
+      );
+      if (r.ok) { sha = (await r.json()).sha; }
+    } catch {}
+
+    // 3. Encoder en base64 (UTF-8 safe)
+    const b64 = btoa(unescape(encodeURIComponent(localContent)));
+
+    // 4. Pousser vers GitHub
+    const body = { message: 'auto: update ' + filePath, content: b64, branch: BRANCH };
+    if (sha) body.sha = sha;
+
+    try {
+      const r = await fetch(
+        'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + filePath,
+        { method: 'PUT', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+      );
+      if (r.ok) { pushed++; }
+      else { errors++; console.error(code, await r.text()); }
+    } catch { errors++; }
+  }
+
+  btn.disabled = false;
+  statusEl.innerHTML = '↑ ' + pushed + ' poussés · ' + skipped + ' absents · ' + (errors ? '<span style="color:var(--accent2)">' + errors + ' erreurs</span>' : '0 erreur');
 }
 
 function updateNaf() {
