@@ -247,11 +247,6 @@
     </select>
   </div>
 
-  <div class="field-group">
-    <label>Dossier exports</label>
-    <input id="exportDir" type="text" value="exports" style="width:160px" />
-  </div>
-
   <div class="scan-status" id="scanStatus"></div>
 </div>
 
@@ -277,8 +272,8 @@ const DEPT_NAMES = {
   "01":"Ain","02":"Aisne","03":"Allier","04":"Alpes-de-Haute-Provence","05":"Hautes-Alpes",
   "06":"Alpes-Maritimes","07":"Ardèche","08":"Ardennes","09":"Ariège","10":"Aube",
   "11":"Aude","12":"Aveyron","13":"Bouches-du-Rhône","14":"Calvados","15":"Cantal",
-  "16":"Charente","17":"Charente-Maritime","18":"Cher","19":"Corrèze","2A":"Corse-du-Sud",
-  "2B":"Haute-Corse","21":"Côte-d'Or","22":"Côtes-d'Armor","23":"Creuse","24":"Dordogne",
+  "16":"Charente","17":"Charente-Maritime","18":"Cher","19":"Corrèze","20":"Corse",
+  "21":"Côte-d'Or","22":"Côtes-d'Armor","23":"Creuse","24":"Dordogne",
   "25":"Doubs","26":"Drôme","27":"Eure","28":"Eure-et-Loir","29":"Finistère",
   "30":"Gard","31":"Haute-Garonne","32":"Gers","33":"Gironde","34":"Hérault",
   "35":"Ille-et-Vilaine","36":"Indre","37":"Indre-et-Loire","38":"Isère","39":"Jura",
@@ -315,9 +310,13 @@ function nafSlug(naf) {
   return naf.replace(/[^a-z0-9]/gi, '-');
 }
 
+function normalizeCode(code) {
+  if (code === '2A' || code === '2B') return '20';
+  return code;
+}
+
 function exportUrl(deptCode) {
-  const dir = document.getElementById('exportDir').value.trim();
-  const prefix = dir ? dir.replace(/\/+$/, '') + '/' : '';
+  const prefix = 'exports/';
   return prefix + 'sirene-' + nafSlug(currentNaf) + '-' + deptCode + '.html';
 }
 
@@ -338,7 +337,7 @@ function getMaxCount() {
 }
 
 function styleForDept(feature) {
-  const code = feature.properties.code;
+  const code = normalizeCode(feature.properties.code);
   const count = deptCounts[code] ?? null;
   const maxC = getMaxCount();
   return {
@@ -374,7 +373,7 @@ function tooltipHtml(code) {
 }
 
 function onEachDept(feature, layer) {
-  const code = feature.properties.code;
+  const code = normalizeCode(feature.properties.code);
   layer.bindTooltip(tooltipHtml(code), { sticky: true, direction: 'top', offset: [0, -10] });
   layer.on('mouseover', function () { this.setStyle(styleHover()); this.bringToFront(); });
   layer.on('mouseout', function () { geoLayer.resetStyle(this); });
@@ -389,8 +388,11 @@ function clearLabels() {
 function addLabels() {
   clearLabels();
   if (!geoLayer) return;
+  const labeledCodes = new Set();
   geoLayer.eachLayer(function (layer) {
-    const code = layer.feature.properties.code;
+    const code = normalizeCode(layer.feature.properties.code);
+    if (labeledCodes.has(code)) return;
+    labeledCodes.add(code);
     const count = deptCounts[code];
     const center = layer.getBounds().getCenter();
     let labelText, cssClass;
@@ -417,7 +419,7 @@ function loadGeoJson(data) {
   geoLayer = L.geoJSON(data, {
     style: styleForDept,
     onEachFeature: onEachDept,
-    filter: function (feature) { return !!DEPT_NAMES[feature.properties.code]; }
+    filter: function (feature) { return !!DEPT_NAMES[normalizeCode(feature.properties.code)]; }
   }).addTo(map);
   addLabels();
 }
@@ -450,6 +452,22 @@ function updateColorScale() {
   document.getElementById('scaleMax').textContent = maxC;
 }
 
+async function fetchCount(rawCode) {
+  try {
+    const res = await fetch(exportUrl(rawCode));
+    if (!res.ok) return null;
+    const html = await res.text();
+    const match = html.match(/const D=(\[[\s\S]*?\]);/);
+    if (match) {
+      try { return JSON.parse(match[1]).length; } catch {}
+    }
+    const titleMatch = html.match(/(\d+)\s*[eé]tablissements/);
+    return titleMatch ? parseInt(titleMatch[1], 10) : null;
+  } catch {
+    return null;
+  }
+}
+
 // Scan export files to extract establishment counts
 async function scanExports() {
   const statusEl = document.getElementById('scanStatus');
@@ -464,26 +482,7 @@ async function scanExports() {
   for (let i = 0; i < codes.length; i += BATCH) {
     const batch = codes.slice(i, i + BATCH);
     await Promise.all(batch.map(async (code) => {
-      const url = exportUrl(code);
-      try {
-        const res = await fetch(url);
-        if (!res.ok) { deptCounts[code] = null; return; }
-        const html = await res.text();
-        // Extract count from: const D=[...]; — count array items
-        const match = html.match(/const D=(\[[\s\S]*?\]);/);
-        if (match) {
-          try {
-            const arr = JSON.parse(match[1]);
-            deptCounts[code] = arr.length;
-          } catch { deptCounts[code] = null; }
-        } else {
-          // Fallback: extract from title "— X établissements"
-          const titleMatch = html.match(/(\d+)\s*[eé]tablissements/);
-          deptCounts[code] = titleMatch ? parseInt(titleMatch[1], 10) : null;
-        }
-      } catch {
-        deptCounts[code] = null;
-      }
+      deptCounts[code] = await fetchCount(code);
     }));
     scanned += batch.length;
     statusEl.innerHTML = '<div class="spinner"></div> Scan ' + Math.min(scanned, codes.length) + '/' + codes.length;
