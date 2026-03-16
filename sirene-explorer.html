@@ -672,6 +672,8 @@ let activeMarker = null;
 let currentPage = 0;
 let totalResults = 0;
 let currentNb = 20;
+let loadedAll = false;
+let geoAbort = null; // AbortController for geocoding
 
 function clearMarkers() {
   markers.forEach(m => map.removeLayer(m));
@@ -730,12 +732,12 @@ function getName(etab) {
     || '(sans dénomination)';
 }
 
-async function geocode(etab) {
+async function geocode(etab, signal) {
   const { line1, line2 } = buildAddr(etab);
   const q = [line1, line2].filter(Boolean).join(' ').trim();
   if (!q) return null;
   try {
-    const r = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=1`);
+    const r = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=1`, { signal });
     const d = await r.json();
     if (d.features?.length) {
       const [lon, lat] = d.features[0].geometry.coordinates;
@@ -787,6 +789,9 @@ async function doSearch(page = 0) {
   currentNb = nb;
   currentPage = page;
 
+  if (geoAbort) geoAbort.abort();
+  geoAbort = new AbortController();
+
   document.getElementById('searchBtn').disabled = true;
   document.getElementById('paginationRow').style.display = 'none';
   clearMarkers();
@@ -796,13 +801,14 @@ async function doSearch(page = 0) {
       <div class="state-msg">
         <div class="spinner"></div>
         <div>${msg}</div>
-        <div style="font-family:var(--mono);font-size:.65rem;color:#ccc;margin-top:6px;word-break:break-all">${q}</div>
+        <div style="font-family:var(--mono);font-size:.65rem;color:#ccc;margin-top:6px;word-break:break-all">${esc(q)}</div>
       </div>`;
   };
 
   try {
     if (toutCharger) {
       // ── Multi-fetch mode ───────────────────────────────────────────
+      loadedAll = true;
       setStatus('Chargement page 1…');
       const first = await fetchSirene(q, 0, 200, apiKey);
       totalResults = first.header?.total || 0;
@@ -836,6 +842,7 @@ async function doSearch(page = 0) {
 
     } else {
       // ── Single-fetch mode (paginated) ──────────────────────────────
+      loadedAll = false;
       setStatus('Interrogation de l\'API SIRENE…');
       const data = await fetchSirene(q, page * nb, nb, apiKey);
       let etabs = filterEtabs(data.etablissements || []);
@@ -853,7 +860,7 @@ async function doSearch(page = 0) {
     }
 
   } catch (err) {
-    document.getElementById('resultsList').innerHTML = `<div class="state-msg"><div class="big">⚠️</div><div>${err.message}</div></div>`;
+    document.getElementById('resultsList').innerHTML = `<div class="state-msg"><div class="big">⚠️</div><div>${esc(err.message)}</div></div>`;
     document.getElementById('searchBtn').disabled = false;
   }
 }
@@ -902,12 +909,15 @@ function renderResults(etabs, nb) {
   geoP.style.display = 'block';
   let done = 0;
   window._exportData = []; // reset export dataset
+  const signal = geoAbort?.signal;
 
   (async () => {
     const GEO_BATCH = 5;
     for (let bi = 0; bi < cardRefs.length; bi += GEO_BATCH) {
+      if (signal?.aborted) return;
       const batch = cardRefs.slice(bi, bi + GEO_BATCH);
-      const results = await Promise.all(batch.map(ref => geocode(ref.etab)));
+      const results = await Promise.all(batch.map(ref => geocode(ref.etab, signal)));
+      if (signal?.aborted) return;
 
       batch.forEach((ref, j) => {
         const { card, etab, naf, name, addr } = ref;
@@ -971,13 +981,15 @@ function renderResults(etabs, nb) {
       map.fitBounds(grp.getBounds().pad(0.12));
     }
 
-    // Pagination
-    const totalPages = Math.ceil(totalResults / currentNb);
-    if (totalPages > 1) {
-      document.getElementById('paginationRow').style.display = 'flex';
-      document.getElementById('pageInfo').textContent = `Page ${currentPage + 1} / ${totalPages}`;
-      document.getElementById('btnPrev').disabled = currentPage === 0;
-      document.getElementById('btnNext').disabled = currentPage >= totalPages - 1;
+    // Pagination (hidden when all data was loaded at once)
+    if (!loadedAll) {
+      const totalPages = Math.ceil(totalResults / currentNb);
+      if (totalPages > 1) {
+        document.getElementById('paginationRow').style.display = 'flex';
+        document.getElementById('pageInfo').textContent = `Page ${currentPage + 1} / ${totalPages}`;
+        document.getElementById('btnPrev').disabled = currentPage === 0;
+        document.getElementById('btnNext').disabled = currentPage >= totalPages - 1;
+      }
     }
   })();
 }
@@ -1012,7 +1024,7 @@ function exportHtml() {
   a.href = URL.createObjectURL(blob);
   a.download = fname;
   a.click();
-  URL.revokeObjectURL(a.href);
+  setTimeout(() => URL.revokeObjectURL(a.href), 60000);
 }
 
 
@@ -1021,7 +1033,7 @@ document.addEventListener('keydown', e => {
     const overlay = document.getElementById('settingsOverlay');
     if (overlay.classList.contains('open')) overlay.classList.remove('open');
   }
-  if (e.key === 'Enter' && e.target.id !== 'apiKey' && !document.getElementById('settingsOverlay').classList.contains('open')) doSearch();
+  if (e.key === 'Enter' && !document.getElementById('settingsOverlay').classList.contains('open') && !e.target.closest('.settings-overlay')) doSearch();
 });
 
 // GitHub push
@@ -1088,10 +1100,10 @@ async function pushToGithub() {
 
     const result = await res.json();
     const htmlUrl = result.content?.html_url || `https://github.com/${repo}/blob/main/${filePath}`;
-    showToast(`<strong>Poussé sur GitHub !</strong><br/><a href="${htmlUrl}" target="_blank" style="color:var(--accent);font-size:.78rem">${filePath}</a>`);
+    showToast(`<strong>Poussé sur GitHub !</strong><br/><a href="${esc(htmlUrl)}" target="_blank" style="color:var(--accent);font-size:.78rem">${esc(filePath)}</a>`);
 
   } catch (err) {
-    showToast(`<strong>Erreur GitHub :</strong> ${err.message}`);
+    showToast(`<strong>Erreur GitHub :</strong> ${esc(err.message)}`);
   } finally {
     ghBtn.disabled = false;
     ghBtn.style.opacity = '1';
@@ -1140,9 +1152,10 @@ function buildDeptExportHtml(data, nafCode, deptCode, deptName) {
 
 // Pousse un fichier unique sur GitHub
 async function pushSingleFile(token, repo, filePath, content) {
+  const encodedPath = filePath.split('/').map(encodeURIComponent).join('/');
   let sha = null;
   try {
-    const r = await fetch(`https://api.github.com/repos/${repo}/contents/${encodeURIComponent(filePath)}`, {
+    const r = await fetch(`https://api.github.com/repos/${repo}/contents/${encodedPath}`, {
       headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github.v3+json' }
     });
     if (r.ok) sha = (await r.json()).sha;
@@ -1152,7 +1165,7 @@ async function pushSingleFile(token, repo, filePath, content) {
     content: btoa(unescape(encodeURIComponent(content))),
   };
   if (sha) body.sha = sha;
-  const r = await fetch(`https://api.github.com/repos/${repo}/contents/${encodeURIComponent(filePath)}`, {
+  const r = await fetch(`https://api.github.com/repos/${repo}/contents/${encodedPath}`, {
     method: 'PUT',
     headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json', Accept: 'application/vnd.github.v3+json' },
     body: JSON.stringify(body),
@@ -1191,10 +1204,10 @@ async function autoUpdateAllDepts() {
 
       if (!etabs.length) { empty++; done++; continue; }
 
-      // 2. Géocodage séquentiel de chaque établissement
+      // 2. Géocodage par batch de chaque établissement
       const exportData = [];
       for (const etab of etabs) {
-        const coords = await geocode(etab);
+        const coords = await geocode(etab, undefined);
         if (!coords) continue;
         const periode = etab.periodesEtablissement?.[0] || {};
         exportData.push({
@@ -1276,15 +1289,17 @@ function buildExportHtml() {
     lat: d.lat, lon: d.lon
   })));
 
+  function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
   const listHtml = data.map(function(d, i) {
     const addr = [d.addr.line1, d.addr.line2].filter(Boolean).join(', ') || '\u2014';
     const etatCls = d.etat === 'A' ? 'actif' : 'ferme';
     const etatLbl = d.etat === 'A' ? 'Actif' : 'Ferm\u00e9';
-    return '<div class="card" data-i="' + i + '"><div class="name">' + d.name + '</div>'
-      + '<div class="siret">' + d.siret + '</div>'
-      + '<div class="tags"><span class="tnaf">' + d.naf + '</span>'
+    return '<div class="card" data-i="' + i + '"><div class="name">' + escHtml(d.name) + '</div>'
+      + '<div class="siret">' + escHtml(d.siret) + '</div>'
+      + '<div class="tags"><span class="tnaf">' + escHtml(d.naf) + '</span>'
       + '<span class="tetat ' + etatCls + '">' + etatLbl + '</span></div>'
-      + '<div class="addr">\uD83D\uDCCD ' + addr + '</div></div>';
+      + '<div class="addr">\uD83D\uDCCD ' + escHtml(addr) + '</div></div>';
   }).join('');
 
   const css = '*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}'
@@ -1318,12 +1333,13 @@ function buildExportHtml() {
   const js = 'const D=' + dataJson + ';'
     + 'const map=L.map("map");'
     + 'L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"\\u00a9 OpenStreetMap",maxZoom:19}).addTo(map);'
+    + 'function esc(s){return String(s).replace(/&/g,"\\x26amp;").replace(/</g,"\\x26lt;").replace(/>/g,"\\x26gt;").replace(/"/g,"\\x26quot;");}'
     + 'function mk(a){const c=a?"#c8342a":"#1a3a6b",s=\'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="\'+c+\'"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>\';return L.divIcon({html:s,className:"",iconSize:[24,32],iconAnchor:[12,32],popupAnchor:[0,-34]});}'
     + 'let aC=null,aM=null;'
     + 'const cards=document.querySelectorAll(".card"),ml=[];'
     + 'D.forEach(function(d,i){'
     + '  const m=L.marker([d.lat,d.lon],{icon:mk(false)}).addTo(map);'
-    + '  m.bindPopup(\'<div class="pname">\'+d.name+\'</div><div class="pnaf">\'+d.naf+\'</div><div class="paddr">\\uD83D\\uDCCD \'+(d.a1?d.a1+" ":"")+d.a2+\'</div>\');'
+    + '  m.bindPopup(\'<div class="pname">\'+esc(d.name)+\'</div><div class="pnaf">\'+esc(d.naf)+\'</div><div class="paddr">\\uD83D\\uDCCD \'+esc((d.a1?d.a1+" ":"")+d.a2)+\'</div>\');'
     + '  ml.push(m);'
     + '  function activate(ci,mi){if(aC)aC.classList.remove("active");if(aM)aM.setIcon(mk(false));ci.classList.add("active");aC=ci;mi.setIcon(mk(true));aM=mi;}'
     + '  cards[i].addEventListener("click",function(){activate(cards[i],m);map.setView([d.lat,d.lon],15);m.openPopup();});'
@@ -1349,11 +1365,11 @@ function buildExportHtml() {
   return [
     '<!DOCTYPE html><html lang="fr"><head>',
     '<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>',
-    '<title>' + title + '</title>',
+    '<title>' + escHtml(title) + '</title>',
     '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>',
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"><' + '/script>',
     '<style>' + css + '</style></head><body>',
-    '<header><h1>&#128205; ' + title + '</h1><div class="meta">Export\u00e9 le ' + now + ' \u2014 API Sirene INSEE</div></header>',
+    '<header><h1>&#128205; ' + escHtml(title) + '</h1><div class="meta">Export\u00e9 le ' + escHtml(now) + ' \u2014 API Sirene INSEE</div></header>',
     '<div class="body"><div class="sb"><div class="sbh" id="sbh">' + count + ' \u00e9tablissements</div>',
     '<div class="search-box"><input id="search" type="search" placeholder="Rechercher nom, adresse\u2026" oninput="filterCards(this.value)"/></div>',
     '<div class="list" id="list">' + listHtml + '</div></div><div id="map"></div></div>',
