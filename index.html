@@ -247,11 +247,6 @@
     </select>
   </div>
 
-  <div class="field-group">
-    <label>Dossier exports</label>
-    <input id="exportDir" type="text" value="exports" style="width:160px" />
-  </div>
-
   <div class="scan-status" id="scanStatus"></div>
 </div>
 
@@ -301,6 +296,7 @@ let geoLayer = null;
 let deptCounts = {};   // { "38": 12, "69": 5, ... }
 let deptLabels = [];   // L.marker label references
 let cachedGeoJson = null;
+const scanCache = {};  // { "11-05Z": { "38": 12, ... }, ... }
 
 const map = L.map('map', { zoomSnap: 0.25 }).setView([46.6, 2.5], 6);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
@@ -311,18 +307,22 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.
   maxZoom: 19, pane: 'overlayPane'
 }).addTo(map);
 
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
 function nafSlug(naf) {
   return naf.replace(/[^a-z0-9]/gi, '-');
 }
 
 function exportUrl(deptCode) {
-  const dir = document.getElementById('exportDir').value.trim();
-  const prefix = dir ? dir.replace(/\/+$/, '') + '/' : '';
-  return prefix + 'sirene-' + nafSlug(currentNaf) + '-' + deptCode + '.html';
+  return 'exports/sirene-' + nafSlug(currentNaf) + '-' + deptCode + '.html';
 }
 
 // Color scale: light blue (0) → dark red (max)
-const COLORS = ['#eef3fb','#d0dff5','#a3c1ea','#6a9bd6','#d4845a','#c8572e','#a83220','#7a1a14'];
+const COLORS = ['#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026'];
 
 function getColor(count, maxCount) {
   if (count === null) return '#f0eeea';
@@ -361,7 +361,7 @@ function styleHover() {
 }
 
 function tooltipHtml(code) {
-  const name = DEPT_NAMES[code] || code;
+  const name = esc(DEPT_NAMES[code] || code);
   const count = deptCounts[code];
   const countStr = count !== undefined && count !== null
     ? '<span class="tt-count">' + count + ' établissement' + (count > 1 ? 's' : '') + '</span>'
@@ -452,6 +452,15 @@ function updateColorScale() {
 
 // Scan export files to extract establishment counts
 async function scanExports() {
+  const cacheKey = nafSlug(currentNaf);
+  if (scanCache[cacheKey]) {
+    deptCounts = scanCache[cacheKey];
+    document.getElementById('scanStatus').innerHTML =
+      '&#x2714; ' + Object.values(deptCounts).filter(v => v !== null && v > 0).length + '/' + Object.keys(DEPT_NAMES).length + ' fichiers trouvés (cache)';
+    refreshMap();
+    return;
+  }
+
   const statusEl = document.getElementById('scanStatus');
   const codes = Object.keys(DEPT_NAMES);
   let scanned = 0;
@@ -490,6 +499,7 @@ async function scanExports() {
     refreshMap();
   }
 
+  scanCache[cacheKey] = { ...deptCounts };
   const found = Object.values(deptCounts).filter(v => v !== null && v > 0).length;
   statusEl.innerHTML = '&#x2714; ' + found + '/' + codes.length + ' fichiers trouvés';
   refreshMap();
