@@ -737,12 +737,14 @@ async function geocode(etab, signal) {
   const q = [line1, line2].filter(Boolean).join(' ').trim();
   if (!q) return null;
   const MAX_RETRIES = 4;
+  let lastError = null;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
       if (signal?.aborted) return null;
       const r = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=1`, { signal });
       if (r.status === 429) {
-        if (attempt >= MAX_RETRIES) return null;
+        lastError = new Error('Géocodage BAN : quota dépassé (429)');
+        if (attempt >= MAX_RETRIES) break;
         await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
         continue;
       }
@@ -755,11 +757,12 @@ async function geocode(etab, signal) {
       return null;
     } catch (e) {
       if (e.name === 'AbortError') return null;
-      if (attempt >= MAX_RETRIES) return null;
+      lastError = e;
+      if (attempt >= MAX_RETRIES) break;
       await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
     }
   }
-  return null;
+  throw lastError;
 }
 
 // Batch geocoding via BAN CSV endpoint — returns Map<index, {lat, lon}>
@@ -784,6 +787,7 @@ async function geocodeBatchCsv(etabs, signal) {
   form.append('result_columns', 'result_score');
 
   const MAX_RETRIES = 4;
+  let lastError = null;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
       if (signal?.aborted) return new Map();
@@ -791,7 +795,8 @@ async function geocodeBatchCsv(etabs, signal) {
         method: 'POST', body: form, signal,
       });
       if (r.status === 429 || r.status === 503) {
-        if (attempt >= MAX_RETRIES) return new Map();
+        lastError = new Error('Géocodage BAN CSV : quota dépassé (' + r.status + ')');
+        if (attempt >= MAX_RETRIES) break;
         await new Promise(resolve => setTimeout(resolve, 2000 * Math.pow(2, attempt)));
         continue;
       }
@@ -823,11 +828,12 @@ async function geocodeBatchCsv(etabs, signal) {
       return results;
     } catch (e) {
       if (e.name === 'AbortError') return new Map();
-      if (attempt >= MAX_RETRIES) return new Map();
+      lastError = e;
+      if (attempt >= MAX_RETRIES) break;
       await new Promise(resolve => setTimeout(resolve, 2000 * Math.pow(2, attempt)));
     }
   }
-  return new Map();
+  throw lastError;
 }
 
 async function fetchSirene(q, debut, nombre, inseeKey, onRetry) {
@@ -1007,6 +1013,7 @@ function renderResults(etabs, nb) {
   const signal = geoAbort?.signal;
 
   (async () => {
+    try {
     geoL.textContent = `Géocodage CSV batch : ${cardRefs.length} adresses…`;
     geoF.style.width = '0%';
 
@@ -1079,12 +1086,19 @@ function renderResults(etabs, nb) {
     geoL.textContent = `Géocodage terminé : ${window._exportData.length} / ${cardRefs.length}`;
     geoF.style.width = '100%';
 
+    } catch (err) {
+      geoL.textContent = `Géocodage échoué : ${esc(err.message)}`;
+      geoF.style.width = '100%';
+      geoF.style.background = '#c8342a';
+      showToast(`<strong>Erreur géocodage :</strong> ${esc(err.message)}`);
+    }
+
     geoP.style.display = 'none';
     document.getElementById('searchBtn').disabled = false;
     const expBtn = document.getElementById('exportBtn');
-    if (expBtn) { expBtn.disabled = false; expBtn.style.opacity = '1'; }
+    if (expBtn && window._exportData.length) { expBtn.disabled = false; expBtn.style.opacity = '1'; }
     const ghBtn = document.getElementById('ghPushBtn');
-    if (ghBtn && document.getElementById('ghToken').value.trim() && document.getElementById('ghRepo').value.trim()) {
+    if (ghBtn && window._exportData.length && document.getElementById('ghToken').value.trim() && document.getElementById('ghRepo').value.trim()) {
       ghBtn.disabled = false; ghBtn.style.opacity = '1';
     }
 
