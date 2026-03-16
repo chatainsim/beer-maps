@@ -1052,12 +1052,14 @@ function renderResults(etabs, nb) {
     }
 
     // Apply results to cards and map
+    let geoOk = 0, geoFail = 0;
     cardRefs.forEach((ref, i) => {
       const { card, etab, naf, name, addr } = ref;
       const safeName = esc(name);
       const coords = allCoords[i];
 
       if (coords) {
+        geoOk++;
         window._exportData.push({ name, siret: etab.siret || '', naf, etat: etab.periodesEtablissement?.[0]?.etatAdministratifEtablissement || '', addr, lat: coords.lat, lon: coords.lon });
         const marker = L.marker([coords.lat, coords.lon], { icon: makeIcon(false) }).addTo(map);
         markers.push(marker);
@@ -1086,6 +1088,7 @@ function renderResults(etabs, nb) {
           card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         });
       } else {
+        geoFail++;
         const ng = document.createElement('div');
         ng.className = 'no-geo';
         ng.textContent = '📍 adresse non géolocalisable';
@@ -1094,7 +1097,10 @@ function renderResults(etabs, nb) {
       }
     });
 
-    geoL.textContent = `Géocodage terminé : ${window._exportData.length} / ${cardRefs.length}`;
+    const total = cardRefs.length;
+    geoL.textContent = geoFail
+      ? `Géocodage terminé : ${geoOk} géocodés / ${geoFail} échoués / ${total} total`
+      : `Géocodage terminé : ${geoOk} / ${total}`;
     geoF.style.width = '100%';
 
     } catch (err) {
