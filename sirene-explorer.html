@@ -762,26 +762,37 @@ async function geocode(etab, signal) {
   return null;
 }
 
-async function fetchSirene(q, debut, nombre, inseeKey) {
+async function fetchSirene(q, debut, nombre, inseeKey, onRetry) {
   const url = "https://api.insee.fr/api-sirene/3.11/siret?q=" + encodeURIComponent(q) + "&nombre=" + nombre + "&debut=" + debut;
   console.log('[Sirene] query:', q);
 
-  const res = await fetch(url, {
-    headers: {
-      'Accept': 'application/json',
-      'X-INSEE-Api-Key-Integration': inseeKey,
-    }
-  });
+  const MAX_RETRIES = 4;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    const res = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+        'X-INSEE-Api-Key-Integration': inseeKey,
+      }
+    });
 
-  if (res.status === 401) throw new Error('Clé API INSEE invalide ou expirée (401).');
-  if (res.status === 403) throw new Error("Accès refusé (403). Vérifiez votre abonnement sur portail-api.insee.fr.");
-  if (res.status === 404) return { etablissements: [], header: { total: 0 } };
-  if (res.status === 429) throw new Error('Quota API INSEE dépassé (429). Attendez quelques secondes.');
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error('Erreur API INSEE ' + res.status + ' : ' + (body?.header?.message || res.statusText));
+    if (res.status === 401) throw new Error('Clé API INSEE invalide ou expirée (401).');
+    if (res.status === 403) throw new Error("Accès refusé (403). Vérifiez votre abonnement sur portail-api.insee.fr.");
+    if (res.status === 404) return { etablissements: [], header: { total: 0 } };
+
+    if (res.status === 429 || res.status === 503) {
+      if (attempt >= MAX_RETRIES) throw new Error('Quota API INSEE dépassé après ' + (MAX_RETRIES + 1) + ' tentatives. Réessayez plus tard.');
+      const wait = Math.pow(2, attempt + 1);
+      if (onRetry) onRetry(attempt + 1, wait);
+      await new Promise(r => setTimeout(r, wait * 1000));
+      continue;
+    }
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error('Erreur API INSEE ' + res.status + ' : ' + (body?.header?.message || res.statusText));
+    }
+    return res.json();
   }
-  return res.json();
 }
 
 function filterEtabs(etabs) {
@@ -825,7 +836,8 @@ async function doSearch(page = 0) {
       // ── Multi-fetch mode ───────────────────────────────────────────
       loadedAll = true;
       setStatus('Chargement page 1…');
-      const first = await fetchSirene(q, 0, 200, apiKey);
+      const retryMsg = (att, wait) => setStatus(`Quota INSEE dépassé — tentative ${att}, attente ${wait}s…`);
+      const first = await fetchSirene(q, 0, 200, apiKey, retryMsg);
       totalResults = first.header?.total || 0;
       const maxPages = Math.ceil(Math.min(totalResults, 10000) / 200);
 
@@ -837,7 +849,8 @@ async function doSearch(page = 0) {
         setStatus(`Chargement page ${p + 1} / ${maxPages}… (${allEtabs.length} établissements récupérés)`);
         // Small delay to avoid hammering the API
         await new Promise(r => setTimeout(r, 300));
-        const data = await fetchSirene(q, p * 200, 200, apiKey);
+        const retryMsgP = (att, wait) => setStatus(`Page ${p + 1} / ${maxPages} — quota dépassé, tentative ${att}, attente ${wait}s…`);
+        const data = await fetchSirene(q, p * 200, 200, apiKey, retryMsgP);
         allEtabs = allEtabs.concat(data.etablissements || []);
         document.getElementById('countPill').textContent =
           `${allEtabs.length} / ${totalResults.toLocaleString('fr-FR')}`;
@@ -859,7 +872,7 @@ async function doSearch(page = 0) {
       // ── Single-fetch mode (paginated) ──────────────────────────────
       loadedAll = false;
       setStatus('Interrogation de l\'API SIRENE…');
-      const data = await fetchSirene(q, page * nb, nb, apiKey);
+      const data = await fetchSirene(q, page * nb, nb, apiKey, (att, wait) => setStatus(`Quota INSEE dépassé — tentative ${att}, attente ${wait}s…`));
       let etabs = filterEtabs(data.etablissements || []);
       totalResults = data.header?.total || 0;
 
@@ -1212,7 +1225,7 @@ async function autoUpdateAllDepts() {
     try {
       // 1. Requête SIRENE — 200 établissements actifs du département
       const q = `periode(activitePrincipaleEtablissement:${naf} AND etatAdministratifEtablissement:A) AND codePostalEtablissement:${deptCode}*`;
-      const res = await fetchSirene(q, 0, 200, apiKey);
+      const res = await fetchSirene(q, 0, 200, apiKey, (att, wait) => showToast(`⟳ ${deptCode} — quota dépassé, tentative ${att}, attente ${wait}s…`));
       const etabs = (res.etablissements || []).filter(
         et => et.periodesEtablissement?.[0]?.etatAdministratifEtablissement === 'A'
       );
