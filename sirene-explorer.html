@@ -132,6 +132,9 @@
     }
     .btn-auto-depts:hover { background: #a02820; }
     .btn-auto-depts:disabled { opacity: .4; cursor: default; }
+    .btn-auto-depts.btn-cancel { background: #555; animation: pulse-cancel 1.2s infinite; }
+    .btn-auto-depts.btn-cancel:hover { background: #333; }
+    @keyframes pulse-cancel { 0%,100% { opacity: 1; } 50% { opacity: .7; } }
 
     .chips-row {
       background: var(--surface);
@@ -674,6 +677,7 @@ let totalResults = 0;
 let currentNb = 20;
 let loadedAll = false;
 let geoAbort = null; // AbortController for geocoding
+let autoDeptsAbort = null; // AbortController for autoUpdateAllDepts
 
 function clearMarkers() {
   markers.forEach(m => map.removeLayer(m));
@@ -736,37 +740,138 @@ async function geocode(etab, signal) {
   const { line1, line2 } = buildAddr(etab);
   const q = [line1, line2].filter(Boolean).join(' ').trim();
   if (!q) return null;
-  try {
-    const r = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=1`, { signal });
-    const d = await r.json();
-    if (d.features?.length) {
-      const [lon, lat] = d.features[0].geometry.coordinates;
-      return { lat, lon };
+  const MAX_RETRIES = 4;
+  let lastError = null;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      if (signal?.aborted) return null;
+      const r = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=1`, { signal });
+      if (r.status === 429) {
+        lastError = new Error('Géocodage BAN : quota dépassé (429)');
+        if (attempt >= MAX_RETRIES) break;
+        await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
+        continue;
+      }
+      if (!r.ok) return null;
+      const d = await r.json();
+      if (d.features?.length) {
+        const [lon, lat] = d.features[0].geometry.coordinates;
+        return { lat, lon };
+      }
+      return null;
+    } catch (e) {
+      if (e.name === 'AbortError') return null;
+      lastError = e;
+      if (attempt >= MAX_RETRIES) break;
+      await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
     }
-  } catch {}
-  return null;
+  }
+  throw lastError;
 }
 
-async function fetchSirene(q, debut, nombre, inseeKey) {
+// Batch geocoding via BAN CSV endpoint — returns Map<index, {lat, lon}>
+async function geocodeBatchCsv(etabs, signal) {
+  const rows = [['id', 'adresse', 'postcode']];
+  etabs.forEach((etab, i) => {
+    const { line1, line2 } = buildAddr(etab);
+    const a = etab.adresseEtablissement || {};
+    const cp = a.codePostalEtablissement || '';
+    const addr = [line1, line2].filter(Boolean).join(' ').trim();
+    // CSV-escape: wrap in quotes and double any quotes
+    rows.push([i, '"' + addr.replace(/"/g, '""') + '"', cp]);
+  });
+  const csv = rows.map(r => r.join(',')).join('\n');
+
+  const form = new FormData();
+  form.append('data', new Blob([csv], { type: 'text/csv' }), 'batch.csv');
+  form.append('columns', 'adresse');
+  form.append('postcode', 'postcode');
+  form.append('result_columns', 'latitude');
+  form.append('result_columns', 'longitude');
+  form.append('result_columns', 'result_score');
+
+  const MAX_RETRIES = 4;
+  let lastError = null;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      if (signal?.aborted) return new Map();
+      const r = await fetch('https://api-adresse.data.gouv.fr/search/csv/', {
+        method: 'POST', body: form, signal,
+      });
+      if (r.status === 429 || r.status === 503) {
+        lastError = new Error('Géocodage BAN CSV : quota dépassé (' + r.status + ')');
+        if (attempt >= MAX_RETRIES) break;
+        await new Promise(resolve => setTimeout(resolve, 2000 * Math.pow(2, attempt)));
+        continue;
+      }
+      if (!r.ok) return new Map();
+
+      const text = await r.text();
+      const lines = text.trim().split('\n');
+      if (lines.length < 2) return new Map();
+
+      // Parse CSV header to find column indices
+      const header = lines[0].split(',');
+      const idIdx = header.indexOf('id');
+      const latIdx = header.indexOf('latitude');
+      const lonIdx = header.indexOf('longitude');
+      const scoreIdx = header.indexOf('result_score');
+      if (idIdx < 0 || latIdx < 0 || lonIdx < 0) return new Map();
+
+      const results = new Map();
+      for (let li = 1; li < lines.length; li++) {
+        const cols = lines[li].split(',');
+        const id = parseInt(cols[idIdx], 10);
+        const lat = parseFloat(cols[latIdx]);
+        const lon = parseFloat(cols[lonIdx]);
+        const score = scoreIdx >= 0 ? parseFloat(cols[scoreIdx]) : 1;
+        if (!isNaN(id) && !isNaN(lat) && !isNaN(lon) && score > 0.3) {
+          results.set(id, { lat, lon });
+        }
+      }
+      return results;
+    } catch (e) {
+      if (e.name === 'AbortError') return new Map();
+      lastError = e;
+      if (attempt >= MAX_RETRIES) break;
+      await new Promise(resolve => setTimeout(resolve, 2000 * Math.pow(2, attempt)));
+    }
+  }
+  throw lastError;
+}
+
+async function fetchSirene(q, debut, nombre, inseeKey, onRetry, signal) {
   const url = "https://api.insee.fr/api-sirene/3.11/siret?q=" + encodeURIComponent(q) + "&nombre=" + nombre + "&debut=" + debut;
   console.log('[Sirene] query:', q);
 
-  const res = await fetch(url, {
-    headers: {
-      'Accept': 'application/json',
-      'X-INSEE-Api-Key-Integration': inseeKey,
-    }
-  });
+  const MAX_RETRIES = 4;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    const res = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+        'X-INSEE-Api-Key-Integration': inseeKey,
+      },
+      signal,
+    });
 
-  if (res.status === 401) throw new Error('Clé API INSEE invalide ou expirée (401).');
-  if (res.status === 403) throw new Error("Accès refusé (403). Vérifiez votre abonnement sur portail-api.insee.fr.");
-  if (res.status === 404) return { etablissements: [], header: { total: 0 } };
-  if (res.status === 429) throw new Error('Quota API INSEE dépassé (429). Attendez quelques secondes.');
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error('Erreur API INSEE ' + res.status + ' : ' + (body?.header?.message || res.statusText));
+    if (res.status === 401) throw new Error('Clé API INSEE invalide ou expirée (401).');
+    if (res.status === 403) throw new Error("Accès refusé (403). Vérifiez votre abonnement sur portail-api.insee.fr.");
+    if (res.status === 404) return { etablissements: [], header: { total: 0 } };
+
+    if (res.status === 429 || res.status === 503) {
+      if (attempt >= MAX_RETRIES) throw new Error('Quota API INSEE dépassé après ' + (MAX_RETRIES + 1) + ' tentatives. Réessayez plus tard.');
+      const wait = Math.pow(2, attempt + 1);
+      if (onRetry) onRetry(attempt + 1, wait);
+      await new Promise(r => setTimeout(r, wait * 1000));
+      continue;
+    }
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error('Erreur API INSEE ' + res.status + ' : ' + (body?.header?.message || res.statusText));
+    }
+    return res.json();
   }
-  return res.json();
 }
 
 function filterEtabs(etabs) {
@@ -789,6 +894,7 @@ async function doSearch(page = 0) {
   currentNb = nb;
   currentPage = page;
 
+  if (autoDeptsAbort) cancelAutoUpdateAllDepts();
   if (geoAbort) geoAbort.abort();
   geoAbort = new AbortController();
 
@@ -810,7 +916,8 @@ async function doSearch(page = 0) {
       // ── Multi-fetch mode ───────────────────────────────────────────
       loadedAll = true;
       setStatus('Chargement page 1…');
-      const first = await fetchSirene(q, 0, 200, apiKey);
+      const retryMsg = (att, wait) => setStatus(`Quota INSEE dépassé — tentative ${att}, attente ${wait}s…`);
+      const first = await fetchSirene(q, 0, 200, apiKey, retryMsg);
       totalResults = first.header?.total || 0;
       const maxPages = Math.ceil(Math.min(totalResults, 10000) / 200);
 
@@ -822,7 +929,8 @@ async function doSearch(page = 0) {
         setStatus(`Chargement page ${p + 1} / ${maxPages}… (${allEtabs.length} établissements récupérés)`);
         // Small delay to avoid hammering the API
         await new Promise(r => setTimeout(r, 300));
-        const data = await fetchSirene(q, p * 200, 200, apiKey);
+        const retryMsgP = (att, wait) => setStatus(`Page ${p + 1} / ${maxPages} — quota dépassé, tentative ${att}, attente ${wait}s…`);
+        const data = await fetchSirene(q, p * 200, 200, apiKey, retryMsgP);
         allEtabs = allEtabs.concat(data.etablissements || []);
         document.getElementById('countPill').textContent =
           `${allEtabs.length} / ${totalResults.toLocaleString('fr-FR')}`;
@@ -844,7 +952,7 @@ async function doSearch(page = 0) {
       // ── Single-fetch mode (paginated) ──────────────────────────────
       loadedAll = false;
       setStatus('Interrogation de l\'API SIRENE…');
-      const data = await fetchSirene(q, page * nb, nb, apiKey);
+      const data = await fetchSirene(q, page * nb, nb, apiKey, (att, wait) => setStatus(`Quota INSEE dépassé — tentative ${att}, attente ${wait}s…`));
       let etabs = filterEtabs(data.etablissements || []);
       totalResults = data.header?.total || 0;
 
@@ -902,77 +1010,101 @@ function renderResults(etabs, nb) {
     return { card, etab, naf, name, addr };
   });
 
-  // Geocode in background
+  // Geocode in background via CSV batch
   const geoP = document.getElementById('geoProgress');
   const geoL = document.getElementById('geoLabel');
   const geoF = document.getElementById('geoFill');
   geoP.style.display = 'block';
-  let done = 0;
   window._exportData = []; // reset export dataset
   const signal = geoAbort?.signal;
 
   (async () => {
-    const GEO_BATCH = 5;
-    for (let bi = 0; bi < cardRefs.length; bi += GEO_BATCH) {
+    try {
+    geoL.textContent = `Géocodage CSV batch : ${cardRefs.length} adresses…`;
+    geoF.style.width = '0%';
+
+    // Split into chunks of 500 (BAN CSV limit ~6 MB)
+    const CSV_CHUNK = 500;
+    const allCoords = new Array(cardRefs.length).fill(null);
+
+    for (let ci = 0; ci < cardRefs.length; ci += CSV_CHUNK) {
       if (signal?.aborted) return;
-      const batch = cardRefs.slice(bi, bi + GEO_BATCH);
-      const results = await Promise.all(batch.map(ref => geocode(ref.etab, signal)));
+      const chunk = cardRefs.slice(ci, ci + CSV_CHUNK);
+      const chunkEtabs = chunk.map(ref => ref.etab);
+
+      geoL.textContent = cardRefs.length <= CSV_CHUNK
+        ? `Géocodage CSV batch : ${cardRefs.length} adresses…`
+        : `Géocodage CSV batch ${Math.floor(ci / CSV_CHUNK) + 1}/${Math.ceil(cardRefs.length / CSV_CHUNK)}…`;
+
+      const coordsMap = await geocodeBatchCsv(chunkEtabs, signal);
       if (signal?.aborted) return;
 
-      batch.forEach((ref, j) => {
-        const { card, etab, naf, name, addr } = ref;
-        const safeName = esc(name);
-        const coords = results[j];
-        done++;
-        geoL.textContent = `Géocodage : ${done} / ${cardRefs.length}`;
-        geoF.style.width = `${(done / cardRefs.length) * 100}%`;
-
-        if (coords) {
-          window._exportData.push({ name, siret: etab.siret || '', naf, etat: etab.periodesEtablissement?.[0]?.etatAdministratifEtablissement || '', addr, lat: coords.lat, lon: coords.lon });
-          const marker = L.marker([coords.lat, coords.lon], { icon: makeIcon(false) }).addTo(map);
-          markers.push(marker);
-          marker.bindPopup(`
-            <div class="popup-name">${safeName}</div>
-            <div class="popup-naf">${esc(naf)} · ${esc(NAF_DICT[naf] || '')}</div>
-            <div class="popup-addr">${[addr.line1, addr.line2].filter(Boolean).map(esc).join('<br/>')}</div>
-          `);
-
-          card.onclick = () => {
-            if (activeCard) activeCard.classList.remove('active');
-            if (activeMarker) activeMarker.setIcon(makeIcon(false));
-            card.classList.add('active');
-            activeCard = card;
-            activeMarker = marker;
-            marker.setIcon(makeIcon(true));
-            map.setView([coords.lat, coords.lon], 15);
-            marker.openPopup();
-          };
-          marker.on('click', () => {
-            if (activeCard) activeCard.classList.remove('active');
-            if (activeMarker) activeMarker.setIcon(makeIcon(false));
-            card.classList.add('active');
-            activeCard = card;
-            activeMarker = marker;
-            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          });
-        } else {
-          const ng = document.createElement('div');
-          ng.className = 'no-geo';
-          ng.textContent = '📍 adresse non géolocalisable';
-          card.appendChild(ng);
-          card.style.cursor = 'default';
-        }
+      coordsMap.forEach((coords, localIdx) => {
+        allCoords[ci + localIdx] = coords;
       });
 
-      await new Promise(r => setTimeout(r, 50));
+      geoF.style.width = `${Math.min(100, ((ci + chunk.length) / cardRefs.length) * 100)}%`;
+    }
+
+    // Apply results to cards and map
+    cardRefs.forEach((ref, i) => {
+      const { card, etab, naf, name, addr } = ref;
+      const safeName = esc(name);
+      const coords = allCoords[i];
+
+      if (coords) {
+        window._exportData.push({ name, siret: etab.siret || '', naf, etat: etab.periodesEtablissement?.[0]?.etatAdministratifEtablissement || '', addr, lat: coords.lat, lon: coords.lon });
+        const marker = L.marker([coords.lat, coords.lon], { icon: makeIcon(false) }).addTo(map);
+        markers.push(marker);
+        marker.bindPopup(`
+          <div class="popup-name">${safeName}</div>
+          <div class="popup-naf">${esc(naf)} · ${esc(NAF_DICT[naf] || '')}</div>
+          <div class="popup-addr">${[addr.line1, addr.line2].filter(Boolean).map(esc).join('<br/>')}</div>
+        `);
+
+        card.onclick = () => {
+          if (activeCard) activeCard.classList.remove('active');
+          if (activeMarker) activeMarker.setIcon(makeIcon(false));
+          card.classList.add('active');
+          activeCard = card;
+          activeMarker = marker;
+          marker.setIcon(makeIcon(true));
+          map.setView([coords.lat, coords.lon], 15);
+          marker.openPopup();
+        };
+        marker.on('click', () => {
+          if (activeCard) activeCard.classList.remove('active');
+          if (activeMarker) activeMarker.setIcon(makeIcon(false));
+          card.classList.add('active');
+          activeCard = card;
+          activeMarker = marker;
+          card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      } else {
+        const ng = document.createElement('div');
+        ng.className = 'no-geo';
+        ng.textContent = '📍 adresse non géolocalisable';
+        card.appendChild(ng);
+        card.style.cursor = 'default';
+      }
+    });
+
+    geoL.textContent = `Géocodage terminé : ${window._exportData.length} / ${cardRefs.length}`;
+    geoF.style.width = '100%';
+
+    } catch (err) {
+      geoL.textContent = `Géocodage échoué : ${esc(err.message)}`;
+      geoF.style.width = '100%';
+      geoF.style.background = '#c8342a';
+      showToast(`<strong>Erreur géocodage :</strong> ${esc(err.message)}`);
     }
 
     geoP.style.display = 'none';
     document.getElementById('searchBtn').disabled = false;
     const expBtn = document.getElementById('exportBtn');
-    if (expBtn) { expBtn.disabled = false; expBtn.style.opacity = '1'; }
+    if (expBtn && window._exportData.length) { expBtn.disabled = false; expBtn.style.opacity = '1'; }
     const ghBtn = document.getElementById('ghPushBtn');
-    if (ghBtn && document.getElementById('ghToken').value.trim() && document.getElementById('ghRepo').value.trim()) {
+    if (ghBtn && window._exportData.length && document.getElementById('ghToken').value.trim() && document.getElementById('ghRepo').value.trim()) {
       ghBtn.disabled = false; ghBtn.style.opacity = '1';
     }
 
@@ -1151,15 +1283,16 @@ function buildDeptExportHtml(data, nafCode, deptCode, deptName) {
 }
 
 // Pousse un fichier unique sur GitHub
-async function pushSingleFile(token, repo, filePath, content) {
+async function pushSingleFile(token, repo, filePath, content, signal) {
   const encodedPath = filePath.split('/').map(encodeURIComponent).join('/');
   let sha = null;
   try {
     const r = await fetch(`https://api.github.com/repos/${repo}/contents/${encodedPath}`, {
-      headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github.v3+json' }
+      headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github.v3+json' },
+      signal,
     });
     if (r.ok) sha = (await r.json()).sha;
-  } catch {}
+  } catch (e) { if (e.name === 'AbortError') throw e; }
   const body = {
     message: 'auto: update ' + filePath,
     content: btoa(unescape(encodeURIComponent(content))),
@@ -1169,11 +1302,22 @@ async function pushSingleFile(token, repo, filePath, content) {
     method: 'PUT',
     headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json', Accept: 'application/vnd.github.v3+json' },
     body: JSON.stringify(body),
+    signal,
   });
   if (!r.ok) throw new Error('GitHub ' + r.status);
 }
 
+function cancelAutoUpdateAllDepts() {
+  if (autoDeptsAbort) {
+    autoDeptsAbort.abort();
+    autoDeptsAbort = null;
+  }
+}
+
 async function autoUpdateAllDepts() {
+  // If already running, cancel
+  if (autoDeptsAbort) { cancelAutoUpdateAllDepts(); return; }
+
   const apiKey = document.getElementById('apiKey').value.trim();
   const token  = document.getElementById('ghToken').value.trim();
   const repo   = document.getElementById('ghRepo').value.trim();
@@ -1185,30 +1329,38 @@ async function autoUpdateAllDepts() {
   if (!repo)   return showToast('<strong>Dépôt GitHub manquant.</strong> Configurez-le dans Paramètres.');
   if (!naf)    return showToast('<strong>Code NAF manquant.</strong> Renseignez un code NAF dans la barre de recherche.');
 
+  autoDeptsAbort = new AbortController();
+  const signal = autoDeptsAbort.signal;
+
   const btn = document.getElementById('btnAutoDepts');
-  btn.disabled = true;
+  const origLabel = btn.textContent;
+  btn.textContent = '✕ Annuler batch';
+  btn.classList.add('btn-cancel');
+  document.getElementById('searchBtn').disabled = true;
 
   const codes = Object.keys(DEPT_NAMES);
   let done = 0, pushed = 0, empty = 0, errors = 0;
 
   for (const deptCode of codes) {
+    if (signal.aborted) break;
     showToast(`⟳ ${deptCode} · ${DEPT_NAMES[deptCode]} (${done + 1}/${codes.length})`);
 
     try {
       // 1. Requête SIRENE — 200 établissements actifs du département
       const q = `periode(activitePrincipaleEtablissement:${naf} AND etatAdministratifEtablissement:A) AND codePostalEtablissement:${deptCode}*`;
-      const res = await fetchSirene(q, 0, 200, apiKey);
+      const res = await fetchSirene(q, 0, 200, apiKey, (att, wait) => showToast(`⟳ ${deptCode} — quota dépassé, tentative ${att}, attente ${wait}s…`), signal);
       const etabs = (res.etablissements || []).filter(
         et => et.periodesEtablissement?.[0]?.etatAdministratifEtablissement === 'A'
       );
 
       if (!etabs.length) { empty++; done++; continue; }
 
-      // 2. Géocodage par batch de chaque établissement
+      // 2. Géocodage CSV batch de tous les établissements du département
+      const coordsMap = await geocodeBatchCsv(etabs, signal);
       const exportData = [];
-      for (const etab of etabs) {
-        const coords = await geocode(etab, undefined);
-        if (!coords) continue;
+      etabs.forEach((etab, i) => {
+        const coords = coordsMap.get(i);
+        if (!coords) return;
         const periode = etab.periodesEtablissement?.[0] || {};
         exportData.push({
           name:  getName(etab),
@@ -1219,7 +1371,7 @@ async function autoUpdateAllDepts() {
           lat:   coords.lat,
           lon:   coords.lon,
         });
-      }
+      });
 
       if (!exportData.length) { empty++; done++; continue; }
 
@@ -1229,10 +1381,11 @@ async function autoUpdateAllDepts() {
       // 4. Push GitHub
       const nafSlug = naf.replace(/[^a-z0-9]/gi, '-');
       const filePath = (dir ? dir.replace(/\/+$/, '') + '/' : '') + 'sirene-' + nafSlug + '-' + deptCode + '.html';
-      await pushSingleFile(token, repo, filePath, html);
+      await pushSingleFile(token, repo, filePath, html, signal);
       pushed++;
 
     } catch (err) {
+      if (err.name === 'AbortError') break;
       console.error(deptCode, err);
       errors++;
     }
@@ -1240,10 +1393,19 @@ async function autoUpdateAllDepts() {
     done++;
   }
 
-  btn.disabled = false;
-  showToast(
-    `<strong>Terminé !</strong> ${pushed} poussés · ${empty} vides · ${errors} erreur${errors !== 1 ? 's' : ''}`,
-  );
+  const cancelled = signal.aborted;
+  autoDeptsAbort = null;
+  btn.textContent = origLabel;
+  btn.classList.remove('btn-cancel');
+  document.getElementById('searchBtn').disabled = false;
+
+  if (cancelled) {
+    showToast(`<strong>Annulé.</strong> ${pushed} poussés sur ${done} traités / ${codes.length} départements.`);
+  } else {
+    showToast(
+      `<strong>Terminé !</strong> ${pushed} poussés · ${empty} vides · ${errors} erreur${errors !== 1 ? 's' : ''}`,
+    );
+  }
 }
 
 // Extract unique department codes from export data
