@@ -7,6 +7,9 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
@@ -656,6 +659,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> · données <a href="https://www.insee.fr">INSEE SIRENE</a>',
   maxZoom: 19,
 }).addTo(map);
+let clusterGroup = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
+map.addLayer(clusterGroup);
 
 function makeIcon(active) {
   const color = active ? '#c8342a' : '#1a3a6b';
@@ -685,7 +690,7 @@ let geoAbort = null; // AbortController for geocoding
 let autoDeptsAbort = null; // AbortController for autoUpdateAllDepts
 
 function clearMarkers() {
-  markers.forEach(m => map.removeLayer(m));
+  clusterGroup.clearLayers();
   markers = [];
 }
 
@@ -1061,7 +1066,7 @@ function renderResults(etabs, nb) {
       if (coords) {
         geoOk++;
         window._exportData.push({ name, siret: etab.siret || '', naf, etat: etab.periodesEtablissement?.[0]?.etatAdministratifEtablissement || '', addr, lat: coords.lat, lon: coords.lon });
-        const marker = L.marker([coords.lat, coords.lon], { icon: makeIcon(false) }).addTo(map);
+        const marker = L.marker([coords.lat, coords.lon], { icon: makeIcon(false) });
         markers.push(marker);
         marker.bindPopup(`
           <div class="popup-name">${safeName}</div>
@@ -1120,8 +1125,8 @@ function renderResults(etabs, nb) {
     }
 
     if (markers.length) {
-      const grp = L.featureGroup(markers);
-      map.fitBounds(grp.getBounds().pad(0.12));
+      clusterGroup.addLayers(markers);
+      map.fitBounds(clusterGroup.getBounds().pad(0.12));
     }
 
     // Pagination (hidden when all data was loaded at once)
@@ -1506,19 +1511,20 @@ function buildExportHtml() {
   const js = 'const D=' + dataJson + ';'
     + 'const map=L.map("map");'
     + 'L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"\\u00a9 OpenStreetMap",maxZoom:19}).addTo(map);'
+    + 'const cg=L.markerClusterGroup({chunkedLoading:true,maxClusterRadius:45});map.addLayer(cg);'
     + 'function esc(s){return String(s).replace(/&/g,"\\x26amp;").replace(/</g,"\\x26lt;").replace(/>/g,"\\x26gt;").replace(/"/g,"\\x26quot;");}'
     + 'function mk(a){const c=a?"#c8342a":"#1a3a6b",s=\'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="\'+c+\'"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>\';return L.divIcon({html:s,className:"",iconSize:[24,32],iconAnchor:[12,32],popupAnchor:[0,-34]});}'
     + 'let aC=null,aM=null;'
     + 'const cards=document.querySelectorAll(".card"),ml=[];'
     + 'D.forEach(function(d,i){'
-    + '  const m=L.marker([d.lat,d.lon],{icon:mk(false)}).addTo(map);'
+    + '  const m=L.marker([d.lat,d.lon],{icon:mk(false)});'
     + '  m.bindPopup(\'<div class="pname">\'+esc(d.name)+\'</div><div class="pnaf">\'+esc(d.naf)+\'</div><div class="paddr">\\uD83D\\uDCCD \'+esc((d.a1?d.a1+" ":"")+d.a2)+\'</div>\');'
     + '  ml.push(m);'
     + '  function activate(ci,mi){if(aC)aC.classList.remove("active");if(aM)aM.setIcon(mk(false));ci.classList.add("active");aC=ci;mi.setIcon(mk(true));aM=mi;}'
     + '  cards[i].addEventListener("click",function(){activate(cards[i],m);map.setView([d.lat,d.lon],15);m.openPopup();});'
     + '  m.on("click",function(){activate(cards[i],m);cards[i].scrollIntoView({behavior:"smooth",block:"nearest"});});'
     + '});'
-    + 'if(ml.length){const g=L.featureGroup(ml);map.fitBounds(g.getBounds().pad(0.12));}'
+    + 'if(ml.length){cg.addLayers(ml);map.fitBounds(cg.getBounds().pad(0.12));}'
     + 'function filterCards(q){'
     + '  const t=q.toLowerCase().trim();'
     + '  let vis=0;'
@@ -1541,6 +1547,9 @@ function buildExportHtml() {
     '<title>' + escHtml(title) + '</title>',
     '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>',
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"><' + '/script>',
+    '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>',
+    '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>',
+    '<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"><' + '/script>',
     '<style>' + css + '</style></head><body>',
     '<header><h1>&#128205; ' + escHtml(title) + '</h1><div class="meta">Export\u00e9 le ' + escHtml(now) + ' \u2014 API Sirene INSEE</div></header>',
     '<div class="body"><div class="sb"><div class="sbh" id="sbh">' + count + ' \u00e9tablissements</div>',
