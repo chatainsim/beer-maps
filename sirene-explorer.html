@@ -641,6 +641,12 @@ Object.entries(NAF_DICT).forEach(([code, lib]) => {
   dl.appendChild(opt);
 });
 
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
 // MAP
 const map = L.map('map').setView([46.6, 2.3], 6);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -869,11 +875,13 @@ function renderResults(etabs, nb) {
     const card = document.createElement('div');
     card.className = 'card';
     card.style.animationDelay = `${i * 0.02}s`;
+    const safeName = esc(name);
+    const safeAddr = esc([addr.line1, addr.line2].filter(Boolean).join(', ') || '—');
     card.innerHTML = `
-      <div class="card-name" title="${name}">${name}</div>
-      <div class="card-siret">SIRET ${siret}</div>
+      <div class="card-name" title="${safeName}">${safeName}</div>
+      <div class="card-siret">SIRET ${esc(siret)}</div>
       <div class="card-tags">
-        <span class="tag tag-naf">${naf} · ${NAF_DICT[naf] || naf}</span>
+        <span class="tag tag-naf">${esc(naf)} · ${esc(NAF_DICT[naf] || naf)}</span>
         <span class="tag ${etat === 'A' ? 'tag-actif' : 'tag-ferme'}">${etat === 'A' ? 'Actif' : 'Fermé'}</span>
       </div>
       <div class="card-addr">
@@ -881,7 +889,7 @@ function renderResults(etabs, nb) {
           <path d="M5 .5C2.5.5.5 2.5.5 5c0 3.5 4.5 7.5 4.5 7.5S9.5 8.5 9.5 5C9.5 2.5 7.5.5 5 .5z"/>
           <circle cx="5" cy="5" r="1.5"/>
         </svg>
-        ${[addr.line1, addr.line2].filter(Boolean).join(', ') || '—'}
+        ${safeAddr}
       </div>`;
     list.appendChild(card);
     return { card, etab, naf, name, addr };
@@ -896,49 +904,57 @@ function renderResults(etabs, nb) {
   window._exportData = []; // reset export dataset
 
   (async () => {
-    for (const { card, etab, naf, name, addr } of cardRefs) {
-      const coords = await geocode(etab);
-      done++;
-      geoL.textContent = `Géocodage : ${done} / ${cardRefs.length}`;
-      geoF.style.width = `${(done / cardRefs.length) * 100}%`;
+    const GEO_BATCH = 5;
+    for (let bi = 0; bi < cardRefs.length; bi += GEO_BATCH) {
+      const batch = cardRefs.slice(bi, bi + GEO_BATCH);
+      const results = await Promise.all(batch.map(ref => geocode(ref.etab)));
 
-      if (coords) {
-        window._exportData.push({ name, siret: etab.siret || '', naf, etat: etab.periodesEtablissement?.[0]?.etatAdministratifEtablissement || '', addr, lat: coords.lat, lon: coords.lon });
-        const marker = L.marker([coords.lat, coords.lon], { icon: makeIcon(false) }).addTo(map);
-        markers.push(marker);
-        marker.bindPopup(`
-          <div class="popup-name">${name}</div>
-          <div class="popup-naf">${naf} · ${NAF_DICT[naf] || ''}</div>
-          <div class="popup-addr">${[addr.line1, addr.line2].filter(Boolean).join('<br/>')}</div>
-        `);
+      batch.forEach((ref, j) => {
+        const { card, etab, naf, name, addr } = ref;
+        const safeName = esc(name);
+        const coords = results[j];
+        done++;
+        geoL.textContent = `Géocodage : ${done} / ${cardRefs.length}`;
+        geoF.style.width = `${(done / cardRefs.length) * 100}%`;
 
-        card.onclick = () => {
-          if (activeCard) activeCard.classList.remove('active');
-          if (activeMarker) activeMarker.setIcon(makeIcon(false));
-          card.classList.add('active');
-          activeCard = card;
-          activeMarker = marker;
-          marker.setIcon(makeIcon(true));
-          map.setView([coords.lat, coords.lon], 15);
-          marker.openPopup();
-        };
-        marker.on('click', () => {
-          if (activeCard) activeCard.classList.remove('active');
-          if (activeMarker) activeMarker.setIcon(makeIcon(false));
-          card.classList.add('active');
-          activeCard = card;
-          activeMarker = marker;
-          card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
-      } else {
-        const ng = document.createElement('div');
-        ng.className = 'no-geo';
-        ng.textContent = '📍 adresse non géolocalisable';
-        card.appendChild(ng);
-        card.style.cursor = 'default';
-      }
+        if (coords) {
+          window._exportData.push({ name, siret: etab.siret || '', naf, etat: etab.periodesEtablissement?.[0]?.etatAdministratifEtablissement || '', addr, lat: coords.lat, lon: coords.lon });
+          const marker = L.marker([coords.lat, coords.lon], { icon: makeIcon(false) }).addTo(map);
+          markers.push(marker);
+          marker.bindPopup(`
+            <div class="popup-name">${safeName}</div>
+            <div class="popup-naf">${esc(naf)} · ${esc(NAF_DICT[naf] || '')}</div>
+            <div class="popup-addr">${[addr.line1, addr.line2].filter(Boolean).map(esc).join('<br/>')}</div>
+          `);
 
-      await new Promise(r => setTimeout(r, 70));
+          card.onclick = () => {
+            if (activeCard) activeCard.classList.remove('active');
+            if (activeMarker) activeMarker.setIcon(makeIcon(false));
+            card.classList.add('active');
+            activeCard = card;
+            activeMarker = marker;
+            marker.setIcon(makeIcon(true));
+            map.setView([coords.lat, coords.lon], 15);
+            marker.openPopup();
+          };
+          marker.on('click', () => {
+            if (activeCard) activeCard.classList.remove('active');
+            if (activeMarker) activeMarker.setIcon(makeIcon(false));
+            card.classList.add('active');
+            activeCard = card;
+            activeMarker = marker;
+            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          });
+        } else {
+          const ng = document.createElement('div');
+          ng.className = 'no-geo';
+          ng.textContent = '📍 adresse non géolocalisable';
+          card.appendChild(ng);
+          card.style.cursor = 'default';
+        }
+      });
+
+      await new Promise(r => setTimeout(r, 50));
     }
 
     geoP.style.display = 'none';
@@ -989,7 +1005,6 @@ function exportHtml() {
   if (!data.length) return showToast('Aucune donnée à exporter. Attendez la fin du géocodage.');
 
   const nafCode = document.getElementById('nafInput').value.trim();
-  const count   = data.length;
   const fname   = 'sirene-' + nafCode.replace(/[^a-z0-9]/gi,'-') + '-' + deptsLabel() + '.html';
 
   const blob = new Blob([buildExportHtml()], { type: 'text/html;charset=utf-8' });
@@ -1034,9 +1049,10 @@ async function pushToGithub() {
     const filePath = dir ? dir.replace(/\/+$/, '') + '/' + fname : fname;
 
     // Check if file already exists (to get its SHA for update)
+    const encodedPath = filePath.split('/').map(encodeURIComponent).join('/');
     let sha = null;
     try {
-      const checkRes = await fetch(`https://api.github.com/repos/${repo}/contents/${encodeURIComponent(filePath)}`, {
+      const checkRes = await fetch(`https://api.github.com/repos/${repo}/contents/${encodedPath}`, {
         headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
       });
       if (checkRes.ok) {
@@ -1055,7 +1071,7 @@ async function pushToGithub() {
     };
     if (sha) body.sha = sha;
 
-    const res = await fetch(`https://api.github.com/repos/${repo}/contents/${encodeURIComponent(filePath)}`, {
+    const res = await fetch(`https://api.github.com/repos/${repo}/contents/${encodedPath}`, {
       method: 'PUT',
       headers: {
         'Authorization': 'token ' + token,
