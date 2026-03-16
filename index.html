@@ -220,6 +220,7 @@
       font-family: var(--mono);
       font-size: .6rem;
     }
+
   </style>
 </head>
 <body>
@@ -272,8 +273,8 @@ const DEPT_NAMES = {
   "01":"Ain","02":"Aisne","03":"Allier","04":"Alpes-de-Haute-Provence","05":"Hautes-Alpes",
   "06":"Alpes-Maritimes","07":"Ardèche","08":"Ardennes","09":"Ariège","10":"Aube",
   "11":"Aude","12":"Aveyron","13":"Bouches-du-Rhône","14":"Calvados","15":"Cantal",
-  "16":"Charente","17":"Charente-Maritime","18":"Cher","19":"Corrèze","2A":"Corse-du-Sud",
-  "2B":"Haute-Corse","21":"Côte-d'Or","22":"Côtes-d'Armor","23":"Creuse","24":"Dordogne",
+  "16":"Charente","17":"Charente-Maritime","18":"Cher","19":"Corrèze","20":"Corse",
+  "21":"Côte-d'Or","22":"Côtes-d'Armor","23":"Creuse","24":"Dordogne",
   "25":"Doubs","26":"Drôme","27":"Eure","28":"Eure-et-Loir","29":"Finistère",
   "30":"Gard","31":"Haute-Garonne","32":"Gers","33":"Gironde","34":"Hérault",
   "35":"Ille-et-Vilaine","36":"Indre","37":"Indre-et-Loire","38":"Isère","39":"Jura",
@@ -317,8 +318,27 @@ function nafSlug(naf) {
   return naf.replace(/[^a-z0-9]/gi, '-');
 }
 
+// Fusionne les features 2A et 2B en un seul MultiPolygon "20"
+function preprocessGeoJson(data) {
+  function toPolygons(feat) {
+    if (!feat) return [];
+    const g = feat.geometry;
+    return g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
+  }
+  const f2A = data.features.find(f => f.properties.code === '2A');
+  const f2B = data.features.find(f => f.properties.code === '2B');
+  const corseFeat = {
+    type: 'Feature',
+    properties: { code: '20', nom: 'Corse' },
+    geometry: { type: 'MultiPolygon', coordinates: [...toPolygons(f2A), ...toPolygons(f2B)] }
+  };
+  const others = data.features.filter(f => f.properties.code !== '2A' && f.properties.code !== '2B');
+  return { ...data, features: [...others, corseFeat] };
+}
+
 function exportUrl(deptCode) {
-  return 'exports/sirene-' + nafSlug(currentNaf) + '-' + deptCode + '.html';
+  const prefix = 'exports/';
+  return prefix + 'sirene-' + nafSlug(currentNaf) + '-' + deptCode + '.html';
 }
 
 // Color scale: light blue (0) → dark red (max)
@@ -392,7 +412,8 @@ function addLabels() {
   geoLayer.eachLayer(function (layer) {
     const code = layer.feature.properties.code;
     const count = deptCounts[code];
-    const center = layer.getBounds().getCenter();
+    // Pour la Corse (MultiPolygon), le centre de la bbox tombe en mer — on fixe manuellement
+    const center = code === '20' ? L.latLng(42.1, 9.1) : layer.getBounds().getCenter();
     let labelText, cssClass;
     if (count !== undefined && count !== null && count > 0) {
       labelText = String(count);
@@ -450,6 +471,22 @@ function updateColorScale() {
   document.getElementById('scaleMax').textContent = maxC;
 }
 
+async function fetchCount(rawCode) {
+  try {
+    const res = await fetch(exportUrl(rawCode));
+    if (!res.ok) return null;
+    const html = await res.text();
+    const match = html.match(/const D=(\[[\s\S]*?\]);/);
+    if (match) {
+      try { return JSON.parse(match[1]).length; } catch {}
+    }
+    const titleMatch = html.match(/(\d+)\s*[eé]tablissements/);
+    return titleMatch ? parseInt(titleMatch[1], 10) : null;
+  } catch {
+    return null;
+  }
+}
+
 // Scan export files to extract establishment counts
 async function scanExports() {
   const cacheKey = nafSlug(currentNaf);
@@ -473,26 +510,7 @@ async function scanExports() {
   for (let i = 0; i < codes.length; i += BATCH) {
     const batch = codes.slice(i, i + BATCH);
     await Promise.all(batch.map(async (code) => {
-      const url = exportUrl(code);
-      try {
-        const res = await fetch(url);
-        if (!res.ok) { deptCounts[code] = null; return; }
-        const html = await res.text();
-        // Extract count from: const D=[...]; — count array items
-        const match = html.match(/const D=(\[[\s\S]*?\]);/);
-        if (match) {
-          try {
-            const arr = JSON.parse(match[1]);
-            deptCounts[code] = arr.length;
-          } catch { deptCounts[code] = null; }
-        } else {
-          // Fallback: extract from title "— X établissements"
-          const titleMatch = html.match(/(\d+)\s*[eé]tablissements/);
-          deptCounts[code] = titleMatch ? parseInt(titleMatch[1], 10) : null;
-        }
-      } catch {
-        deptCounts[code] = null;
-      }
+      deptCounts[code] = await fetchCount(code);
     }));
     scanned += batch.length;
     statusEl.innerHTML = '<div class="spinner"></div> Scan ' + Math.min(scanned, codes.length) + '/' + codes.length;
@@ -514,8 +532,8 @@ function updateNaf() {
 fetch('https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements-version-simplifiee.geojson')
   .then(r => r.json())
   .then(data => {
-    cachedGeoJson = data;
-    loadGeoJson(data);
+    cachedGeoJson = preprocessGeoJson(data);
+    loadGeoJson(cachedGeoJson);
     scanExports();
   })
   .catch(err => {
