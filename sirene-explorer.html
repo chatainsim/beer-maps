@@ -132,6 +132,9 @@
     }
     .btn-auto-depts:hover { background: #a02820; }
     .btn-auto-depts:disabled { opacity: .4; cursor: default; }
+    .btn-auto-depts.btn-cancel { background: #555; animation: pulse-cancel 1.2s infinite; }
+    .btn-auto-depts.btn-cancel:hover { background: #333; }
+    @keyframes pulse-cancel { 0%,100% { opacity: 1; } 50% { opacity: .7; } }
 
     .chips-row {
       background: var(--surface);
@@ -674,6 +677,7 @@ let totalResults = 0;
 let currentNb = 20;
 let loadedAll = false;
 let geoAbort = null; // AbortController for geocoding
+let autoDeptsAbort = null; // AbortController for autoUpdateAllDepts
 
 function clearMarkers() {
   markers.forEach(m => map.removeLayer(m));
@@ -836,7 +840,7 @@ async function geocodeBatchCsv(etabs, signal) {
   throw lastError;
 }
 
-async function fetchSirene(q, debut, nombre, inseeKey, onRetry) {
+async function fetchSirene(q, debut, nombre, inseeKey, onRetry, signal) {
   const url = "https://api.insee.fr/api-sirene/3.11/siret?q=" + encodeURIComponent(q) + "&nombre=" + nombre + "&debut=" + debut;
   console.log('[Sirene] query:', q);
 
@@ -846,7 +850,8 @@ async function fetchSirene(q, debut, nombre, inseeKey, onRetry) {
       headers: {
         'Accept': 'application/json',
         'X-INSEE-Api-Key-Integration': inseeKey,
-      }
+      },
+      signal,
     });
 
     if (res.status === 401) throw new Error('Clé API INSEE invalide ou expirée (401).');
@@ -889,6 +894,7 @@ async function doSearch(page = 0) {
   currentNb = nb;
   currentPage = page;
 
+  if (autoDeptsAbort) cancelAutoUpdateAllDepts();
   if (geoAbort) geoAbort.abort();
   geoAbort = new AbortController();
 
@@ -1277,15 +1283,16 @@ function buildDeptExportHtml(data, nafCode, deptCode, deptName) {
 }
 
 // Pousse un fichier unique sur GitHub
-async function pushSingleFile(token, repo, filePath, content) {
+async function pushSingleFile(token, repo, filePath, content, signal) {
   const encodedPath = filePath.split('/').map(encodeURIComponent).join('/');
   let sha = null;
   try {
     const r = await fetch(`https://api.github.com/repos/${repo}/contents/${encodedPath}`, {
-      headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github.v3+json' }
+      headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github.v3+json' },
+      signal,
     });
     if (r.ok) sha = (await r.json()).sha;
-  } catch {}
+  } catch (e) { if (e.name === 'AbortError') throw e; }
   const body = {
     message: 'auto: update ' + filePath,
     content: btoa(unescape(encodeURIComponent(content))),
@@ -1295,11 +1302,22 @@ async function pushSingleFile(token, repo, filePath, content) {
     method: 'PUT',
     headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json', Accept: 'application/vnd.github.v3+json' },
     body: JSON.stringify(body),
+    signal,
   });
   if (!r.ok) throw new Error('GitHub ' + r.status);
 }
 
+function cancelAutoUpdateAllDepts() {
+  if (autoDeptsAbort) {
+    autoDeptsAbort.abort();
+    autoDeptsAbort = null;
+  }
+}
+
 async function autoUpdateAllDepts() {
+  // If already running, cancel
+  if (autoDeptsAbort) { cancelAutoUpdateAllDepts(); return; }
+
   const apiKey = document.getElementById('apiKey').value.trim();
   const token  = document.getElementById('ghToken').value.trim();
   const repo   = document.getElementById('ghRepo').value.trim();
@@ -1311,19 +1329,26 @@ async function autoUpdateAllDepts() {
   if (!repo)   return showToast('<strong>Dépôt GitHub manquant.</strong> Configurez-le dans Paramètres.');
   if (!naf)    return showToast('<strong>Code NAF manquant.</strong> Renseignez un code NAF dans la barre de recherche.');
 
+  autoDeptsAbort = new AbortController();
+  const signal = autoDeptsAbort.signal;
+
   const btn = document.getElementById('btnAutoDepts');
-  btn.disabled = true;
+  const origLabel = btn.textContent;
+  btn.textContent = '✕ Annuler batch';
+  btn.classList.add('btn-cancel');
+  document.getElementById('searchBtn').disabled = true;
 
   const codes = Object.keys(DEPT_NAMES);
   let done = 0, pushed = 0, empty = 0, errors = 0;
 
   for (const deptCode of codes) {
+    if (signal.aborted) break;
     showToast(`⟳ ${deptCode} · ${DEPT_NAMES[deptCode]} (${done + 1}/${codes.length})`);
 
     try {
       // 1. Requête SIRENE — 200 établissements actifs du département
       const q = `periode(activitePrincipaleEtablissement:${naf} AND etatAdministratifEtablissement:A) AND codePostalEtablissement:${deptCode}*`;
-      const res = await fetchSirene(q, 0, 200, apiKey, (att, wait) => showToast(`⟳ ${deptCode} — quota dépassé, tentative ${att}, attente ${wait}s…`));
+      const res = await fetchSirene(q, 0, 200, apiKey, (att, wait) => showToast(`⟳ ${deptCode} — quota dépassé, tentative ${att}, attente ${wait}s…`), signal);
       const etabs = (res.etablissements || []).filter(
         et => et.periodesEtablissement?.[0]?.etatAdministratifEtablissement === 'A'
       );
@@ -1331,7 +1356,7 @@ async function autoUpdateAllDepts() {
       if (!etabs.length) { empty++; done++; continue; }
 
       // 2. Géocodage CSV batch de tous les établissements du département
-      const coordsMap = await geocodeBatchCsv(etabs, undefined);
+      const coordsMap = await geocodeBatchCsv(etabs, signal);
       const exportData = [];
       etabs.forEach((etab, i) => {
         const coords = coordsMap.get(i);
@@ -1356,10 +1381,11 @@ async function autoUpdateAllDepts() {
       // 4. Push GitHub
       const nafSlug = naf.replace(/[^a-z0-9]/gi, '-');
       const filePath = (dir ? dir.replace(/\/+$/, '') + '/' : '') + 'sirene-' + nafSlug + '-' + deptCode + '.html';
-      await pushSingleFile(token, repo, filePath, html);
+      await pushSingleFile(token, repo, filePath, html, signal);
       pushed++;
 
     } catch (err) {
+      if (err.name === 'AbortError') break;
       console.error(deptCode, err);
       errors++;
     }
@@ -1367,10 +1393,19 @@ async function autoUpdateAllDepts() {
     done++;
   }
 
-  btn.disabled = false;
-  showToast(
-    `<strong>Terminé !</strong> ${pushed} poussés · ${empty} vides · ${errors} erreur${errors !== 1 ? 's' : ''}`,
-  );
+  const cancelled = signal.aborted;
+  autoDeptsAbort = null;
+  btn.textContent = origLabel;
+  btn.classList.remove('btn-cancel');
+  document.getElementById('searchBtn').disabled = false;
+
+  if (cancelled) {
+    showToast(`<strong>Annulé.</strong> ${pushed} poussés sur ${done} traités / ${codes.length} départements.`);
+  } else {
+    showToast(
+      `<strong>Terminé !</strong> ${pushed} poussés · ${empty} vides · ${errors} erreur${errors !== 1 ? 's' : ''}`,
+    );
+  }
 }
 
 // Extract unique department codes from export data
