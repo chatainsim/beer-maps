@@ -549,7 +549,7 @@
     </label>
   </div>
 
-  <button class="btn-search" id="searchBtn" onclick="doSearch()">⌕ Rechercher</button>
+  <button class="btn-search" id="searchBtn" onclick="doSearchDebounced()">⌕ Rechercher</button>
   <button class="btn-auto-depts" id="btnAutoDepts" onclick="autoUpdateAllDepts()" title="Requête SIRENE pour chaque département, géocodage, puis push GitHub">⟳ Tous les depts → GitHub</button>
 </div>
 
@@ -676,6 +676,11 @@ let currentPage = 0;
 let totalResults = 0;
 let currentNb = 20;
 let loadedAll = false;
+let _searchTimer = null;
+function doSearchDebounced() {
+  clearTimeout(_searchTimer);
+  _searchTimer = setTimeout(() => doSearch(), 300);
+}
 let geoAbort = null; // AbortController for geocoding
 let autoDeptsAbort = null; // AbortController for autoUpdateAllDepts
 
@@ -1165,7 +1170,7 @@ document.addEventListener('keydown', e => {
     const overlay = document.getElementById('settingsOverlay');
     if (overlay.classList.contains('open')) overlay.classList.remove('open');
   }
-  if (e.key === 'Enter' && !document.getElementById('settingsOverlay').classList.contains('open') && !e.target.closest('.settings-overlay')) doSearch();
+  if (e.key === 'Enter' && !document.getElementById('settingsOverlay').classList.contains('open') && !e.target.closest('.settings-overlay')) doSearchDebounced();
 });
 
 // GitHub push
