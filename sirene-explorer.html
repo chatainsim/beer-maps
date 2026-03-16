@@ -736,14 +736,29 @@ async function geocode(etab, signal) {
   const { line1, line2 } = buildAddr(etab);
   const q = [line1, line2].filter(Boolean).join(' ').trim();
   if (!q) return null;
-  try {
-    const r = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=1`, { signal });
-    const d = await r.json();
-    if (d.features?.length) {
-      const [lon, lat] = d.features[0].geometry.coordinates;
-      return { lat, lon };
+  const MAX_RETRIES = 4;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      if (signal?.aborted) return null;
+      const r = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=1`, { signal });
+      if (r.status === 429) {
+        if (attempt >= MAX_RETRIES) return null;
+        await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
+        continue;
+      }
+      if (!r.ok) return null;
+      const d = await r.json();
+      if (d.features?.length) {
+        const [lon, lat] = d.features[0].geometry.coordinates;
+        return { lat, lon };
+      }
+      return null;
+    } catch (e) {
+      if (e.name === 'AbortError') return null;
+      if (attempt >= MAX_RETRIES) return null;
+      await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
     }
-  } catch {}
+  }
   return null;
 }
 
