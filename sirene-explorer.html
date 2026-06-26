@@ -527,6 +527,11 @@
   </div>
 
   <div class="field-group">
+    <label>Créé depuis (année)</label>
+    <input class="input-cp" id="anneeInput" type="number" min="1900" max="2099" step="1" placeholder="ex: 2015" style="width:90px" />
+  </div>
+
+  <div class="field-group">
     <label>Résultats</label>
     <select id="nbInput">
       <option value="20">20</option>
@@ -580,6 +585,18 @@
         cursor:pointer; font-family:var(--sans); font-size:.72rem; font-weight:500;
         padding:4px 10px; opacity:.4; transition:opacity .2s; white-space:nowrap;">
         ⬇ Export HTML
+      </button>
+      <button id="exportCsvBtn" onclick="exportCsv()" disabled title="Exporter en CSV (Excel, QGIS…)" style="
+        background:#2d7a50; border:none; border-radius:4px; color:#fff;
+        cursor:pointer; font-family:var(--sans); font-size:.72rem; font-weight:500;
+        padding:4px 10px; opacity:.4; transition:opacity .2s; white-space:nowrap;">
+        ⬇ CSV
+      </button>
+      <button id="exportGeoBtn" onclick="exportGeoJson()" disabled title="Exporter en GeoJSON (QGIS, cartographie)" style="
+        background:#2d7a50; border:none; border-radius:4px; color:#fff;
+        cursor:pointer; font-family:var(--sans); font-size:.72rem; font-weight:500;
+        padding:4px 10px; opacity:.4; transition:opacity .2s; white-space:nowrap;">
+        ⬇ GeoJSON
       </button>
       <button id="ghPushBtn" onclick="pushToGithub()" disabled title="Pousser l'export sur un dépôt GitHub" style="
         background:#24292f; border:none; border-radius:4px; color:#fff;
@@ -662,6 +679,21 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 let clusterGroup = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
 map.addLayer(clusterGroup);
 
+// ── Cache de géocodage (clé = adresse normalisée) persistant en localStorage ──
+const GEO_CACHE_KEY = 'geo_cache_v1';
+let geoCache = {};
+try { geoCache = JSON.parse(localStorage.getItem(GEO_CACHE_KEY) || '{}'); } catch { geoCache = {}; }
+let geoCacheDirty = 0;
+function geoCacheKey(etab) {
+  const { line1, line2 } = buildAddr(etab);
+  return [line1, line2].filter(Boolean).join(' ').trim().toLowerCase();
+}
+function flushGeoCache() {
+  if (!geoCacheDirty) return;
+  try { localStorage.setItem(GEO_CACHE_KEY, JSON.stringify(geoCache)); geoCacheDirty = 0; }
+  catch { /* quota dépassé : on garde le cache en mémoire pour la session */ }
+}
+
 function makeIcon(active) {
   const color = active ? '#c8342a' : '#1a3a6b';
   const s = active ? 32 : 26;
@@ -729,6 +761,12 @@ function buildQuery(nafRaw, cp) {
     parts.push('-codePostalEtablissement:98*');
   }
 
+  // "Créé depuis (année)" — dateCreationEtablissement is non-historized, goes OUTSIDE periode()
+  const annee = parseInt(document.getElementById('anneeInput')?.value, 10);
+  if (annee >= 1900 && annee <= 2099) {
+    parts.push('dateCreationEtablissement:[' + annee + '-01-01 TO *]');
+  }
+
   return { q: parts.join(' AND '), nafCode };
 }
 
@@ -780,17 +818,43 @@ async function geocode(etab, signal) {
 }
 
 // Batch geocoding via BAN CSV endpoint — returns Map<index, {lat, lon}>
+// Consulte d'abord le cache localStorage ; n'envoie que les adresses inconnues.
 async function geocodeBatchCsv(etabs, signal) {
-  const rows = [['id', 'adresse', 'postcode']];
+  const results = new Map();
+  const uncached = []; // { i, etab, key }
   etabs.forEach((etab, i) => {
+    const key = geoCacheKey(etab);
+    if (key && Object.prototype.hasOwnProperty.call(geoCache, key)) {
+      const c = geoCache[key];
+      if (c) results.set(i, c); // null = échec mémorisé → on ne renvoie rien
+    } else {
+      uncached.push({ i, etab, key });
+    }
+  });
+
+  if (!uncached.length) return results;
+
+  const rows = [['id', 'adresse', 'postcode']];
+  uncached.forEach(({ i, etab }) => {
     const { line1, line2 } = buildAddr(etab);
     const a = etab.adresseEtablissement || {};
     const cp = a.codePostalEtablissement || '';
     const addr = [line1, line2].filter(Boolean).join(' ').trim();
-    // CSV-escape: wrap in quotes and double any quotes
+    // CSV-escape: wrap in quotes and double any quotes ; id = index original
     rows.push([i, '"' + addr.replace(/"/g, '""') + '"', cp]);
   });
   const csv = rows.map(r => r.join(',')).join('\n');
+
+  // Mémorise hits ET échecs des adresses interrogées, puis fusionne dans results
+  const commit = (fresh) => {
+    uncached.forEach(({ i, key }) => {
+      const c = fresh.get(i) || null;
+      if (key) { geoCache[key] = c; geoCacheDirty++; }
+      if (c) results.set(i, c);
+    });
+    flushGeoCache();
+    return results;
+  };
 
   const form = new FormData();
   form.append('data', new Blob([csv], { type: 'text/csv' }), 'batch.csv');
@@ -804,7 +868,7 @@ async function geocodeBatchCsv(etabs, signal) {
   let lastError = null;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
-      if (signal?.aborted) return new Map();
+      if (signal?.aborted) return results;
       const r = await fetch('https://api-adresse.data.gouv.fr/search/csv/', {
         method: 'POST', body: form, signal,
       });
@@ -814,11 +878,11 @@ async function geocodeBatchCsv(etabs, signal) {
         await new Promise(resolve => setTimeout(resolve, 2000 * Math.pow(2, attempt)));
         continue;
       }
-      if (!r.ok) return new Map();
+      if (!r.ok) return results;
 
       const text = await r.text();
       const lines = text.trim().split('\n');
-      if (lines.length < 2) return new Map();
+      if (lines.length < 2) return results;
 
       // Parse CSV header to find column indices
       const header = lines[0].split(',');
@@ -826,9 +890,9 @@ async function geocodeBatchCsv(etabs, signal) {
       const latIdx = header.indexOf('latitude');
       const lonIdx = header.indexOf('longitude');
       const scoreIdx = header.indexOf('result_score');
-      if (idIdx < 0 || latIdx < 0 || lonIdx < 0) return new Map();
+      if (idIdx < 0 || latIdx < 0 || lonIdx < 0) return results;
 
-      const results = new Map();
+      const fresh = new Map();
       for (let li = 1; li < lines.length; li++) {
         const cols = lines[li].split(',');
         const id = parseInt(cols[idIdx], 10);
@@ -836,12 +900,12 @@ async function geocodeBatchCsv(etabs, signal) {
         const lon = parseFloat(cols[lonIdx]);
         const score = scoreIdx >= 0 ? parseFloat(cols[scoreIdx]) : 1;
         if (!isNaN(id) && !isNaN(lat) && !isNaN(lon) && score > 0.3) {
-          results.set(id, { lat, lon });
+          fresh.set(id, { lat, lon });
         }
       }
-      return results;
+      return commit(fresh);
     } catch (e) {
-      if (e.name === 'AbortError') return new Map();
+      if (e.name === 'AbortError') return results;
       lastError = e;
       if (attempt >= MAX_RETRIES) break;
       await new Promise(resolve => setTimeout(resolve, 2000 * Math.pow(2, attempt)));
@@ -903,6 +967,8 @@ async function doSearch(page = 0) {
   const { q, nafCode } = buildQuery(nafRaw, cp);
   currentNb = nb;
   currentPage = page;
+  persistSearch();
+  syncUrl();
 
   if (autoDeptsAbort) cancelAutoUpdateAllDepts();
   if (geoAbort) geoAbort.abort();
@@ -1065,7 +1131,7 @@ function renderResults(etabs, nb) {
 
       if (coords) {
         geoOk++;
-        window._exportData.push({ name, siret: etab.siret || '', naf, etat: etab.periodesEtablissement?.[0]?.etatAdministratifEtablissement || '', addr, lat: coords.lat, lon: coords.lon });
+        window._exportData.push({ name, siret: etab.siret || '', naf, etat: etab.periodesEtablissement?.[0]?.etatAdministratifEtablissement || '', dateCreation: etab.dateCreationEtablissement || '', addr, lat: coords.lat, lon: coords.lon });
         const marker = L.marker([coords.lat, coords.lon], { icon: makeIcon(false) });
         markers.push(marker);
         marker.bindPopup(`
@@ -1117,8 +1183,12 @@ function renderResults(etabs, nb) {
 
     geoP.style.display = 'none';
     document.getElementById('searchBtn').disabled = false;
-    const expBtn = document.getElementById('exportBtn');
-    if (expBtn && window._exportData.length) { expBtn.disabled = false; expBtn.style.opacity = '1'; }
+    if (window._exportData.length) {
+      ['exportBtn', 'exportCsvBtn', 'exportGeoBtn'].forEach(id => {
+        const b = document.getElementById(id);
+        if (b) { b.disabled = false; b.style.opacity = '1'; }
+      });
+    }
     const ghBtn = document.getElementById('ghPushBtn');
     if (ghBtn && window._exportData.length && document.getElementById('ghToken').value.trim() && document.getElementById('ghRepo').value.trim()) {
       ghBtn.disabled = false; ghBtn.style.opacity = '1';
@@ -1159,6 +1229,68 @@ function showToast(html) {
   setTimeout(() => t.remove(), 4000);
 }
 
+// ── Deep-link + persistance des critères de recherche ─────────────────────────
+const SEARCH_STATE_KEY = 'last_search_v1';
+
+function currentSearchState() {
+  return {
+    naf:    document.getElementById('nafInput').value.trim(),
+    cp:     document.getElementById('cpInput').value.trim(),
+    nb:     document.getElementById('nbInput').value,
+    annee:  document.getElementById('anneeInput').value.trim(),
+    fermes: document.getElementById('inclureFermes').checked,
+    tout:   document.getElementById('toutCharger').checked,
+    domtom: document.getElementById('inclureDomTom').checked,
+  };
+}
+
+function applySearchState(s) {
+  if (!s) return;
+  if (s.naf   != null) document.getElementById('nafInput').value = s.naf;
+  if (s.cp    != null) document.getElementById('cpInput').value = s.cp;
+  if (s.annee != null) document.getElementById('anneeInput').value = s.annee;
+  if (s.nb && document.querySelector(`#nbInput option[value="${s.nb}"]`)) document.getElementById('nbInput').value = s.nb;
+  document.getElementById('inclureFermes').checked = !!s.fermes;
+  document.getElementById('toutCharger').checked = !!s.tout;
+  document.getElementById('inclureDomTom').checked = !!s.domtom;
+}
+
+function persistSearch() {
+  try { localStorage.setItem(SEARCH_STATE_KEY, JSON.stringify(currentSearchState())); } catch {}
+}
+
+function syncUrl() {
+  const s = currentSearchState();
+  const p = new URLSearchParams();
+  if (s.naf)   p.set('naf', s.naf);
+  if (s.cp)    p.set('cp', s.cp);
+  if (s.annee) p.set('annee', s.annee);
+  if (s.nb && s.nb !== '20') p.set('nb', s.nb);
+  if (s.fermes) p.set('fermes', '1');
+  if (s.tout)   p.set('tout', '1');
+  if (s.domtom) p.set('domtom', '1');
+  const qs = p.toString();
+  history.replaceState(null, '', qs ? '?' + qs : location.pathname);
+}
+
+function restoreSearch() {
+  const p = new URLSearchParams(location.search);
+  let s = null;
+  if ([...p.keys()].length) {
+    s = {
+      naf: p.get('naf') || '', cp: p.get('cp') || '', annee: p.get('annee') || '',
+      nb: p.get('nb') || '20', fermes: p.has('fermes'), tout: p.has('tout'), domtom: p.has('domtom'),
+    };
+  } else {
+    try { s = JSON.parse(localStorage.getItem(SEARCH_STATE_KEY) || 'null'); } catch {}
+  }
+  applySearchState(s);
+  // Auto-recherche si l'URL portait des critères et qu'une clé API est présente
+  if (s && (s.naf || s.cp) && [...p.keys()].length && document.getElementById('apiKey').value.trim()) {
+    doSearch();
+  }
+}
+
 
 function exportHtml() {
   const data = window._exportData || [];
@@ -1173,6 +1305,55 @@ function exportHtml() {
   a.download = fname;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+}
+
+function downloadBlob(content, mime, fname) {
+  const blob = new Blob([content], { type: mime });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+}
+
+// RFC 4180 CSV cell escaping
+function csvCell(v) {
+  const s = String(v ?? '');
+  return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+
+function exportCsv() {
+  const data = window._exportData || [];
+  if (!data.length) return showToast('Aucune donnée à exporter. Attendez la fin du géocodage.');
+  const header = ['nom', 'siret', 'naf', 'etat', 'date_creation', 'adresse', 'code_postal_commune', 'latitude', 'longitude'];
+  const rows = data.map(d => [
+    d.name, d.siret, d.naf, d.etat === 'A' ? 'Actif' : 'Fermé', d.dateCreation || '',
+    d.addr?.line1 || '', d.addr?.line2 || '', d.lat, d.lon
+  ].map(csvCell).join(','));
+  // UTF-8 BOM so Excel detects encoding
+  const csv = '﻿' + header.join(',') + '\r\n' + rows.join('\r\n');
+  const fname = 'sirene-' + document.getElementById('nafInput').value.trim().replace(/[^a-z0-9]/gi, '-') + '-' + deptsLabel() + '.csv';
+  downloadBlob(csv, 'text/csv;charset=utf-8', fname);
+}
+
+function exportGeoJson() {
+  const data = window._exportData || [];
+  if (!data.length) return showToast('Aucune donnée à exporter. Attendez la fin du géocodage.');
+  const fc = {
+    type: 'FeatureCollection',
+    features: data.map(d => ({
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [d.lon, d.lat] },
+      properties: {
+        nom: d.name, siret: d.siret, naf: d.naf,
+        etat: d.etat === 'A' ? 'Actif' : 'Fermé',
+        date_creation: d.dateCreation || '',
+        adresse: [d.addr?.line1, d.addr?.line2].filter(Boolean).join(', ')
+      }
+    }))
+  };
+  const fname = 'sirene-' + document.getElementById('nafInput').value.trim().replace(/[^a-z0-9]/gi, '-') + '-' + deptsLabel() + '.geojson';
+  downloadBlob(JSON.stringify(fc), 'application/geo+json', fname);
 }
 
 
@@ -1298,17 +1479,37 @@ function buildDeptExportHtml(data, nafCode, deptCode, deptName) {
   return html;
 }
 
-// Pousse un fichier unique sur GitHub
+// Extrait le jeu de données embarqué (const D=[...]) pour comparer deux exports
+// en ignorant les tampons de date (header "Exporté le…", meta sirene:generated)
+function extractDataset(html) {
+  const m = html.match(/const D=(\[[\s\S]*?\]);/);
+  return m ? m[1] : null;
+}
+
+// Pousse un fichier unique sur GitHub. Renvoie 'pushed' ou 'unchanged'.
 async function pushSingleFile(token, repo, filePath, content, signal) {
   const encodedPath = filePath.split('/').map(encodeURIComponent).join('/');
-  let sha = null;
+  let sha = null, existingHtml = null;
   try {
     const r = await fetch(`https://api.github.com/repos/${repo}/contents/${encodedPath}`, {
       headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github.v3+json' },
       signal,
     });
-    if (r.ok) sha = (await r.json()).sha;
+    if (r.ok) {
+      const j = await r.json();
+      sha = j.sha;
+      if (j.content) {
+        try { existingHtml = decodeURIComponent(escape(atob(j.content.replace(/\n/g, '')))); } catch {}
+      }
+    }
   } catch (e) { if (e.name === 'AbortError') throw e; }
+
+  // Skip si les données sont identiques (on ignore les tampons de date)
+  if (existingHtml) {
+    const a = extractDataset(existingHtml), b = extractDataset(content);
+    if (a !== null && b !== null && a === b) return 'unchanged';
+  }
+
   const body = {
     message: 'auto: update ' + filePath,
     content: btoa(unescape(encodeURIComponent(content))),
@@ -1321,6 +1522,7 @@ async function pushSingleFile(token, repo, filePath, content, signal) {
     signal,
   });
   if (!r.ok) throw new Error('GitHub ' + r.status);
+  return 'pushed';
 }
 
 function cancelAutoUpdateAllDepts() {
@@ -1355,7 +1557,7 @@ async function autoUpdateAllDepts() {
   document.getElementById('searchBtn').disabled = true;
 
   const codes = Object.keys(DEPT_NAMES);
-  let done = 0, pushed = 0, empty = 0, errors = 0;
+  let done = 0, pushed = 0, unchanged = 0, empty = 0, errors = 0;
 
   for (const deptCode of codes) {
     if (signal.aborted) break;
@@ -1383,6 +1585,7 @@ async function autoUpdateAllDepts() {
           siret: etab.siret || '',
           naf:   periode.activitePrincipaleEtablissement || naf,
           etat:  periode.etatAdministratifEtablissement || 'A',
+          dateCreation: etab.dateCreationEtablissement || '',
           addr:  buildAddr(etab),
           lat:   coords.lat,
           lon:   coords.lon,
@@ -1397,8 +1600,8 @@ async function autoUpdateAllDepts() {
       // 4. Push GitHub
       const nafSlug = naf.replace(/[^a-z0-9]/gi, '-');
       const filePath = (dir ? dir.replace(/\/+$/, '') + '/' : '') + 'sirene-' + nafSlug + '-' + deptCode + '.html';
-      await pushSingleFile(token, repo, filePath, html, signal);
-      pushed++;
+      const status = await pushSingleFile(token, repo, filePath, html, signal);
+      if (status === 'unchanged') unchanged++; else pushed++;
 
     } catch (err) {
       if (err.name === 'AbortError') break;
@@ -1416,10 +1619,10 @@ async function autoUpdateAllDepts() {
   document.getElementById('searchBtn').disabled = false;
 
   if (cancelled) {
-    showToast(`<strong>Annulé.</strong> ${pushed} poussés sur ${done} traités / ${codes.length} départements.`);
+    showToast(`<strong>Annulé.</strong> ${pushed} poussés · ${unchanged} inchangés sur ${done} traités / ${codes.length} départements.`);
   } else {
     showToast(
-      `<strong>Terminé !</strong> ${pushed} poussés · ${empty} vides · ${errors} erreur${errors !== 1 ? 's' : ''}`,
+      `<strong>Terminé !</strong> ${pushed} poussés · ${unchanged} inchangés · ${empty} vides · ${errors} erreur${errors !== 1 ? 's' : ''}`,
     );
   }
 }
@@ -1461,11 +1664,15 @@ function buildExportHtml() {
   const title   = 'Sirene \u2014 ' + nafCode + ' \u00b7 ' + dLabel + ' \u2014 ' + count + ' \u00e9tablissements';
   const now     = new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
 
+  // Neutralise la rupture </script> et les séparateurs de ligne JS (U+2028/2029)
+  // pour que le JSON embarqué dans <script> reste sûr et syntaxiquement valide.
   const dataJson = JSON.stringify(data.map(d => ({
     name: d.name, siret: d.siret, naf: d.naf, etat: d.etat,
     a1: d.addr.line1 || '', a2: d.addr.line2 || '',
     lat: d.lat, lon: d.lon
-  })));
+  })))
+    .replace(/</g, '\\u003c').replace(/>/g, '\\u003e')
+    .replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
 
   function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -1544,6 +1751,10 @@ function buildExportHtml() {
   return [
     '<!DOCTYPE html><html lang="fr"><head>',
     '<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>',
+    '<meta name="sirene:count" content="' + count + '"/>',
+    '<meta name="sirene:naf" content="' + escHtml(nafCode) + '"/>',
+    '<meta name="sirene:dept" content="' + escHtml(dLabel) + '"/>',
+    '<meta name="sirene:generated" content="' + new Date().toISOString() + '"/>',
     '<title>' + escHtml(title) + '</title>',
     '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>',
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"><' + '/script>',
@@ -1607,6 +1818,8 @@ function saveGhSettings() {
   if (ghToken) document.getElementById('ghToken').value = ghToken;
   if (ghRepo)  document.getElementById('ghRepo').value = ghRepo;
   if (ghPath !== null) document.getElementById('ghPath').value = ghPath;
+
+  restoreSearch();
 })();
 </script>
 </body>

@@ -476,6 +476,9 @@ async function fetchCount(rawCode) {
     const res = await fetch(exportUrl(rawCode));
     if (!res.ok) return null;
     const html = await res.text();
+    // Prefer the explicit meta tag (fast, robust)
+    const meta = html.match(/<meta\s+name="sirene:count"\s+content="(\d+)"/i);
+    if (meta) return parseInt(meta[1], 10);
     const match = html.match(/const D=(\[[\s\S]*?\]);/);
     if (match) {
       try { return JSON.parse(match[1]).length; } catch {}
