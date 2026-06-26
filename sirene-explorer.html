@@ -1664,8 +1664,8 @@ function buildExportHtml() {
   const title   = 'Sirene \u2014 ' + nafCode + ' \u00b7 ' + dLabel + ' \u2014 ' + count + ' \u00e9tablissements';
   const now     = new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
 
-  // Neutralise la rupture </script> et les séparateurs de ligne JS (U+2028/2029)
-  // pour que le JSON embarqué dans <script> reste sûr et syntaxiquement valide.
+  // Neutralise la rupture de balise script et les separateurs de ligne JS
+  // (U+2028/2029) pour que le JSON embarque reste sur et syntaxiquement valide.
   const dataJson = JSON.stringify(data.map(d => ({
     name: d.name, siret: d.siret, naf: d.naf, etat: d.etat,
     a1: d.addr.line1 || '', a2: d.addr.line2 || '',
