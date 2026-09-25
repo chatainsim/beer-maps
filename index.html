@@ -302,12 +302,11 @@ let manifest = null;   // exports/manifest.json (null = absent → scan des fich
 const scanCache = {};  // { "11-05Z": { "38": 12, ... }, ... }
 
 const map = L.map('map', { zoomSnap: 0.25 }).setView([46.6, 2.5], 6);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-  attribution: '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> · © <a href="https://carto.com/">CARTO</a>',
+// Fond OpenStreetMap standard, atténué pour laisser ressortir la choroplèthe
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>',
   maxZoom: 19,
-}).addTo(map);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
-  maxZoom: 19, pane: 'overlayPane'
+  opacity: 0.6,
 }).addTo(map);
 
 function esc(s) {
