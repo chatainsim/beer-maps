@@ -36,12 +36,18 @@ Les deux pages sont reliées par des liens croisés en en-tête.
 ## Fonctionnalités
 
 **Recherche**
-- Recherche par code NAF (ex. `11.05Z`) ou par libellé d'activité, et par
-  code postal / département.
+- Recherche par code NAF (ex. `11.05Z`, `1105z`) ou par libellé d'activité
+  (« brasseries », « boulangerie », « cafés »…), et par département ou code postal.
+  Un département (`38`, `2A`, `20` = toute la Corse, `971`…) est filtré sur le
+  **code commune INSEE**, plus fiable que le code postal (certaines communes ont le
+  code postal d'un département voisin).
+- Seule la **situation actuelle** des établissements est interrogée (paramètre
+  `date=` de l'API) : un établissement fermé ou qui a changé d'activité n'est pas
+  compté.
 - Filtre **« créé depuis (année) »** (`dateCreationEtablissement`).
 - Inclure / exclure les établissements fermés et les DOM-TOM.
-- Mode **« Tout charger »** : enchaîne plusieurs requêtes pour dépasser la limite
-  de 200 résultats de l'API.
+- Mode **« Tout charger »** : enchaîne des requêtes de 1 000 résultats via le
+  **curseur** de l'API (pagination profonde), jusqu'à 10 000 établissements.
 - **Lien profond + persistance** : les critères sont reflétés dans l'URL (partageable)
   et restaurés au rechargement. Une URL portant des critères relance la recherche
   automatiquement si une clé API est présente.
@@ -61,8 +67,10 @@ Les deux pages sont reliées par des liens croisés en en-tête.
 **Publication automatique**
 - Bouton **Push GitHub** : pousse l'export courant sur un dépôt via l'API Contents.
 - **« Tous les départements → GitHub »** : boucle sur les 95 départements
-  métropolitains, génère et pousse une page par département. Les commits identiques
-  sont **ignorés** (comparaison du jeu de données embarqué, hors tampon de date).
+  métropolitains, récupère **tous** les établissements actifs de chacun (pas de
+  plafond), génère et pousse une page par département, puis met à jour
+  `manifest.json`. Les commits identiques sont **ignorés** (comparaison du jeu de
+  données embarqué, hors tampon de date, y compris pour les fichiers de plus de 1 Mo).
 
 ## Le dossier `exports/`
 
@@ -72,9 +80,24 @@ Les pages générées y sont stockées, **une par activité × département**, n
 exports/sirene-<NAF>-<DEPT>.html      ex. exports/sirene-11-05Z-56.html
 ```
 
-`index.html` scanne ces fichiers pour construire la carte choroplèthe. Chaque export
-embarque une balise `<meta name="sirene:count">` (+ `:naf`, `:dept`, `:generated`)
-qui permet à `index.html` de lire le décompte sans parser le contenu.
+`exports/manifest.json` recense les décomptes de toutes les pages ; `index.html` le
+lit en une seule requête pour construire la carte choroplèthe et la liste des
+activités :
+
+```json
+{ "version": 1, "updated": "…",
+  "naf": { "11.05Z": { "label": "Fabrication de bière",
+                       "depts": { "38": { "count": 80, "total": 85, "generated": "…" } } } } }
+```
+
+`count` = établissements géolocalisés dans la page, `total` = résultats SIRENE
+(absent pour les pages antérieures au manifest). Le manifest est mis à jour par le
+batch « Tous les départements », et par le bouton **Push GitHub** lorsqu'il s'agit
+d'un département complet (« Tout charger » coché).
+
+Sans manifest, `index.html` retombe sur l'ancien mode : il scanne chaque page, dont
+la balise `<meta name="sirene:count">` (+ `:naf`, `:dept`, `:generated`) donne le
+décompte.
 
 Activités déjà publiées : brasseries (`11.05Z`), restauration (`56.10A`), débits de
 boissons (`56.30Z`), boulangeries (`10.71C`), librairies (`47.61Z`), et quelques autres.
