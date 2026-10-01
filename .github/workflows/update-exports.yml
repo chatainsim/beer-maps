@@ -1,0 +1,69 @@
+# Régénère chaque mois les pages exports/ et le manifest à partir de l'API SIRENE.
+# Prérequis : secret de dépôt INSEE_API_KEY (Settings → Secrets and variables → Actions).
+name: Mise à jour des exports SIRENE
+
+on:
+  schedule:
+    - cron: '17 3 2 * *'  # le 2 de chaque mois, 03:17 UTC
+  workflow_dispatch:
+    inputs:
+      naf:
+        description: 'Codes NAF séparés par des virgules (vide = toutes les activités du manifest)'
+        required: false
+        default: ''
+      dept:
+        description: 'Départements séparés par des virgules (vide = les 95)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-exports
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Cache de géocodage BAN conservé d'une exécution à l'autre
+      - uses: actions/cache@v4
+        with:
+          path: .cache/geo-cache.json
+          key: geo-cache-${{ github.run_id }}
+          restore-keys: geo-cache-
+
+      - name: Régénération des exports
+        id: update
+        env:
+          INSEE_API_KEY: ${{ secrets.INSEE_API_KEY }}
+          NAF: ${{ inputs.naf }}
+          DEPT: ${{ inputs.dept }}
+        run: node scripts/update-exports.mjs --naf "$NAF" --dept "$DEPT"
+
+      # Un seul commit pour toute l'exécution, même si certains départements ont échoué
+      - name: Commit
+        if: ${{ !cancelled() && steps.update.outcome != 'skipped' }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A exports
+          if git diff --cached --quiet; then
+            echo "Aucun changement."
+            exit 0
+          fi
+          { echo "auto: mise à jour des exports SIRENE"; echo; cat .cache/summary.md 2>/dev/null || true; } > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3; do
+            git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            sleep 5
+          done
+          exit 1

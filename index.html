@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brasseries de France — Carte par département</title>
+  <title>SIRENE — Carte par département</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="lib/sirene-core.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
@@ -208,17 +209,50 @@
       text-transform: uppercase;
       margin-bottom: 6px;
     }
-    .color-scale-bar {
-      width: 120px;
-      height: 12px;
-      border-radius: 3px;
-      margin-bottom: 4px;
-    }
-    .color-scale-labels {
+    .scale-row {
       display: flex;
-      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
       font-family: var(--mono);
-      font-size: .6rem;
+      font-size: .62rem;
+      line-height: 1.6;
+      white-space: nowrap;
+    }
+    .swatch {
+      width: 14px; height: 10px;
+      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,.12);
+      flex-shrink: 0;
+    }
+    .color-scale-note { font-size: .58rem; margin-top: 4px; opacity: .8; }
+
+    .topbar-link {
+      margin-left: auto;
+      color: #fff;
+      font-size: .75rem;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: var(--radius);
+      padding: 5px 10px;
+      white-space: nowrap;
+    }
+    .topbar-link:hover { background: rgba(255,255,255,.12); }
+    .info-panel .hint { font-size: .7rem; }
+
+    /* Petits écrans : panneaux compacts */
+    @media (max-width: 700px) {
+      body { height: 100dvh; }
+      .topbar { padding: 0 12px; gap: 10px; }
+      .topbar-sub, .topbar-sep { display: none; }
+      .toolbar { padding: 8px 12px; gap: 8px; }
+      .toolbar .field-group { flex: 1 1 40%; min-width: 0; }
+      .toolbar select { width: 100%; }
+      .scan-status { margin-left: 0; width: 100%; }
+      .info-panel { left: 8px; bottom: 8px; padding: 8px 10px; max-width: 46vw; }
+      .info-panel .total { font-size: 1.1rem; }
+      .info-panel .hint { display: none; }
+      .color-scale { right: 8px; bottom: 8px; padding: 8px 10px; }
+      .color-scale-note { display: none; }
     }
 
   </style>
@@ -229,22 +263,22 @@
   <div class="topbar-logo">SIRENE<span>.explorer</span></div>
   <div class="topbar-sep"></div>
   <div class="topbar-sub">Carte des départements — Cliquez pour voir les établissements</div>
+  <a class="topbar-link" href="sirene-explorer.html">Explorer / générer ⟶</a>
 </div>
 
 <div class="toolbar">
   <div class="field-group">
-    <label>Code NAF</label>
+    <label for="nafSelect">Activité</label>
     <select id="nafSelect" onchange="updateNaf()">
       <option value="11.05Z" selected>11.05Z — Fabrication de bière</option>
-      <option value="56.30Z">56.30Z — Débits de boissons</option>
-      <option value="56.10A">56.10A — Restauration traditionnelle</option>
-      <option value="10.71C">10.71C — Boulangerie-pâtisserie</option>
-      <option value="47.61Z">47.61Z — Commerce de détail de livres</option>
-      <option value="59.14Z">59.14Z — Projection de films</option>
-      <option value="55.10Z">55.10Z — Hôtels</option>
-      <option value="86.21Z">86.21Z — Médecine générale</option>
-      <option value="96.02A">96.02A — Coiffure</option>
-      <option value="93.11Z">93.11Z — Installations sportives</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="modeSelect">Mesure</label>
+    <select id="modeSelect" onchange="updateMode()">
+      <option value="count">Nombre d'établissements</option>
+      <option value="hab">Pour 10 000 habitants</option>
     </select>
   </div>
 
@@ -256,68 +290,36 @@
 <div class="info-panel" id="infoPanel">
   <span class="total" id="totalCount">—</span>
   <strong>Établissements trouvés</strong><br/>
-  <span id="infoDetails">Scan des fichiers d'export en cours…</span>
+  <span id="infoDetails">Chargement…</span>
 </div>
 
 <div class="color-scale" id="colorScale" style="display:none">
-  <div class="color-scale-title">Établissements</div>
-  <div class="color-scale-bar" id="scaleBar"></div>
-  <div class="color-scale-labels">
-    <span id="scaleMin">0</span>
-    <span id="scaleMax">—</span>
-  </div>
+  <div class="color-scale-title" id="scaleTitle">Établissements</div>
+  <div id="scaleItems"></div>
+  <div class="color-scale-note">Classes de même effectif (quantiles)</div>
 </div>
 
 <script>
-const DEPT_NAMES = {
-  "01":"Ain","02":"Aisne","03":"Allier","04":"Alpes-de-Haute-Provence","05":"Hautes-Alpes",
-  "06":"Alpes-Maritimes","07":"Ardèche","08":"Ardennes","09":"Ariège","10":"Aube",
-  "11":"Aude","12":"Aveyron","13":"Bouches-du-Rhône","14":"Calvados","15":"Cantal",
-  "16":"Charente","17":"Charente-Maritime","18":"Cher","19":"Corrèze","20":"Corse",
-  "21":"Côte-d'Or","22":"Côtes-d'Armor","23":"Creuse","24":"Dordogne",
-  "25":"Doubs","26":"Drôme","27":"Eure","28":"Eure-et-Loir","29":"Finistère",
-  "30":"Gard","31":"Haute-Garonne","32":"Gers","33":"Gironde","34":"Hérault",
-  "35":"Ille-et-Vilaine","36":"Indre","37":"Indre-et-Loire","38":"Isère","39":"Jura",
-  "40":"Landes","41":"Loir-et-Cher","42":"Loire","43":"Haute-Loire","44":"Loire-Atlantique",
-  "45":"Loiret","46":"Lot","47":"Lot-et-Garonne","48":"Lozère","49":"Maine-et-Loire",
-  "50":"Manche","51":"Marne","52":"Haute-Marne","53":"Mayenne","54":"Meurthe-et-Moselle",
-  "55":"Meuse","56":"Morbihan","57":"Moselle","58":"Nièvre","59":"Nord",
-  "60":"Oise","61":"Orne","62":"Pas-de-Calais","63":"Puy-de-Dôme","64":"Pyrénées-Atlantiques",
-  "65":"Hautes-Pyrénées","66":"Pyrénées-Orientales","67":"Bas-Rhin","68":"Haut-Rhin","69":"Rhône",
-  "70":"Haute-Saône","71":"Saône-et-Loire","72":"Sarthe","73":"Savoie","74":"Haute-Savoie",
-  "75":"Paris","76":"Seine-Maritime","77":"Seine-et-Marne","78":"Yvelines","79":"Deux-Sèvres",
-  "80":"Somme","81":"Tarn","82":"Tarn-et-Garonne","83":"Var","84":"Vaucluse",
-  "85":"Vendée","86":"Vienne","87":"Haute-Vienne","88":"Vosges","89":"Yonne",
-  "90":"Territoire de Belfort","91":"Essonne","92":"Hauts-de-Seine","93":"Seine-Saint-Denis",
-  "94":"Val-de-Marne","95":"Val-d'Oise"
-};
+const { DEPT_NAMES, DEPT_CODES, DEPT_POPULATION, NAF_DICT, escHtml: esc, exportFileName } = SireneCore;
 
 let currentNaf = '11.05Z';
+let mode = 'count';    // 'count' | 'hab' (pour 10 000 habitants)
 let geoLayer = null;
-let deptCounts = {};   // { "38": 12, "69": 5, ... }
+let deptCounts = {};   // { "38": 12, "69": 5, ... } — null = pas d'export
+let deptInfo = {};     // { "38": { geo, total } } — détails du manifest, si connus
 let deptLabels = [];   // L.marker label references
-let deptTotals = {};   // { "38": 15 } — résultats SIRENE (manifest), si connus
+let breaks = [];       // bornes des classes de couleur (quantiles)
 let cachedGeoJson = null;
 let manifest = null;   // exports/manifest.json (null = absent → scan des fichiers)
-const scanCache = {};  // { "11-05Z": { "38": 12, ... }, ... }
+const scanCache = {};  // { "11.05Z": { "38": 12, ... }, ... }
 
 const map = L.map('map', { zoomSnap: 0.25 }).setView([46.6, 2.5], 6);
 // Fond OpenStreetMap standard, atténué pour laisser ressortir la choroplèthe
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>',
+  attribution: '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> · populations légales INSEE',
   maxZoom: 19,
   opacity: 0.6,
 }).addTo(map);
-
-function esc(s) {
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
-}
-
-function nafSlug(naf) {
-  return naf.replace(/[^a-z0-9]/gi, '-');
-}
 
 // Fusionne les features 2A et 2B en un seul MultiPolygon "20"
 function preprocessGeoJson(data) {
@@ -338,34 +340,71 @@ function preprocessGeoJson(data) {
 }
 
 function exportUrl(deptCode) {
-  const prefix = 'exports/';
-  return prefix + 'sirene-' + nafSlug(currentNaf) + '-' + deptCode + '.html';
+  return 'exports/' + exportFileName(currentNaf, deptCode);
 }
 
-// Color scale: light blue (0) → dark red (max)
+// ── Valeurs et classes de couleur ────────────────────────────────────────────
+
+// Palette séquentielle (YlOrRd, ColorBrewer)
 const COLORS = ['#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#b10026'];
+const NO_DATA = '#f0eeea';
 
-function getColor(count, maxCount) {
-  if (count === null) return '#f0eeea';
-  if (count === 0) return '#f0eeea';
-  const ratio = Math.min(count / Math.max(maxCount, 1), 1);
-  const idx = Math.min(Math.floor(ratio * (COLORS.length - 1)), COLORS.length - 1);
-  return COLORS[idx];
+function perHab(code) {
+  const c = deptCounts[code], pop = DEPT_POPULATION[code];
+  return c != null && pop ? c / pop * 10000 : null;
 }
 
-function getMaxCount() {
-  const vals = Object.values(deptCounts).filter(v => v !== null && v > 0);
-  return vals.length ? Math.max(...vals) : 1;
+function valueOf(code) {
+  const c = deptCounts[code];
+  if (c == null) return null;
+  return mode === 'hab' ? perHab(code) : c;
+}
+
+function fmt(v) {
+  if (v == null) return '—';
+  if (mode !== 'hab') return Math.round(v).toLocaleString('fr-FR');
+  return v.toLocaleString('fr-FR', { maximumFractionDigits: v < 10 ? 1 : 0 });
+}
+
+// Bornes par quantiles : chaque couleur regroupe à peu près autant de départements,
+// pour qu'un département très au-dessus des autres (Paris) n'écrase pas l'échelle.
+function computeBreaks() {
+  const vals = DEPT_CODES.map(valueOf).filter(v => v != null && v > 0).sort((a, b) => a - b);
+  breaks = [];
+  if (!vals.length) return;
+  const k = Math.min(COLORS.length, vals.length);
+  for (let i = 1; i < k; i++) {
+    const b = vals[Math.floor(i * vals.length / k)];
+    if (!breaks.length || b > breaks[breaks.length - 1]) breaks.push(b);
+  }
+  breaks.min = vals[0];
+  breaks.max = vals[vals.length - 1];
+}
+
+function classOf(v) {
+  let i = 0;
+  while (i < breaks.length && v >= breaks[i]) i++;
+  return i;
+}
+
+// Étale les classes effectives sur toute la palette
+function colorOfClass(i) {
+  const n = breaks.length + 1;
+  return COLORS[n <= 1 ? COLORS.length - 1 : Math.round(i * (COLORS.length - 1) / (n - 1))];
+}
+
+function getColor(v) {
+  if (v == null || v <= 0) return NO_DATA;
+  return colorOfClass(classOf(v));
 }
 
 function styleForDept(feature) {
-  const code = feature.properties.code;
-  const count = deptCounts[code] ?? null;
-  const maxC = getMaxCount();
+  const v = valueOf(feature.properties.code);
+  const has = v != null && v > 0;
   return {
-    fillColor: getColor(count, maxC),
-    fillOpacity: count > 0 ? 0.75 : 0.3,
-    color: count > 0 ? '#1a3a6b' : '#ccc',
+    fillColor: getColor(v),
+    fillOpacity: has ? 0.75 : 0.3,
+    color: has ? '#1a3a6b' : '#ccc',
     weight: 1.2,
     opacity: 0.6,
   };
@@ -384,27 +423,25 @@ function styleHover() {
 function tooltipHtml(code) {
   const name = esc(DEPT_NAMES[code] || code);
   const count = deptCounts[code];
-  const total = deptTotals[code];
-  const hasExport = count !== undefined && count !== null;
-  const countStr = hasExport
-    ? '<span class="tt-count">' + count + ' établissement' + (count > 1 ? 's' : '') + '</span>'
-    : '<span style="color:#bbb">Pas d\'export</span>';
-  // Écart entre résultats SIRENE et établissements géolocalisés sur la carte
-  const totalStr = hasExport && total > count
-    ? '<span class="status">' + total + ' dans SIRENE, ' + (total - count) + ' non géolocalisé' + (total - count > 1 ? 's' : '') + '</span>'
-    : '';
-  const fileStr = count > 0
-    ? '<span class="status">→ ' + 'sirene-' + nafSlug(currentNaf) + '-' + code + '.html</span>'
-    : '';
-  return '<div class="dept-tooltip">' +
-    '<span class="code">' + code + '</span> ' + name + '<br/>' +
-    countStr + totalStr + fileStr +
-    '</div>';
+  const info = deptInfo[code] || {};
+  const hasExport = count != null;
+  let html = '<div class="dept-tooltip"><span class="code">' + code + '</span> ' + name + '<br/>';
+  if (!hasExport) return html + '<span style="color:#bbb">Pas d\'export</span></div>';
+  html += '<span class="tt-count">' + count.toLocaleString('fr-FR') + ' établissement' + (count > 1 ? 's' : '') + '</span>';
+  const ph = perHab(code);
+  if (ph != null) html += '<span class="status">' + ph.toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' pour 10 000 hab. · '
+    + DEPT_POPULATION[code].toLocaleString('fr-FR') + ' hab.</span>';
+  if (info.geo != null && info.geo < count) {
+    const n = count - info.geo;
+    html += '<span class="status">dont ' + n.toLocaleString('fr-FR') + ' sans position sur la carte</span>';
+  }
+  if (count > 0) html += '<span class="status">→ ' + esc(exportFileName(currentNaf, code)) + '</span>';
+  return html + '</div>';
 }
 
 function onEachDept(feature, layer) {
   const code = feature.properties.code;
-  layer.bindTooltip(tooltipHtml(code), { sticky: true, direction: 'top', offset: [0, -10] });
+  layer.bindTooltip(() => tooltipHtml(code), { sticky: true, direction: 'top', offset: [0, -10] });
   layer.on('mouseover', function () { this.setStyle(styleHover()); this.bringToFront(); });
   layer.on('mouseout', function () { geoLayer.resetStyle(this); });
   layer.on('click', function () {
@@ -422,22 +459,12 @@ function addLabels() {
   if (!geoLayer) return;
   geoLayer.eachLayer(function (layer) {
     const code = layer.feature.properties.code;
-    const count = deptCounts[code];
+    const v = valueOf(code);
     // Pour la Corse (MultiPolygon), le centre de la bbox tombe en mer — on fixe manuellement
     const center = code === '20' ? L.latLng(42.1, 9.1) : layer.getBounds().getCenter();
-    let labelText, cssClass;
-    if (count !== undefined && count !== null && count > 0) {
-      labelText = String(count);
-      cssClass = 'dept-label has-data';
-    } else if (count === 0) {
-      labelText = '0';
-      cssClass = 'dept-label no-data';
-    } else {
-      labelText = '—';
-      cssClass = 'dept-label no-data';
-    }
+    const cssClass = v > 0 ? 'dept-label has-data' : 'dept-label no-data';
     const marker = L.marker(center, {
-      icon: L.divIcon({ className: cssClass, html: labelText, iconSize: [30, 14], iconAnchor: [15, 7] }),
+      icon: L.divIcon({ className: cssClass, html: v == null ? '—' : fmt(v), iconSize: [40, 14], iconAnchor: [20, 7] }),
       interactive: false,
     }).addTo(map);
     deptLabels.push(marker);
@@ -451,36 +478,47 @@ function loadGeoJson(data) {
     onEachFeature: onEachDept,
     filter: function (feature) { return !!DEPT_NAMES[feature.properties.code]; }
   }).addTo(map);
+  // Premier affichage : cadre la métropole quelle que soit la taille d'écran
+  if (!loadGeoJson.framed) { map.fitBounds(geoLayer.getBounds(), { padding: [10, 10] }); loadGeoJson.framed = true; }
   addLabels();
 }
 
 function refreshMap() {
-  if (!cachedGeoJson) return;
-  loadGeoJson(cachedGeoJson);
+  computeBreaks();
   updateInfoPanel();
   updateColorScale();
+  if (cachedGeoJson) loadGeoJson(cachedGeoJson);
 }
 
 function updateInfoPanel() {
-  const counts = Object.values(deptCounts).filter(v => v !== null && v > 0);
-  const total = counts.reduce((a, b) => a + b, 0);
-  const nbDepts = counts.length;
+  const withData = DEPT_CODES.filter(c => deptCounts[c] > 0);
+  const total = withData.reduce((a, c) => a + deptCounts[c], 0);
+  const pop = withData.reduce((a, c) => a + (DEPT_POPULATION[c] || 0), 0);
+  const nbDepts = withData.length;
   document.getElementById('totalCount').textContent = total.toLocaleString('fr-FR');
   document.getElementById('infoDetails').innerHTML =
-    '<strong>' + nbDepts + '</strong> département' + (nbDepts > 1 ? 's' : '') + ' avec données<br/>' +
-    'Cliquez sur un département pour ouvrir sa carte.';
+    '<strong>' + nbDepts + '</strong> département' + (nbDepts > 1 ? 's' : '') + ' avec données'
+    + (pop ? ' · ' + (total / pop * 10000).toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' pour 10 000 hab.' : '')
+    + '<br/><span class="hint">Cliquez sur un département pour ouvrir sa carte.</span>';
 }
 
 function updateColorScale() {
-  const maxC = getMaxCount();
-  if (maxC <= 0) return;
   const scale = document.getElementById('colorScale');
+  if (breaks.max == null) { scale.style.display = 'none'; return; }
   scale.style.display = '';
-  document.getElementById('scaleBar').style.background =
-    'linear-gradient(90deg, ' + COLORS.join(', ') + ')';
-  document.getElementById('scaleMin').textContent = '0';
-  document.getElementById('scaleMax').textContent = maxC;
+  document.getElementById('scaleTitle').textContent = mode === 'hab' ? 'Pour 10 000 habitants' : 'Établissements';
+  const bounds = [breaks.min].concat(breaks, [breaks.max]);
+  let html = '';
+  for (let i = breaks.length; i >= 0; i--) {
+    const lo = bounds[i], hi = bounds[i + 1];
+    html += '<div class="scale-row"><span class="swatch" style="background:' + colorOfClass(i) + '"></span>'
+      + (i === breaks.length ? fmt(lo) + ' et plus' : fmt(lo) + ' – ' + fmt(hi)) + '</div>';
+  }
+  html += '<div class="scale-row"><span class="swatch" style="background:' + NO_DATA + '"></span>Aucun / pas d\'export</div>';
+  document.getElementById('scaleItems').innerHTML = html;
 }
+
+// ── Données : manifest, ou scan des pages à défaut ───────────────────────────
 
 async function fetchCount(rawCode) {
   try {
@@ -490,10 +528,6 @@ async function fetchCount(rawCode) {
     // Prefer the explicit meta tag (fast, robust)
     const meta = html.match(/<meta\s+name="sirene:count"\s+content="(\d+)"/i);
     if (meta) return parseInt(meta[1], 10);
-    const match = html.match(/const D=(\[[\s\S]*?\]);/);
-    if (match) {
-      try { return JSON.parse(match[1]).length; } catch {}
-    }
     const titleMatch = html.match(/(\d+)\s*[eé]tablissements/);
     return titleMatch ? parseInt(titleMatch[1], 10) : null;
   } catch {
@@ -506,16 +540,17 @@ function countsFromManifest() {
   const entry = manifest?.naf?.[currentNaf];
   if (!entry?.depts) return false;
   deptCounts = {};
-  deptTotals = {};
-  Object.keys(DEPT_NAMES).forEach(code => {
+  deptInfo = {};
+  DEPT_CODES.forEach(code => {
     const d = entry.depts[code];
     deptCounts[code] = d ? d.count : null;
-    if (d && d.total != null) deptTotals[code] = d.total;
+    if (d) deptInfo[code] = { geo: d.geo, total: d.total };
   });
-  const found = Object.values(deptCounts).filter(v => v !== null && v > 0).length;
-  const updated = manifest.updated ? ' · maj ' + new Date(manifest.updated).toLocaleDateString('fr-FR') : '';
+  const found = DEPT_CODES.filter(c => deptCounts[c] > 0).length;
+  const dates = Object.values(entry.depts).map(d => d.generated).filter(Boolean).sort();
+  const updated = dates.length ? ' · données du ' + new Date(dates[dates.length - 1]).toLocaleDateString('fr-FR') : '';
   document.getElementById('scanStatus').innerHTML =
-    '&#x2714; ' + found + '/' + Object.keys(DEPT_NAMES).length + ' départements (manifest' + updated + ')';
+    '&#x2714; ' + found + '/' + DEPT_CODES.length + ' départements' + updated;
   refreshMap();
   return true;
 }
@@ -523,7 +558,13 @@ function countsFromManifest() {
 // Remplit le sélecteur avec les activités présentes dans le manifest
 function populateNafSelect() {
   const codes = Object.keys(manifest?.naf || {}).sort();
-  if (!codes.length) return;
+  if (!codes.length) {
+    // Sans manifest : activités connues
+    const sel = document.getElementById('nafSelect');
+    sel.innerHTML = Object.entries(NAF_DICT).map(([c, l]) => '<option value="' + c + '">' + c + ' — ' + esc(l) + '</option>').join('');
+    sel.value = currentNaf;
+    return;
+  }
   const sel = document.getElementById('nafSelect');
   sel.innerHTML = '';
   codes.forEach(code => {
@@ -531,55 +572,77 @@ function populateNafSelect() {
     const nbDepts = Object.values(n.depts || {}).filter(d => d.count > 0).length;
     const opt = document.createElement('option');
     opt.value = code;
-    opt.textContent = code + ' — ' + (n.label || code) + ' (' + nbDepts + ' dép.)';
+    opt.textContent = code + ' — ' + (n.label || NAF_DICT[code] || code) + (nbDepts < DEPT_CODES.length ? ' (' + nbDepts + ' dép.)' : '');
     sel.appendChild(opt);
   });
-  if (!manifest.naf[currentNaf]) currentNaf = codes[0];
+  if (!manifest.naf[currentNaf]) currentNaf = codes.includes('11.05Z') ? '11.05Z' : codes[0];
   sel.value = currentNaf;
 }
 
 // Scan export files to extract establishment counts
 async function scanExports() {
   if (countsFromManifest()) return;
-  deptTotals = {};
-  const cacheKey = nafSlug(currentNaf);
-  if (scanCache[cacheKey]) {
-    deptCounts = scanCache[cacheKey];
+  deptInfo = {};
+  if (scanCache[currentNaf]) {
+    deptCounts = scanCache[currentNaf];
     document.getElementById('scanStatus').innerHTML =
-      '&#x2714; ' + Object.values(deptCounts).filter(v => v !== null && v > 0).length + '/' + Object.keys(DEPT_NAMES).length + ' fichiers trouvés (cache)';
+      '&#x2714; ' + DEPT_CODES.filter(c => deptCounts[c] > 0).length + '/' + DEPT_CODES.length + ' fichiers trouvés (cache)';
     refreshMap();
     return;
   }
 
   const statusEl = document.getElementById('scanStatus');
-  const codes = Object.keys(DEPT_NAMES);
+  const naf = currentNaf;
   let scanned = 0;
   deptCounts = {};
 
-  statusEl.innerHTML = '<div class="spinner"></div> Scan 0/' + codes.length;
+  statusEl.innerHTML = '<div class="spinner"></div> Scan 0/' + DEPT_CODES.length;
 
   // Scan in batches of 6 to avoid hammering
   const BATCH = 6;
-  for (let i = 0; i < codes.length; i += BATCH) {
-    const batch = codes.slice(i, i + BATCH);
-    await Promise.all(batch.map(async (code) => {
-      deptCounts[code] = await fetchCount(code);
-    }));
+  for (let i = 0; i < DEPT_CODES.length; i += BATCH) {
+    const batch = DEPT_CODES.slice(i, i + BATCH);
+    const counts = await Promise.all(batch.map(fetchCount));
+    if (naf !== currentNaf) return; // l'utilisateur a changé d'activité entre-temps
+    batch.forEach((code, j) => { deptCounts[code] = counts[j]; });
     scanned += batch.length;
-    statusEl.innerHTML = '<div class="spinner"></div> Scan ' + Math.min(scanned, codes.length) + '/' + codes.length;
+    statusEl.innerHTML = '<div class="spinner"></div> Scan ' + Math.min(scanned, DEPT_CODES.length) + '/' + DEPT_CODES.length;
     refreshMap();
   }
 
-  scanCache[cacheKey] = { ...deptCounts };
-  const found = Object.values(deptCounts).filter(v => v !== null && v > 0).length;
-  statusEl.innerHTML = '&#x2714; ' + found + '/' + codes.length + ' fichiers trouvés';
+  scanCache[naf] = { ...deptCounts };
+  const found = DEPT_CODES.filter(c => deptCounts[c] > 0).length;
+  statusEl.innerHTML = '&#x2714; ' + found + '/' + DEPT_CODES.length + ' fichiers trouvés';
   refreshMap();
+}
+
+// ── État dans l'URL (?naf=11.05Z&mesure=hab), pour partager une vue ──────────
+
+function syncUrl() {
+  const p = new URLSearchParams();
+  p.set('naf', currentNaf);
+  if (mode === 'hab') p.set('mesure', 'hab');
+  history.replaceState(null, '', '?' + p.toString());
 }
 
 function updateNaf() {
   currentNaf = document.getElementById('nafSelect').value;
+  syncUrl();
   scanExports();
 }
+
+function updateMode() {
+  mode = document.getElementById('modeSelect').value;
+  syncUrl();
+  refreshMap();
+}
+
+(function restoreUrl() {
+  const p = new URLSearchParams(location.search);
+  if (p.get('naf')) currentNaf = p.get('naf').toUpperCase();
+  if (p.get('mesure') === 'hab') mode = 'hab';
+  document.getElementById('modeSelect').value = mode;
+})();
 
 // Init — le manifest est facultatif : sans lui, on scanne les fichiers d'export
 const manifestReady = fetch('exports/manifest.json', { cache: 'no-cache' })
