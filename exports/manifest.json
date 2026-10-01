@@ -580,154 +580,154 @@
    "label": "Fabrication de bière",
    "depts": {
     "10": {
-     "count": 15,
+     "count": 17,
+     "geo": 15,
      "total": 17,
-     "generated": "2026-09-25T12:12:00.398Z",
-     "geo": 15
+     "generated": "2026-10-01T18:36:16.374Z"
     },
     "11": {
-     "count": 30,
-     "total": 35,
-     "generated": "2026-09-25T12:12:01.952Z",
-     "geo": 30
+     "count": 34,
+     "geo": 30,
+     "total": 34,
+     "generated": "2026-10-01T18:36:16.905Z"
     },
     "12": {
-     "count": 24,
+     "count": 29,
+     "geo": 24,
      "total": 29,
-     "generated": "2026-09-25T12:12:03.874Z",
-     "geo": 24
+     "generated": "2026-10-01T18:36:17.420Z"
     },
     "13": {
-     "count": 54,
+     "count": 58,
+     "geo": 54,
      "total": 58,
-     "generated": "2026-09-25T12:12:05.530Z",
-     "geo": 54
+     "generated": "2026-10-01T18:36:18.057Z"
     },
     "14": {
-     "count": 29,
+     "count": 32,
+     "geo": 29,
      "total": 32,
-     "generated": "2026-09-25T12:12:07.087Z",
-     "geo": 29
+     "generated": "2026-10-01T18:36:18.584Z"
     },
     "15": {
      "count": 7,
+     "geo": 7,
      "total": 7,
-     "generated": "2026-09-25T12:12:08.722Z",
-     "geo": 7
+     "generated": "2026-10-01T18:36:19.008Z"
     },
     "16": {
-     "count": 18,
+     "count": 20,
+     "geo": 18,
      "total": 20,
-     "generated": "2026-09-25T12:12:10.167Z",
-     "geo": 18
+     "generated": "2026-10-01T18:36:19.542Z"
     },
     "17": {
      "count": 36,
+     "geo": 36,
      "total": 36,
-     "generated": "2026-09-25T12:12:11.631Z",
-     "geo": 36
+     "generated": "2026-10-01T18:36:19.936Z"
     },
     "18": {
      "count": 17,
+     "geo": 17,
      "total": 17,
-     "generated": "2026-09-25T12:12:13.432Z",
-     "geo": 17
+     "generated": "2026-10-01T18:36:20.332Z"
     },
     "19": {
      "count": 17,
+     "geo": 16,
      "total": 17,
-     "generated": "2026-09-25T12:12:15.210Z",
-     "geo": 17
+     "generated": "2026-10-01T18:36:20.825Z"
     },
     "20": {
-     "count": 21,
+     "count": 23,
+     "geo": 21,
      "total": 23,
-     "generated": "2026-09-25T12:12:16.702Z",
-     "geo": 21
+     "generated": "2026-10-01T18:36:21.348Z"
     },
     "21": {
-     "count": 41,
+     "count": 43,
+     "geo": 41,
      "total": 43,
-     "generated": "2026-09-25T12:12:18.593Z",
-     "geo": 41
+     "generated": "2026-10-01T18:36:21.987Z"
     },
     "22": {
      "count": 45,
-     "total": 46,
-     "generated": "2026-09-25T12:12:20.107Z",
-     "geo": 45
+     "geo": 44,
+     "total": 45,
+     "generated": "2026-10-01T18:36:22.617Z"
     },
     "23": {
-     "count": 13,
+     "count": 16,
+     "geo": 13,
      "total": 16,
-     "generated": "2026-09-25T12:12:21.612Z",
-     "geo": 13
+     "generated": "2026-10-01T18:36:23.073Z"
     },
     "24": {
-     "count": 37,
+     "count": 40,
+     "geo": 37,
      "total": 40,
-     "generated": "2026-09-25T12:12:23.344Z",
-     "geo": 37
+     "generated": "2026-10-01T18:36:23.610Z"
     },
     "25": {
-     "count": 55,
+     "count": 58,
+     "geo": 55,
      "total": 58,
-     "generated": "2026-09-25T12:12:24.911Z",
-     "geo": 55
+     "generated": "2026-10-01T18:36:24.128Z"
     },
     "26": {
-     "count": 34,
-     "total": 42,
-     "generated": "2026-09-25T12:12:26.497Z",
-     "geo": 34
+     "count": 41,
+     "geo": 33,
+     "total": 41,
+     "generated": "2026-10-01T18:36:24.725Z"
     },
     "27": {
-     "count": 22,
+     "count": 24,
+     "geo": 22,
      "total": 24,
-     "generated": "2026-09-25T12:12:27.990Z",
-     "geo": 22
+     "generated": "2026-10-01T18:36:25.212Z"
     },
     "28": {
-     "count": 12,
+     "count": 13,
+     "geo": 12,
      "total": 13,
-     "generated": "2026-09-25T12:12:29.913Z",
-     "geo": 12
+     "generated": "2026-10-01T18:36:25.668Z"
     },
     "29": {
-     "count": 70,
+     "count": 77,
+     "geo": 71,
      "total": 77,
-     "generated": "2026-09-25T12:12:32.032Z",
-     "geo": 70
+     "generated": "2026-10-01T18:36:26.268Z"
     },
     "30": {
-     "count": 44,
+     "count": 48,
+     "geo": 44,
      "total": 48,
-     "generated": "2026-09-25T12:12:33.838Z",
-     "geo": 44
+     "generated": "2026-10-01T18:36:27.058Z"
     },
     "31": {
-     "count": 55,
+     "count": 60,
+     "geo": 55,
      "total": 60,
-     "generated": "2026-09-25T12:12:35.349Z",
-     "geo": 55
+     "generated": "2026-10-01T18:36:27.688Z"
     },
     "32": {
-     "count": 13,
+     "count": 16,
+     "geo": 13,
      "total": 16,
-     "generated": "2026-09-25T12:12:37.094Z",
-     "geo": 13
+     "generated": "2026-10-01T18:36:28.335Z"
     },
     "33": {
-     "count": 75,
+     "count": 80,
+     "geo": 75,
      "total": 80,
-     "generated": "2026-09-25T12:12:38.633Z",
-     "geo": 75
+     "generated": "2026-10-01T18:36:28.887Z"
     },
     "34": {
-     "count": 68,
+     "count": 72,
+     "geo": 68,
      "total": 72,
-     "generated": "2026-09-25T12:12:40.231Z",
-     "geo": 68
+     "generated": "2026-10-01T18:36:30.438Z"
     },
     "35": {
      "count": 44,
@@ -736,214 +736,214 @@
      "geo": 44
     },
     "36": {
-     "count": 11,
+     "count": 12,
+     "geo": 11,
      "total": 12,
-     "generated": "2026-09-25T12:12:44.281Z",
-     "geo": 11
+     "generated": "2026-10-01T18:37:17.983Z"
     },
     "37": {
-     "count": 30,
-     "total": 33,
-     "generated": "2026-09-25T12:12:46.028Z",
-     "geo": 30
+     "count": 32,
+     "geo": 30,
+     "total": 32,
+     "generated": "2026-10-01T18:37:18.459Z"
     },
     "38": {
-     "count": 69,
+     "count": 82,
+     "geo": 69,
      "total": 82,
-     "generated": "2026-09-25T12:12:47.583Z",
-     "geo": 69
+     "generated": "2026-10-01T18:37:19.191Z"
     },
     "39": {
-     "count": 33,
+     "count": 37,
+     "geo": 34,
      "total": 37,
-     "generated": "2026-09-25T12:12:49.103Z",
-     "geo": 33
+     "generated": "2026-10-01T18:37:19.751Z"
     },
     "40": {
-     "count": 27,
+     "count": 28,
+     "geo": 27,
      "total": 28,
-     "generated": "2026-09-25T12:12:50.552Z",
-     "geo": 27
+     "generated": "2026-10-01T18:37:20.249Z"
     },
     "41": {
      "count": 7,
+     "geo": 7,
      "total": 7,
-     "generated": "2026-09-25T12:12:55.141Z",
-     "geo": 7
+     "generated": "2026-10-01T18:37:20.561Z"
     },
     "42": {
      "count": 23,
+     "geo": 23,
      "total": 23,
-     "generated": "2026-09-25T12:13:02.873Z",
-     "geo": 23
+     "generated": "2026-10-01T18:37:20.935Z"
     },
     "43": {
-     "count": 17,
-     "total": 17,
-     "generated": "2026-09-25T12:13:04.155Z",
-     "geo": 17
+     "count": 16,
+     "geo": 16,
+     "total": 16,
+     "generated": "2026-10-01T18:37:21.317Z"
     },
     "44": {
-     "count": 82,
-     "total": 89,
-     "generated": "2026-09-25T12:13:05.682Z",
-     "geo": 82
+     "count": 87,
+     "geo": 80,
+     "total": 87,
+     "generated": "2026-10-01T18:37:22.020Z"
     },
     "45": {
      "count": 30,
+     "geo": 30,
      "total": 30,
-     "generated": "2026-09-25T12:13:07.024Z",
-     "geo": 30
+     "generated": "2026-10-01T18:37:22.531Z"
     },
     "46": {
-     "count": 16,
+     "count": 18,
+     "geo": 16,
      "total": 18,
-     "generated": "2026-09-25T12:13:09.865Z",
-     "geo": 16
+     "generated": "2026-10-01T18:37:23.130Z"
     },
     "47": {
-     "count": 11,
+     "count": 13,
+     "geo": 11,
      "total": 13,
-     "generated": "2026-09-25T12:13:11.374Z",
-     "geo": 11
+     "generated": "2026-10-01T18:37:23.590Z"
     },
     "48": {
-     "count": 11,
+     "count": 12,
+     "geo": 11,
      "total": 12,
-     "generated": "2026-09-25T12:13:12.697Z",
-     "geo": 11
+     "generated": "2026-10-01T18:37:24.351Z"
     },
     "49": {
-     "count": 31,
-     "total": 35,
-     "generated": "2026-09-25T12:13:14.264Z",
-     "geo": 31
+     "count": 36,
+     "geo": 32,
+     "total": 36,
+     "generated": "2026-10-01T18:37:25.151Z"
     },
     "50": {
-     "count": 23,
+     "count": 26,
+     "geo": 23,
      "total": 26,
-     "generated": "2026-09-25T12:13:15.858Z",
-     "geo": 23
+     "generated": "2026-10-01T18:37:25.889Z"
     },
     "51": {
-     "count": 25,
+     "count": 27,
+     "geo": 25,
      "total": 27,
-     "generated": "2026-09-25T12:13:17.607Z",
-     "geo": 25
+     "generated": "2026-10-01T18:37:26.432Z"
     },
     "52": {
-     "count": 9,
+     "count": 14,
+     "geo": 9,
      "total": 14,
-     "generated": "2026-09-25T12:13:19.031Z",
-     "geo": 9
+     "generated": "2026-10-01T18:37:26.889Z"
     },
     "53": {
-     "count": 10,
+     "count": 12,
+     "geo": 10,
      "total": 12,
-     "generated": "2026-09-25T12:13:20.598Z",
-     "geo": 10
+     "generated": "2026-10-01T18:37:27.335Z"
     },
     "54": {
-     "count": 39,
+     "count": 42,
+     "geo": 39,
      "total": 42,
-     "generated": "2026-09-25T12:13:22.143Z",
-     "geo": 39
+     "generated": "2026-10-01T18:37:27.888Z"
     },
     "55": {
-     "count": 12,
+     "count": 14,
+     "geo": 12,
      "total": 14,
-     "generated": "2026-09-25T12:13:23.852Z",
-     "geo": 12
+     "generated": "2026-10-01T18:37:28.349Z"
     },
     "56": {
-     "count": 47,
+     "count": 50,
+     "geo": 47,
      "total": 50,
-     "generated": "2026-09-25T12:13:25.600Z",
-     "geo": 47
+     "generated": "2026-10-01T18:37:28.956Z"
     },
     "57": {
-     "count": 34,
+     "count": 35,
+     "geo": 34,
      "total": 35,
-     "generated": "2026-09-25T12:13:27.404Z",
-     "geo": 34
+     "generated": "2026-10-01T18:37:29.468Z"
     },
     "58": {
-     "count": 9,
+     "count": 11,
+     "geo": 9,
      "total": 11,
-     "generated": "2026-09-25T12:13:28.786Z",
-     "geo": 9
+     "generated": "2026-10-01T18:37:29.948Z"
     },
     "59": {
-     "count": 127,
-     "total": 139,
-     "generated": "2026-09-25T12:13:30.660Z",
-     "geo": 127
+     "count": 137,
+     "geo": 125,
+     "total": 137,
+     "generated": "2026-10-01T18:37:30.785Z"
     },
     "60": {
      "count": 18,
+     "geo": 18,
      "total": 18,
-     "generated": "2026-09-25T12:13:32.151Z",
-     "geo": 18
+     "generated": "2026-10-01T18:37:31.106Z"
     },
     "61": {
-     "count": 9,
+     "count": 12,
+     "geo": 9,
      "total": 12,
-     "generated": "2026-09-25T12:13:34.031Z",
-     "geo": 9
+     "generated": "2026-10-01T18:37:31.630Z"
     },
     "62": {
      "count": 62,
-     "total": 63,
-     "generated": "2026-09-25T12:13:35.633Z",
-     "geo": 62
+     "geo": 61,
+     "total": 62,
+     "generated": "2026-10-01T18:37:32.259Z"
     },
     "63": {
-     "count": 33,
+     "count": 34,
+     "geo": 33,
      "total": 34,
-     "generated": "2026-09-25T12:13:37.357Z",
-     "geo": 33
+     "generated": "2026-10-01T18:37:32.918Z"
     },
     "64": {
      "count": 49,
+     "geo": 49,
      "total": 49,
-     "generated": "2026-09-25T12:13:38.850Z",
-     "geo": 49
+     "generated": "2026-10-01T18:37:33.333Z"
     },
     "65": {
-     "count": 15,
+     "count": 16,
+     "geo": 15,
      "total": 16,
-     "generated": "2026-09-25T12:13:40.305Z",
-     "geo": 15
+     "generated": "2026-10-01T18:37:33.848Z"
     },
     "66": {
-     "count": 41,
+     "count": 44,
+     "geo": 41,
      "total": 44,
-     "generated": "2026-09-25T12:13:41.814Z",
-     "geo": 41
+     "generated": "2026-10-01T18:37:34.353Z"
     },
     "67": {
-     "count": 73,
-     "total": 80,
-     "generated": "2026-09-25T12:13:43.628Z",
-     "geo": 73
+     "count": 79,
+     "geo": 72,
+     "total": 79,
+     "generated": "2026-10-01T18:37:34.944Z"
     },
     "68": {
-     "count": 50,
-     "total": 55,
-     "generated": "2026-09-25T12:13:45.515Z",
-     "geo": 50
+     "count": 56,
+     "geo": 51,
+     "total": 56,
+     "generated": "2026-10-01T18:37:35.496Z"
     },
     "69": {
-     "count": 57,
+     "count": 63,
+     "geo": 57,
      "total": 63,
-     "generated": "2026-09-25T12:13:47.232Z",
-     "geo": 57
+     "generated": "2026-10-01T18:37:36.207Z"
     },
     "70": {
-     "count": 21,
+     "count": 25,
+     "geo": 21,
      "total": 25,
-     "generated": "2026-09-25T12:13:48.778Z",
-     "geo": 21
+     "generated": "2026-10-01T18:37:38.915Z"
     },
     "71": {
      "count": 41,
@@ -952,202 +952,202 @@
      "geo": 41
     },
     "72": {
-     "count": 17,
+     "count": 18,
+     "geo": 17,
      "total": 18,
-     "generated": "2026-09-25T12:13:52.175Z",
-     "geo": 17
+     "generated": "2026-10-01T18:38:26.400Z"
     },
     "73": {
-     "count": 51,
+     "count": 55,
+     "geo": 51,
      "total": 55,
-     "generated": "2026-09-25T12:13:53.739Z",
-     "geo": 51
+     "generated": "2026-10-01T18:38:27.017Z"
     },
     "74": {
-     "count": 53,
+     "count": 57,
+     "geo": 54,
      "total": 57,
-     "generated": "2026-09-25T12:14:09.469Z",
-     "geo": 53
+     "generated": "2026-10-01T18:38:27.839Z"
     },
     "75": {
-     "count": 33,
+     "count": 34,
+     "geo": 33,
      "total": 34,
-     "generated": "2026-09-25T12:14:10.921Z",
-     "geo": 33
+     "generated": "2026-10-01T18:38:28.408Z"
     },
     "76": {
-     "count": 38,
+     "count": 42,
+     "geo": 38,
      "total": 42,
-     "generated": "2026-09-25T12:14:12.782Z",
-     "geo": 38
+     "generated": "2026-10-01T18:38:28.962Z"
     },
     "77": {
-     "count": 32,
-     "total": 35,
-     "generated": "2026-09-25T12:14:14.193Z",
-     "geo": 32
+     "count": 36,
+     "geo": 33,
+     "total": 36,
+     "generated": "2026-10-01T18:38:29.527Z"
     },
     "78": {
-     "count": 26,
+     "count": 28,
+     "geo": 26,
      "total": 28,
-     "generated": "2026-09-25T12:14:15.714Z",
-     "geo": 26
+     "generated": "2026-10-01T18:38:30.064Z"
     },
     "79": {
-     "count": 23,
+     "count": 24,
+     "geo": 23,
      "total": 24,
-     "generated": "2026-09-25T12:14:17.162Z",
-     "geo": 23
+     "generated": "2026-10-01T18:38:30.696Z"
     },
     "80": {
      "count": 18,
+     "geo": 18,
      "total": 18,
-     "generated": "2026-09-25T12:14:18.493Z",
-     "geo": 18
+     "generated": "2026-10-01T18:38:31.090Z"
     },
     "81": {
-     "count": 27,
+     "count": 30,
+     "geo": 27,
      "total": 30,
-     "generated": "2026-09-25T12:14:20.068Z",
-     "geo": 27
+     "generated": "2026-10-01T18:38:31.663Z"
     },
     "82": {
      "count": 11,
+     "geo": 11,
      "total": 11,
-     "generated": "2026-09-25T12:14:21.628Z",
-     "geo": 11
+     "generated": "2026-10-01T18:38:31.978Z"
     },
     "83": {
-     "count": 46,
-     "total": 49,
-     "generated": "2026-09-25T12:14:23.162Z",
-     "geo": 46
+     "count": 48,
+     "geo": 45,
+     "total": 48,
+     "generated": "2026-10-01T18:38:32.522Z"
     },
     "84": {
-     "count": 45,
+     "count": 50,
+     "geo": 45,
      "total": 50,
-     "generated": "2026-09-25T12:14:24.788Z",
-     "geo": 45
+     "generated": "2026-10-01T18:38:33.106Z"
     },
     "85": {
-     "count": 27,
+     "count": 28,
+     "geo": 27,
      "total": 28,
-     "generated": "2026-09-25T12:14:26.272Z",
-     "geo": 27
+     "generated": "2026-10-01T18:38:33.695Z"
     },
     "86": {
-     "count": 32,
+     "count": 33,
+     "geo": 32,
      "total": 33,
-     "generated": "2026-09-25T12:14:28.010Z",
-     "geo": 32
+     "generated": "2026-10-01T18:38:34.279Z"
     },
     "87": {
-     "count": 17,
+     "count": 18,
+     "geo": 17,
      "total": 18,
-     "generated": "2026-09-25T12:14:29.765Z",
-     "geo": 17
+     "generated": "2026-10-01T18:38:34.858Z"
     },
     "88": {
-     "count": 46,
+     "count": 49,
+     "geo": 46,
      "total": 49,
-     "generated": "2026-09-25T12:14:31.528Z",
-     "geo": 46
+     "generated": "2026-10-01T18:38:35.405Z"
     },
     "89": {
-     "count": 16,
+     "count": 18,
+     "geo": 16,
      "total": 18,
-     "generated": "2026-09-25T12:14:33.018Z",
-     "geo": 16
+     "generated": "2026-10-01T18:38:35.922Z"
     },
     "90": {
-     "count": 3,
+     "count": 4,
+     "geo": 3,
      "total": 4,
-     "generated": "2026-09-25T12:14:34.915Z",
-     "geo": 3
+     "generated": "2026-10-01T18:38:36.414Z"
     },
     "91": {
-     "count": 15,
+     "count": 18,
+     "geo": 15,
      "total": 18,
-     "generated": "2026-09-25T12:14:36.583Z",
-     "geo": 15
+     "generated": "2026-10-01T18:38:36.886Z"
     },
     "92": {
      "count": 16,
+     "geo": 16,
      "total": 16,
-     "generated": "2026-09-25T12:14:38.197Z",
-     "geo": 16
+     "generated": "2026-10-01T18:38:37.272Z"
     },
     "93": {
-     "count": 19,
+     "count": 22,
+     "geo": 19,
      "total": 22,
-     "generated": "2026-09-25T12:14:39.918Z",
-     "geo": 19
+     "generated": "2026-10-01T18:38:37.731Z"
     },
     "94": {
      "count": 13,
-     "total": 14,
-     "generated": "2026-09-25T12:14:41.516Z",
-     "geo": 13
+     "geo": 12,
+     "total": 13,
+     "generated": "2026-10-01T18:38:38.285Z"
     },
     "95": {
      "count": 17,
+     "geo": 17,
      "total": 17,
-     "generated": "2026-09-25T12:14:42.843Z",
-     "geo": 17
+     "generated": "2026-10-01T18:38:38.669Z"
     },
     "01": {
-     "count": 36,
-     "total": 41,
-     "generated": "2026-09-25T12:14:44.346Z",
-     "geo": 36
+     "count": 42,
+     "geo": 37,
+     "total": 42,
+     "generated": "2026-10-01T18:36:11.697Z"
     },
     "02": {
-     "count": 21,
+     "count": 22,
+     "geo": 21,
      "total": 22,
-     "generated": "2026-09-25T12:14:45.884Z",
-     "geo": 21
+     "generated": "2026-10-01T18:36:12.326Z"
     },
     "03": {
-     "count": 14,
+     "count": 15,
+     "geo": 14,
      "total": 15,
-     "generated": "2026-09-25T12:14:47.701Z",
-     "geo": 14
+     "generated": "2026-10-01T18:36:12.779Z"
     },
     "04": {
      "count": 17,
+     "geo": 17,
      "total": 17,
-     "generated": "2026-09-25T12:14:49.270Z",
-     "geo": 17
+     "generated": "2026-10-01T18:36:13.153Z"
     },
     "05": {
-     "count": 18,
+     "count": 21,
+     "geo": 18,
      "total": 21,
-     "generated": "2026-09-25T12:14:50.859Z",
-     "geo": 18
+     "generated": "2026-10-01T18:36:13.684Z"
     },
     "06": {
-     "count": 36,
+     "count": 40,
+     "geo": 36,
      "total": 40,
-     "generated": "2026-09-25T12:14:52.525Z",
-     "geo": 36
+     "generated": "2026-10-01T18:36:14.285Z"
     },
     "07": {
-     "count": 48,
+     "count": 52,
+     "geo": 48,
      "total": 52,
-     "generated": "2026-09-25T12:14:54.096Z",
-     "geo": 48
+     "generated": "2026-10-01T18:36:14.867Z"
     },
     "08": {
-     "count": 16,
+     "count": 18,
+     "geo": 16,
      "total": 18,
-     "generated": "2026-09-25T12:14:55.842Z",
-     "geo": 16
+     "generated": "2026-10-01T18:36:15.381Z"
     },
     "09": {
      "count": 25,
+     "geo": 25,
      "total": 25,
-     "generated": "2026-09-25T12:14:57.293Z",
-     "geo": 25
+     "generated": "2026-10-01T18:36:15.756Z"
     }
    }
   },
@@ -2832,5 +2832,5 @@
    }
   }
  },
- "updated": "2026-09-25T16:54:05.702Z"
+ "updated": "2026-10-01T18:38:38.670Z"
 }
