@@ -28,14 +28,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 340
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
 
-      # Cache de géocodage BAN conservé d'une exécution à l'autre
-      - uses: actions/cache@v4
+      # Cache de géocodage BAN conservé d'une exécution à l'autre (restauré ici,
+      # sauvegardé en fin de job même si un département a échoué)
+      - uses: actions/cache/restore@v4
         with:
           path: .cache/geo-cache.json
           key: geo-cache-${{ github.run_id }}
@@ -67,3 +68,10 @@ jobs:
             sleep 5
           done
           exit 1
+
+      - name: Sauvegarde du cache de géocodage
+        if: ${{ !cancelled() && hashFiles('.cache/geo-cache.json') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/geo-cache.json
+          key: geo-cache-${{ github.run_id }}
