@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="sirene:count" content="29"/><meta name="sirene:geo" content="29"/><meta name="sirene:naf" content="59.14Z"/><meta name="sirene:dept" content="73"/><meta name="sirene:generated" content="2026-10-01T19:56:20.074Z"/><meta name="sirene:template" content="2"/><title>Sirene — 59.14Z · 73 — 29 établissements</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;background:#f5f3ef;color:#1a1a1a}header{background:#1a3a6b;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}h1{font-size:.95rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:.72rem;opacity:.65;margin-left:auto;white-space:nowrap}.body{display:flex;flex:1;min-height:0}.sb{width:340px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;min-height:0}.sbh{padding:9px 14px;border-bottom:1px solid #ddd;font-size:.72rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.05em}.search-box{padding:8px;border-bottom:1px solid #eee}.search-box input{width:100%;border:1px solid #ddd;border-radius:5px;padding:6px 10px;font-size:.82rem;outline:none;background:#f9f9f9}.search-box input:focus{border-color:#1a3a6b;background:#fff}.list{flex:1;overflow-y:auto;position:relative}#inner{position:relative}.no-results{padding:24px 14px;text-align:center;font-size:.8rem;color:#aaa}.card{position:absolute;left:8px;right:8px;height:80px;margin-top:6px;overflow:hidden;background:#fafaf8;border:1px solid #e5e2d9;border-left:3px solid transparent;border-radius:6px;padding:8px 12px;cursor:pointer;transition:border-color .15s}.card:hover{border-left-color:#1a3a6b}.card.active{border-left-color:#c8342a;background:#fff8f7}.card.nogeo{cursor:default;opacity:.8}.name{font-weight:600;font-size:.85rem;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.siret{font-family:monospace;font-size:.64rem;color:#888;margin-bottom:3px}.tags{display:flex;gap:4px;margin-bottom:4px}.tnaf,.tetat,.tpos{border-radius:3px;font-size:.65rem;padding:1px 6px;font-weight:600}.tnaf{background:#e8eef8;color:#1a3a6b}.tpos{background:#eee;color:#666}.actif{background:#e6f4ec;color:#2d7a50}.ferme{background:#fdecea;color:#c8342a}.addr{font-size:.75rem;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#map{flex:1;min-height:0}.leaflet-popup-content-wrapper{border-radius:6px!important;font-family:system-ui,sans-serif!important}.pname{font-weight:700;font-size:.85rem;margin-bottom:3px}.pnaf{font-family:monospace;font-size:.72rem;color:#1a3a6b;margin-bottom:4px}.paddr{font-size:.75rem;color:#777}.papprox{font-size:.7rem;color:#a06a00;margin-top:4px}.plink{display:inline-block;margin-top:6px;font-size:.72rem;color:#1a3a6b}@media (max-width:700px){.body{flex-direction:column-reverse}.sb{width:auto;height:42%;border-right:0;border-top:1px solid #ddd}header{padding:8px 12px}.meta{display:none}h1{font-size:.85rem}}</style></head><body><header><h1>&#128205; Sirene — 59.14Z · 73 — 29 établissements</h1><div class="meta">Exporté le 01 octobre 2026 — API Sirene INSEE</div></header><div class="body"><div class="sb"><div class="sbh" id="sbh">29 établissements</div><div class="search-box"><input id="search" type="search" placeholder="Rechercher nom, adresse, SIRET…"/></div><div class="list" id="list"><div id="inner"></div></div></div><div id="map"></div></div><script>
+const D=[{"name":"COMMUNE DE LA PLAGNE TARENTAISE","siret":"20005549900160","naf":"59.14Z","etat":"A","a1":"MONTCHAVIN","a2":"73210 LA PLAGNE TARENTAISE","lat":45.561336,"lon":6.728512},{"name":"COMMUNE DE CHALLES LES EAUX","siret":"21730064900027","naf":"59.14Z","etat":"A","a1":"AVENUE DU PARC","a2":"73190 CHALLES-LES-EAUX","lat":45.552116,"lon":5.985568},{"name":"COMMUNE DE CHALLES LES EAUX","siret":"21730064900084","naf":"59.14Z","etat":"A","a1":"PLACE LOUIS DUMOLLARD","a2":"73190 CHALLES-LES-EAUX","lat":45.547435,"lon":5.983284},{"name":"COMMUNE DE FONTCOUVERTE LA TOUSSUIRE","siret":"21730116700060","naf":"59.14Z","etat":"A","a1":"30 RUE RENE CASSIN","a2":"73300 FONTCOUVERTE-LA-TOUSSUIRE","lat":45.253091,"lon":6.261041},{"name":"COMMUNE DE LANDRY","siret":"21730142300067","naf":"59.14Z","etat":"A","a1":"VALANDRY","a2":"73210 LANDRY","lat":45.558318,"lon":6.761803},{"name":"COMMUNE DE SAINT JEAN D ARVES","siret":"21730242100060","naf":"59.14Z","etat":"A","a1":"LA CHAL","a2":"73530 SAINT-JEAN-D ARVES","lat":45.213729,"lon":6.264472},{"name":"COMMUNE DE VILLAREMBERT","siret":"21730318900088","naf":"59.14Z","etat":"A","a1":"IMMEUBLE CERES","a2":"73300 VILLAREMBERT","lat":45.246522,"lon":6.278834},{"name":"FOYER RURAL CINEMA CHANTELOUVE","siret":"32697972100015","naf":"59.14Z","etat":"A","a1":"1 RUE DE LA MAIRIE","a2":"73480 VAL-CENIS","lat":45.289124,"lon":6.911535},{"name":"ASS CINEMA JEAN RENOIR","siret":"32758208600010","naf":"59.14Z","etat":"A","a1":"PLACE DE GENEVE","a2":"73000 CHAMBERY","lat":45.566849,"lon":5.919182},{"name":"ASS CINEMA JEAN RENOIR","siret":"32758208600028","naf":"59.14Z","etat":"A","a1":"30 RUE NICOLAS PARENT","a2":"73000 CHAMBERY","lat":45.570592,"lon":5.91651},{"name":"FORUM CINEMA","siret":"33496228900016","naf":"59.14Z","etat":"A","a1":"28 PLACE DU FORUM","a2":"73000 CHAMBERY","lat":45.592493,"lon":5.91937},{"name":"FORUM CINEMA","siret":"33496228900024","naf":"59.14Z","etat":"A","a1":"7 BOULEVARD DU THEATRE","a2":"73000 CHAMBERY","lat":45.566439,"lon":5.922814},{"name":"CINEMA ET CULTURE MAURIENNE","siret":"38920725900018","naf":"59.14Z","etat":"A","a1":"16 AVENUE DE LA REPUBLIQUE","a2":"73140 SAINT-MICHEL-DE-MAURIENNE","lat":45.217028,"lon":6.474121},{"name":"ASS UNIVERCINE","siret":"42904247600011","naf":"59.14Z","etat":"A","a1":"CAMPUS","a2":"73000 JACOB-BELLECOMBETTE","lat":45.553711,"lon":5.915006,"ap":1},{"name":"ASSOCIATION DU FESTIVAL DE LA BIOLLE- CINEMA ET RURALITE","siret":"43978339000024","naf":"59.14Z","etat":"A","a1":"","a2":"73410 LA BIOLLE","lat":45.756719,"lon":5.920739,"ap":1},{"name":"PATHE CINEMAS FRANCE","siret":"44456712700055","naf":"59.14Z","etat":"A","a1":"4 RUE DERRIERE LES MURS","a2":"73000 CHAMBERY","lat":45.566571,"lon":5.918328},{"name":"J F R SAS","siret":"45081410800020","naf":"59.14Z","etat":"A","a1":"14 AVENUE DANIEL ROPS","a2":"73100 AIX-LES-BAINS","lat":45.693016,"lon":5.895271},{"name":"VICTORIA","siret":"48473305000013","naf":"59.14Z","etat":"A","a1":"36 AVENUE VICTORIA","a2":"73100 AIX-LES-BAINS","lat":45.689954,"lon":5.909882},{"name":"SARL VAL LOISIRS","siret":"49141790300037","naf":"59.14Z","etat":"A","a1":"137 AVENUE HENRI FALCOZ","a2":"73300 SAINT-JEAN-DE-MAURIENNE","lat":45.277493,"lon":6.348211},{"name":"LES AMIS DU CINEMA EDUCATEUR","siret":"77650922600010","naf":"59.14Z","etat":"A","a1":"45 PLACE MONTMAIN","a2":"73400 UGINE","lat":45.753962,"lon":6.418253},{"name":"LES AMIS DU CINEMA EDUCATEUR","siret":"77650922600028","naf":"59.14Z","etat":"A","a1":"14 RUE GAMBETTA","a2":"73200 ALBERTVILLE","lat":45.677141,"lon":6.392397},{"name":"LES AMIS DU CINEMA EDUCATEUR","siret":"77650922600036","naf":"59.14Z","etat":"A","a1":"135 PLACE DE L'EUROPE","a2":"73200 ALBERTVILLE","lat":45.676229,"lon":6.392409},{"name":"LES AMIS DU CINEMA EDUCATEUR","siret":"77650922600044","naf":"59.14Z","etat":"A","a1":"AVENUE DES BELLEVILLE","a2":"73600 MOUTIERS","lat":45.483565,"lon":6.527597},{"name":"LES AMIS DU CINEMA EDUCATEUR","siret":"77650922600051","naf":"59.14Z","etat":"A","a1":"PLACE DU CENTENAIRE","a2":"73570 BRIDES-LES-BAINS","lat":45.452619,"lon":6.566739},{"name":"B.S.M CINE","siret":"80321710800015","naf":"59.14Z","etat":"A","a1":"RUE SAINT-JEAN","a2":"73700 BOURG-SAINT-MAURICE","lat":45.622519,"lon":6.777687},{"name":"OFFICE DE TOURISME DE PRALOGNAN LA VANOISE","siret":"81746581800026","naf":"59.14Z","etat":"A","a1":"53 RUE DU GRAND COULOIR","a2":"73710 PRALOGNAN-LA-VANOISE","lat":45.381164,"lon":6.722235},{"name":"73210 ZIMAGES","siret":"82044304200024","naf":"59.14Z","etat":"A","a1":"439 AVENUE DE LA GARE","a2":"73210 AIME-LA-PLAGNE","lat":45.555707,"lon":6.651713},{"name":"LES CINGLES DU CINEMA","siret":"93448778600014","naf":"59.14Z","etat":"A","a1":"169 RUE DE LA CHAUDANNE","a2":"73700 BOURG-SAINT-MAURICE","lat":45.619597,"lon":6.766863},{"name":"CINE-CLUB USMB JACOB-BELLECOMBETTE","siret":"94021197200010","naf":"59.14Z","etat":"A","a1":"RUE JEAN BAPTISTE RICHARD","a2":"73000 JACOB-BELLECOMBETTE","lat":45.557422,"lon":5.910862}];
+(function exportPageRuntime(D) {
+    var ROW = 86;
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    };
+    var map = L.map('map');
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '\u00a9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> \u00b7 donn\u00e9es INSEE SIRENE',
+      maxZoom: 19
+    }).addTo(map);
+    var cg = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
+    map.addLayer(cg);
+
+    function pin(color) {
+      return L.divIcon({
+        html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="' + color + '"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>',
+        className: '', iconSize: [24, 32], iconAnchor: [12, 32], popupAnchor: [0, -34]
+      });
+    }
+    var ICON = pin('#1a3a6b'), ICON_APPROX = pin('#8a96a8'), ICON_ACTIVE = pin('#c8342a');
+
+    function popupHtml(d) {
+      return '<div class="pname">' + esc(d.name) + '</div>'
+        + '<div class="pnaf">' + esc(d.naf) + '</div>'
+        + '<div class="paddr">' + esc([d.a1, d.a2].filter(Boolean).join(', ')) + '</div>'
+        + (d.ap ? '<div class="papprox">Position approximative (centre de la commune)</div>' : '')
+        + (d.siret ? '<a class="plink" target="_blank" rel="noopener" href="https://annuaire-entreprises.data.gouv.fr/etablissement/' + esc(d.siret) + '">Fiche annuaire-entreprises \u2192</a>' : '');
+    }
+
+    var markers = [], layers = [], nogeo = 0;
+    D.forEach(function (d, i) {
+      if (d.lat == null) { nogeo++; return; }
+      var m = L.marker([d.lat, d.lon], { icon: d.ap ? ICON_APPROX : ICON });
+      m.bindPopup(function () { return popupHtml(d); });
+      m.on('click', function () { select(i, false); });
+      markers[i] = m;
+      layers.push(m);
+    });
+    if (layers.length) { cg.addLayers(layers); map.fitBounds(cg.getBounds().pad(0.12)); }
+    else map.setView([46.6, 2.5], 6);
+
+    var box = document.getElementById('list'), inner = document.getElementById('inner');
+    var head = document.getElementById('sbh'), input = document.getElementById('search');
+    var hay = null, filtered = D.map(function (_, i) { return i; }), active = -1, queued = false;
+
+    function label() {
+      var n = D.length.toLocaleString('fr-FR') + ' \u00e9tablissement' + (D.length > 1 ? 's' : '');
+      if (filtered.length !== D.length) return filtered.length.toLocaleString('fr-FR') + ' / ' + n;
+      return n + (nogeo ? ' \u00b7 ' + nogeo.toLocaleString('fr-FR') + ' sans position' : '');
+    }
+
+    function card(i, k) {
+      var d = D[i];
+      var tag = d.lat == null ? '<span class="tpos">sans position</span>' : (d.ap ? '<span class="tpos">\u2248 commune</span>' : '');
+      return '<div class="card' + (i === active ? ' active' : '') + (d.lat == null ? ' nogeo' : '') + '" data-i="' + i + '" style="top:' + (k * ROW) + 'px">'
+        + '<div class="name" title="' + esc(d.name) + '">' + esc(d.name) + '</div>'
+        + '<div class="siret">' + esc(d.siret) + '</div>'
+        + '<div class="tags"><span class="tnaf">' + esc(d.naf) + '</span>'
+        + '<span class="tetat ' + (d.etat === 'A' ? 'actif">Actif' : 'ferme">Ferm\u00e9') + '</span>' + tag + '</div>'
+        + '<div class="addr">' + esc([d.a1, d.a2].filter(Boolean).join(', ') || '\u2014') + '</div></div>';
+    }
+
+    function render() {
+      queued = false;
+      var top = box.scrollTop, h = box.clientHeight || 600;
+      var from = Math.max(0, Math.floor(top / ROW) - 5);
+      var to = Math.min(filtered.length, Math.ceil((top + h) / ROW) + 5);
+      var html = '';
+      for (var k = from; k < to; k++) html += card(filtered[k], k);
+      inner.innerHTML = filtered.length ? html : '<div class="no-results">Aucun r\u00e9sultat</div>';
+    }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(render); } }
+
+    function applyFilter(q) {
+      var t = q.toLowerCase().trim();
+      if (!hay) hay = D.map(function (d) { return (d.name + ' ' + d.a1 + ' ' + d.a2 + ' ' + d.siret).toLowerCase(); });
+      filtered = [];
+      for (var i = 0; i < D.length; i++) if (!t || hay[i].indexOf(t) >= 0) filtered.push(i);
+      inner.style.height = (filtered.length * ROW + 8) + 'px';
+      head.textContent = label();
+      box.scrollTop = 0;
+      render();
+    }
+
+    function select(i, fromList) {
+      if (active >= 0 && markers[active]) markers[active].setIcon(D[active].ap ? ICON_APPROX : ICON);
+      active = i;
+      var m = markers[i];
+      if (m) {
+        m.setIcon(ICON_ACTIVE);
+        if (fromList) cg.zoomToShowLayer(m, function () { m.openPopup(); });
+      }
+      if (!fromList) {
+        var k = filtered.indexOf(i);
+        if (k < 0) { input.value = ''; applyFilter(''); k = i; }
+        if (k * ROW < box.scrollTop || (k + 1) * ROW > box.scrollTop + box.clientHeight) {
+          box.scrollTop = Math.max(0, k * ROW - box.clientHeight / 2 + ROW / 2);
+        }
+      }
+      render();
+    }
+
+    box.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    inner.addEventListener('click', function (e) {
+      var c = e.target.closest('.card');
+      if (c) select(+c.getAttribute('data-i'), true);
+    });
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { applyFilter(input.value); }, 150);
+    });
+    applyFilter('');
+  })(D);
+</script></body></html>

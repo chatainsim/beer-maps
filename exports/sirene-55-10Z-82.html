@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="sirene:count" content="69"/><meta name="sirene:geo" content="68"/><meta name="sirene:naf" content="55.10Z"/><meta name="sirene:dept" content="82"/><meta name="sirene:generated" content="2026-10-01T19:36:54.853Z"/><meta name="sirene:template" content="2"/><title>Sirene — 55.10Z · 82 — 69 établissements</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;background:#f5f3ef;color:#1a1a1a}header{background:#1a3a6b;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}h1{font-size:.95rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:.72rem;opacity:.65;margin-left:auto;white-space:nowrap}.body{display:flex;flex:1;min-height:0}.sb{width:340px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;min-height:0}.sbh{padding:9px 14px;border-bottom:1px solid #ddd;font-size:.72rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.05em}.search-box{padding:8px;border-bottom:1px solid #eee}.search-box input{width:100%;border:1px solid #ddd;border-radius:5px;padding:6px 10px;font-size:.82rem;outline:none;background:#f9f9f9}.search-box input:focus{border-color:#1a3a6b;background:#fff}.list{flex:1;overflow-y:auto;position:relative}#inner{position:relative}.no-results{padding:24px 14px;text-align:center;font-size:.8rem;color:#aaa}.card{position:absolute;left:8px;right:8px;height:80px;margin-top:6px;overflow:hidden;background:#fafaf8;border:1px solid #e5e2d9;border-left:3px solid transparent;border-radius:6px;padding:8px 12px;cursor:pointer;transition:border-color .15s}.card:hover{border-left-color:#1a3a6b}.card.active{border-left-color:#c8342a;background:#fff8f7}.card.nogeo{cursor:default;opacity:.8}.name{font-weight:600;font-size:.85rem;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.siret{font-family:monospace;font-size:.64rem;color:#888;margin-bottom:3px}.tags{display:flex;gap:4px;margin-bottom:4px}.tnaf,.tetat,.tpos{border-radius:3px;font-size:.65rem;padding:1px 6px;font-weight:600}.tnaf{background:#e8eef8;color:#1a3a6b}.tpos{background:#eee;color:#666}.actif{background:#e6f4ec;color:#2d7a50}.ferme{background:#fdecea;color:#c8342a}.addr{font-size:.75rem;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#map{flex:1;min-height:0}.leaflet-popup-content-wrapper{border-radius:6px!important;font-family:system-ui,sans-serif!important}.pname{font-weight:700;font-size:.85rem;margin-bottom:3px}.pnaf{font-family:monospace;font-size:.72rem;color:#1a3a6b;margin-bottom:4px}.paddr{font-size:.75rem;color:#777}.papprox{font-size:.7rem;color:#a06a00;margin-top:4px}.plink{display:inline-block;margin-top:6px;font-size:.72rem;color:#1a3a6b}@media (max-width:700px){.body{flex-direction:column-reverse}.sb{width:auto;height:42%;border-right:0;border-top:1px solid #ddd}header{padding:8px 12px}.meta{display:none}h1{font-size:.85rem}}</style></head><body><header><h1>&#128205; Sirene — 55.10Z · 82 — 69 établissements</h1><div class="meta">Exporté le 01 octobre 2026 — API Sirene INSEE</div></header><div class="body"><div class="sb"><div class="sbh" id="sbh">69 établissements</div><div class="search-box"><input id="search" type="search" placeholder="Rechercher nom, adresse, SIRET…"/></div><div class="list" id="list"><div id="inner"></div></div></div><div id="map"></div></div><script>
+const D=[{"name":"FLORYANE GUILLOU","siret":"10094081600018","naf":"55.10Z","etat":"A","a1":"22 RUE ARMAND SAINTIS","a2":"82000 MONTAUBAN","lat":44.023519,"lon":1.362061},{"name":"SOCIETE LES SPAS DE MOISSAC","siret":"10396071200018","naf":"55.10Z","etat":"A","a1":"1 PROMENADE SANCERT","a2":"82200 MOISSAC","lat":44.100076,"lon":1.085895},{"name":"BRUNEL EVENTS","siret":"10455492800010","naf":"55.10Z","etat":"A","a1":"2160 ROUTE DE FRONTON","a2":"82170 GRISOLLES","lat":43.832636,"lon":1.317766},{"name":"COMMUNAUTE DE COMMUNES DES DEUX RIVES","siret":"24820001600058","naf":"55.10Z","etat":"A","a1":"LD GACHES","a2":"82340 AUVILLAR","lat":44.063782,"lon":0.885185},{"name":"DANIEL LARROQUE","siret":"32614992900019","naf":"55.10Z","etat":"A","a1":"16 AV DU HUIT MAI","a2":"82300 CAUSSADE","lat":44.16194,"lon":1.534655},{"name":"HOTEL DU MIDI","siret":"34330058800021","naf":"55.10Z","etat":"A","a1":"570 ROUTE DE LAGARDE","a2":"82290 LA VILLE-DIEU-DU-TEMPLE","lat":44.037563,"lon":1.223561},{"name":"SARL HOTEL RESTAURANT TERRASSIER","siret":"37885729600016","naf":"55.10Z","etat":"A","a1":"205 RUE DU VILLAGE","a2":"82800 VAISSAC","lat":44.033206,"lon":1.569215},{"name":"MARIE-HELENE MARSEILLAC","siret":"38140735200016","naf":"55.10Z","etat":"A","a1":"54 RUE DE L'EGALITE","a2":"82100 CASTELSARRASIN","lat":44.039158,"lon":1.108281},{"name":"EURL HOTEL DU QUERCY","siret":"38140752700013","naf":"55.10Z","etat":"A","a1":"FG DAURIAC","a2":"82110 LAUZERTE","lat":44.255104,"lon":1.138436},{"name":"LA CUISINE D'ALAIN","siret":"38501922900017","naf":"55.10Z","etat":"A","a1":"29 RUE ROGER SALENGRO","a2":"82000 MONTAUBAN","lat":44.014821,"lon":1.341849},{"name":"VPG EVENEMENTS","siret":"39911458600049","naf":"55.10Z","etat":"A","a1":"14 CHEMIN DE JAMBAU","a2":"82130 L'HONOR-DE-COS","lat":44.090698,"lon":1.349247},{"name":"CHATEAU RESIDENCE DE TERRIDES","siret":"40220367300015","naf":"55.10Z","etat":"A","a1":"ROUTE DE TERRIDES","a2":"82100 LABOURGADE","lat":43.951623,"lon":1.09906},{"name":"RENAISSANCE","siret":"40511148500042","naf":"55.10Z","etat":"A","a1":"31 AV DU PERE HUC","a2":"82160 CAYLUS","lat":44.236412,"lon":1.770705},{"name":"VALERIE HARTIG","siret":"42195004900021","naf":"55.10Z","etat":"A","a1":"PLACE DE L'HORLOGE","a2":"82340 AUVILLAR","lat":44.069457,"lon":0.899592},{"name":"CHRISTOPHER OSBORNE","siret":"43045631900010","naf":"55.10Z","etat":"A","a1":"CHATEAU PLOMBIS","a2":"82400 CASTELSAGRAT","lat":44.184392,"lon":0.946474},{"name":"EURL  LE MANOIR DE SAINT JEAN","siret":"43895246700019","naf":"55.10Z","etat":"A","a1":"SAINT JEAN DE CORNAC","a2":"82400 SAINT PAUL D'ESPIS","lat":44.147012,"lon":1.007924},{"name":"MOULIN DE MOISSAC SUD","siret":"44308589900013","naf":"55.10Z","etat":"A","a1":"PROM SANCERT","a2":"82200 MOISSAC","lat":44.100303,"lon":1.0853},{"name":"HOTEL VILLENOUVELLE","siret":"44383185400015","naf":"55.10Z","etat":"A","a1":"30 RUE LEON CLADEL","a2":"82000 MONTAUBAN","lat":44.022488,"lon":1.358093},{"name":"LES GARRIGUES","siret":"44526471600017","naf":"55.10Z","etat":"A","a1":"130 ROUTE DE FRONTON","a2":"82170 GRISOLLES","lat":43.829267,"lon":1.303209},{"name":"SARL LE MANOIR DU CHASSELAS","siret":"44919775500027","naf":"55.10Z","etat":"A","a1":"FESANDIE","a2":"82200 MOISSAC","lat":44.121159,"lon":1.109159,"ap":1},{"name":"FUTEL","siret":"45402964600022","naf":"55.10Z","etat":"A","a1":"205 RUE ROMY SCHNEIDER","a2":"82000 MONTAUBAN","lat":44.040167,"lon":1.385982},{"name":"AU PALAIS GOURMAND","siret":"48237342000041","naf":"55.10Z","etat":"A","a1":"62 RUE DES FRERES QUEMERE","a2":"82150 MONTAIGU-DE-QUERCY","lat":44.340726,"lon":1.018122},{"name":"SAS ABBAYE DES CAPUCINS","siret":"48437105900011","naf":"55.10Z","etat":"A","a1":"6 QUAI DE VERDUN","a2":"82000 MONTAUBAN","lat":44.020595,"lon":1.349551},{"name":"SAS ABBAYE DES CAPUCINS","siret":"48437105900029","naf":"55.10Z","etat":"A","a1":"6 QUAI DE VERDUN","a2":"82000 MONTAUBAN","lat":44.020595,"lon":1.349551},{"name":"E.A.L.I.","siret":"48981038200015","naf":"55.10Z","etat":"A","a1":"PIGNOLS HAUT","a2":"82200 MOISSAC","lat":44.137657,"lon":1.124033},{"name":"LOSA","siret":"50185323800019","naf":"55.10Z","etat":"A","a1":"205 RUE ROMY SCHNEIDER","a2":"82000 MONTAUBAN","lat":44.040167,"lon":1.385982},{"name":"LE CASTEL","siret":"50272265500029","naf":"55.10Z","etat":"A","a1":"50 PONT DE CHAUME","a2":"82000 MONTAUBAN","lat":44.010721,"lon":1.384689},{"name":"LE CASTEL","siret":"50272265500045","naf":"55.10Z","etat":"A","a1":"50 ROUTE DE SAINT- MARTIAL","a2":"82000 MONTAUBAN","lat":44.00558,"lon":1.383129},{"name":"LE CASTEL","siret":"50272265500052","naf":"55.10Z","etat":"A","a1":"50 ROUTE DE SAINT- MARTIAL","a2":"82000 MONTAUBAN","lat":44.00558,"lon":1.383129},{"name":"SAS COULEUR SUD","siret":"51258551400023","naf":"55.10Z","etat":"A","a1":"LD MARTEL","a2":"82110 MONTAGUDET","lat":44.247259,"lon":1.110324},{"name":"LEFRANCOIS PSKRJM","siret":"51345228400013","naf":"55.10Z","etat":"A","a1":"12 AVENUE DU LAC","a2":"82230 MONCLAR-DE-QUERCY","lat":43.966395,"lon":1.586462},{"name":"BMF","siret":"51879116500021","naf":"55.10Z","etat":"A","a1":"16 IMPASSE JACQUES DAGUERRE","a2":"82000 MONTAUBAN","lat":43.981161,"lon":1.330589},{"name":"SASU L'ARMATEUR","siret":"52836911900011","naf":"55.10Z","etat":"A","a1":"22 RUE DU PONT","a2":"82200 MOISSAC","lat":44.100908,"lon":1.082501},{"name":"M.P.C.D.","siret":"53008779000016","naf":"55.10Z","etat":"A","a1":"30 PLACE SYLVAIN DUMON","a2":"82400 VALENCE","lat":44.107386,"lon":0.888808},{"name":"HUGO","siret":"53518155600015","naf":"55.10Z","etat":"A","a1":"23 AVENUE DES PROMENADES","a2":"82220 MOLIERES","lat":44.193447,"lon":1.365125},{"name":"RICHEMONT CONSULTING","siret":"79206473500030","naf":"55.10Z","etat":"A","a1":"","a2":"82110 MONTAGUDET","lat":44.242112,"lon":1.079511,"ap":1},{"name":"TDF SUD OUEST","siret":"79985864200025","naf":"55.10Z","etat":"A","a1":"LES HAMEAUX DES LACS","a2":"82230 MONCLAR-DE-QUERCY","lat":43.966043,"lon":1.593573},{"name":"JULIE DEPLANCKE","siret":"80172936900026","naf":"55.10Z","etat":"A","a1":"2158 ROUTE DE ST ETIENNE DE TULMONT","a2":"82350 ALBIAS","lat":44.070432,"lon":1.452327},{"name":"AUX LYS D'OR","siret":"80321695100019","naf":"55.10Z","etat":"A","a1":"PLACE DE LA REUNION","a2":"82440 REALVILLE","lat":44.11449,"lon":1.478296},{"name":"GEORGE HOTEL","siret":"80793467400019","naf":"55.10Z","etat":"A","a1":"9 PLACE FRANKLIN ROOSEVELT","a2":"82000 MONTAUBAN","lat":44.015417,"lon":1.354041},{"name":"LE GRAND HOTEL","siret":"80857633400029","naf":"55.10Z","etat":"A","a1":"12 RUE NOTRE DAME","a2":"82000 MONTAUBAN","lat":44.015707,"lon":1.355173},{"name":"[ND]","siret":"81777201500027","naf":"55.10Z","etat":"A","a1":"[ND] [ND] [ND]","a2":"[ND] AUVILLAR","lat":null,"lon":null},{"name":"C2B COLLINE DE BOUTIES","siret":"82071880700028","naf":"55.10Z","etat":"A","a1":"PEYRE","a2":"82220 LABARTHE","lat":44.208076,"lon":1.317764,"ap":1},{"name":"STEPHANIE GOLDITE","siret":"83406311700024","naf":"55.10Z","etat":"A","a1":"CHATEAU DE L'HOSTE","a2":"82150 SAINT-BEAUZEIL","lat":44.339718,"lon":0.927806},{"name":"AUCLYADE HOLDING","siret":"83916782200023","naf":"55.10Z","etat":"A","a1":"4925 RTE DE MONCLAR","a2":"82800 PUYGAILLARD-DE-QUERCY","lat":44.01135,"lon":1.635963},{"name":"SAS DAMIEN","siret":"84519418200018","naf":"55.10Z","etat":"A","a1":"3 PLACE DES RECOLLETS","a2":"82200 MOISSAC","lat":44.103243,"lon":1.085882},{"name":"HOTEL ABSOLU","siret":"85365279000017","naf":"55.10Z","etat":"A","a1":"11 PROMENADE DU CHATEAU","a2":"82100 CASTELSARRASIN","lat":44.037637,"lon":1.106073},{"name":"MONT-GRILL","siret":"85393393500019","naf":"55.10Z","etat":"A","a1":"40 IMPASSE LOUIS LEPINE","a2":"82000 MONTAUBAN","lat":43.983459,"lon":1.33469},{"name":"MONT-PC","siret":"85397072100017","naf":"55.10Z","etat":"A","a1":"60 IMPASSE LOUIS LEPINE","a2":"82000 MONTAUBAN","lat":43.983124,"lon":1.333865},{"name":"L'OSTALAS","siret":"88052828600011","naf":"55.10Z","etat":"A","a1":"1080 RUE COTE DE L'ILE","a2":"82130 LAFRANCAISE","lat":44.114858,"lon":1.263574},{"name":"SARL PAGERO34","siret":"88133467600015","naf":"55.10Z","etat":"A","a1":"32 RUE DE LA GARE","a2":"82360 LAMAGISTERE","lat":44.125778,"lon":0.824511},{"name":"ASTORC & DI BACCO","siret":"89227143800053","naf":"55.10Z","etat":"A","a1":"NAUDOU MOULIN A VENT LADEVESE AL","a2":"82160 PARISOT","lat":44.267542,"lon":1.856087},{"name":"NICOLE BOURCIER","siret":"89403349700021","naf":"55.10Z","etat":"A","a1":"1 CHEMIN DE LA FONTAINE","a2":"82110 LAUZERTE","lat":44.254425,"lon":1.135798},{"name":"MARGHOTEL","siret":"89420640800029","naf":"55.10Z","etat":"A","a1":"175 IMPASSE DE FONTANILLES","a2":"82710 BRESSOLS","lat":43.936194,"lon":1.322335},{"name":"BRUNO LERMUSIAUX","siret":"89453406400023","naf":"55.10Z","etat":"A","a1":"22 RUE ARMAND SAINTIS","a2":"82000 MONTAUBAN","lat":44.023519,"lon":1.362061},{"name":"SWEET'Z HOME","siret":"90310958500013","naf":"55.10Z","etat":"A","a1":"800 CHEMIN DE LANIS","a2":"82000 MONTAUBAN","lat":44.030612,"lon":1.334833},{"name":"MF HOME CONCIERGERIE","siret":"90786369000018","naf":"55.10Z","etat":"A","a1":"252 CHEMIN DE PELIGRY","a2":"82000 MONTAUBAN","lat":44.04266,"lon":1.353352},{"name":"HAKUNA MATATA","siret":"90916356000016","naf":"55.10Z","etat":"A","a1":"RES LES CHENES MARSARIOS","a2":"82160 PARISOT","lat":44.234363,"lon":1.874255},{"name":"L'ESCALE CHEZ MIMI","siret":"91332931400011","naf":"55.10Z","etat":"A","a1":"5 PLACE DE L'EGLISE","a2":"82800 BIOULE","lat":44.089631,"lon":1.539899},{"name":"FYL GOOD ECO","siret":"91427750400140","naf":"55.10Z","etat":"A","a1":"35 CHEMIN DE MALLET","a2":"82000 MONTAUBAN","lat":44.007399,"lon":1.385087},{"name":"LE TULIPIER","siret":"91764633300018","naf":"55.10Z","etat":"A","a1":"17 CHEMIN DE LENDER","a2":"82300 MONTEILS","lat":44.166642,"lon":1.567608},{"name":"PARC DE COULASSY","siret":"92235407100016","naf":"55.10Z","etat":"A","a1":"1220 CHEMIN BARTHELOT COULASSY","a2":"82800 NEGREPELISSE","lat":44.057357,"lon":1.500896},{"name":"LE NORMANDY","siret":"92788913900014","naf":"55.10Z","etat":"A","a1":"58 RUE DU MARECHAL FOCH","a2":"82500 BEAUMONT-DE-LOMAGNE","lat":43.883303,"lon":0.991587},{"name":"BLUEBABAR","siret":"94194989300015","naf":"55.10Z","etat":"A","a1":"25 CHEMIN DU COUDOUNIE","a2":"82110 LAUZERTE","lat":44.2588,"lon":1.140393},{"name":"LES HUSSARDS","siret":"94858746400017","naf":"55.10Z","etat":"A","a1":"2 ALLEES MONTEBELLO","a2":"82200 MOISSAC","lat":44.099999,"lon":1.082458},{"name":"ANNEMIE HENDRIX","siret":"97845255500029","naf":"55.10Z","etat":"A","a1":"421 ROUTE DU CHATEAU","a2":"82150 SAINT-BEAUZEIL","lat":44.34413,"lon":0.91641},{"name":"CELINE BENKHALED","siret":"98064214400011","naf":"55.10Z","etat":"A","a1":"228 CHEMIN DE MOISSAGEIN","a2":"82000 MONTAUBAN","lat":44.072983,"lon":1.371102},{"name":"SOCIETE NOUVELLE DU MOULIN DE MOISSAC","siret":"99275825000011","naf":"55.10Z","etat":"A","a1":"PROMENADE SANCERT","a2":"82200 MOISSAC","lat":44.100303,"lon":1.0853},{"name":"PRAPTI","siret":"99332678400028","naf":"55.10Z","etat":"A","a1":"60 IMPASSE LOUIS LEPINE","a2":"82000 MONTAUBAN","lat":43.983124,"lon":1.333865}];
+(function exportPageRuntime(D) {
+    var ROW = 86;
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    };
+    var map = L.map('map');
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '\u00a9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> \u00b7 donn\u00e9es INSEE SIRENE',
+      maxZoom: 19
+    }).addTo(map);
+    var cg = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
+    map.addLayer(cg);
+
+    function pin(color) {
+      return L.divIcon({
+        html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="' + color + '"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>',
+        className: '', iconSize: [24, 32], iconAnchor: [12, 32], popupAnchor: [0, -34]
+      });
+    }
+    var ICON = pin('#1a3a6b'), ICON_APPROX = pin('#8a96a8'), ICON_ACTIVE = pin('#c8342a');
+
+    function popupHtml(d) {
+      return '<div class="pname">' + esc(d.name) + '</div>'
+        + '<div class="pnaf">' + esc(d.naf) + '</div>'
+        + '<div class="paddr">' + esc([d.a1, d.a2].filter(Boolean).join(', ')) + '</div>'
+        + (d.ap ? '<div class="papprox">Position approximative (centre de la commune)</div>' : '')
+        + (d.siret ? '<a class="plink" target="_blank" rel="noopener" href="https://annuaire-entreprises.data.gouv.fr/etablissement/' + esc(d.siret) + '">Fiche annuaire-entreprises \u2192</a>' : '');
+    }
+
+    var markers = [], layers = [], nogeo = 0;
+    D.forEach(function (d, i) {
+      if (d.lat == null) { nogeo++; return; }
+      var m = L.marker([d.lat, d.lon], { icon: d.ap ? ICON_APPROX : ICON });
+      m.bindPopup(function () { return popupHtml(d); });
+      m.on('click', function () { select(i, false); });
+      markers[i] = m;
+      layers.push(m);
+    });
+    if (layers.length) { cg.addLayers(layers); map.fitBounds(cg.getBounds().pad(0.12)); }
+    else map.setView([46.6, 2.5], 6);
+
+    var box = document.getElementById('list'), inner = document.getElementById('inner');
+    var head = document.getElementById('sbh'), input = document.getElementById('search');
+    var hay = null, filtered = D.map(function (_, i) { return i; }), active = -1, queued = false;
+
+    function label() {
+      var n = D.length.toLocaleString('fr-FR') + ' \u00e9tablissement' + (D.length > 1 ? 's' : '');
+      if (filtered.length !== D.length) return filtered.length.toLocaleString('fr-FR') + ' / ' + n;
+      return n + (nogeo ? ' \u00b7 ' + nogeo.toLocaleString('fr-FR') + ' sans position' : '');
+    }
+
+    function card(i, k) {
+      var d = D[i];
+      var tag = d.lat == null ? '<span class="tpos">sans position</span>' : (d.ap ? '<span class="tpos">\u2248 commune</span>' : '');
+      return '<div class="card' + (i === active ? ' active' : '') + (d.lat == null ? ' nogeo' : '') + '" data-i="' + i + '" style="top:' + (k * ROW) + 'px">'
+        + '<div class="name" title="' + esc(d.name) + '">' + esc(d.name) + '</div>'
+        + '<div class="siret">' + esc(d.siret) + '</div>'
+        + '<div class="tags"><span class="tnaf">' + esc(d.naf) + '</span>'
+        + '<span class="tetat ' + (d.etat === 'A' ? 'actif">Actif' : 'ferme">Ferm\u00e9') + '</span>' + tag + '</div>'
+        + '<div class="addr">' + esc([d.a1, d.a2].filter(Boolean).join(', ') || '\u2014') + '</div></div>';
+    }
+
+    function render() {
+      queued = false;
+      var top = box.scrollTop, h = box.clientHeight || 600;
+      var from = Math.max(0, Math.floor(top / ROW) - 5);
+      var to = Math.min(filtered.length, Math.ceil((top + h) / ROW) + 5);
+      var html = '';
+      for (var k = from; k < to; k++) html += card(filtered[k], k);
+      inner.innerHTML = filtered.length ? html : '<div class="no-results">Aucun r\u00e9sultat</div>';
+    }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(render); } }
+
+    function applyFilter(q) {
+      var t = q.toLowerCase().trim();
+      if (!hay) hay = D.map(function (d) { return (d.name + ' ' + d.a1 + ' ' + d.a2 + ' ' + d.siret).toLowerCase(); });
+      filtered = [];
+      for (var i = 0; i < D.length; i++) if (!t || hay[i].indexOf(t) >= 0) filtered.push(i);
+      inner.style.height = (filtered.length * ROW + 8) + 'px';
+      head.textContent = label();
+      box.scrollTop = 0;
+      render();
+    }
+
+    function select(i, fromList) {
+      if (active >= 0 && markers[active]) markers[active].setIcon(D[active].ap ? ICON_APPROX : ICON);
+      active = i;
+      var m = markers[i];
+      if (m) {
+        m.setIcon(ICON_ACTIVE);
+        if (fromList) cg.zoomToShowLayer(m, function () { m.openPopup(); });
+      }
+      if (!fromList) {
+        var k = filtered.indexOf(i);
+        if (k < 0) { input.value = ''; applyFilter(''); k = i; }
+        if (k * ROW < box.scrollTop || (k + 1) * ROW > box.scrollTop + box.clientHeight) {
+          box.scrollTop = Math.max(0, k * ROW - box.clientHeight / 2 + ROW / 2);
+        }
+      }
+      render();
+    }
+
+    box.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    inner.addEventListener('click', function (e) {
+      var c = e.target.closest('.card');
+      if (c) select(+c.getAttribute('data-i'), true);
+    });
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { applyFilter(input.value); }, 150);
+    });
+    applyFilter('');
+  })(D);
+</script></body></html>

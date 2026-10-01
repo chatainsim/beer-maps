@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="sirene:count" content="59"/><meta name="sirene:geo" content="59"/><meta name="sirene:naf" content="93.11Z"/><meta name="sirene:dept" content="41"/><meta name="sirene:generated" content="2026-10-01T20:07:12.207Z"/><meta name="sirene:template" content="2"/><title>Sirene — 93.11Z · 41 — 59 établissements</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;background:#f5f3ef;color:#1a1a1a}header{background:#1a3a6b;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}h1{font-size:.95rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:.72rem;opacity:.65;margin-left:auto;white-space:nowrap}.body{display:flex;flex:1;min-height:0}.sb{width:340px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;min-height:0}.sbh{padding:9px 14px;border-bottom:1px solid #ddd;font-size:.72rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.05em}.search-box{padding:8px;border-bottom:1px solid #eee}.search-box input{width:100%;border:1px solid #ddd;border-radius:5px;padding:6px 10px;font-size:.82rem;outline:none;background:#f9f9f9}.search-box input:focus{border-color:#1a3a6b;background:#fff}.list{flex:1;overflow-y:auto;position:relative}#inner{position:relative}.no-results{padding:24px 14px;text-align:center;font-size:.8rem;color:#aaa}.card{position:absolute;left:8px;right:8px;height:80px;margin-top:6px;overflow:hidden;background:#fafaf8;border:1px solid #e5e2d9;border-left:3px solid transparent;border-radius:6px;padding:8px 12px;cursor:pointer;transition:border-color .15s}.card:hover{border-left-color:#1a3a6b}.card.active{border-left-color:#c8342a;background:#fff8f7}.card.nogeo{cursor:default;opacity:.8}.name{font-weight:600;font-size:.85rem;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.siret{font-family:monospace;font-size:.64rem;color:#888;margin-bottom:3px}.tags{display:flex;gap:4px;margin-bottom:4px}.tnaf,.tetat,.tpos{border-radius:3px;font-size:.65rem;padding:1px 6px;font-weight:600}.tnaf{background:#e8eef8;color:#1a3a6b}.tpos{background:#eee;color:#666}.actif{background:#e6f4ec;color:#2d7a50}.ferme{background:#fdecea;color:#c8342a}.addr{font-size:.75rem;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#map{flex:1;min-height:0}.leaflet-popup-content-wrapper{border-radius:6px!important;font-family:system-ui,sans-serif!important}.pname{font-weight:700;font-size:.85rem;margin-bottom:3px}.pnaf{font-family:monospace;font-size:.72rem;color:#1a3a6b;margin-bottom:4px}.paddr{font-size:.75rem;color:#777}.papprox{font-size:.7rem;color:#a06a00;margin-top:4px}.plink{display:inline-block;margin-top:6px;font-size:.72rem;color:#1a3a6b}@media (max-width:700px){.body{flex-direction:column-reverse}.sb{width:auto;height:42%;border-right:0;border-top:1px solid #ddd}header{padding:8px 12px}.meta{display:none}h1{font-size:.85rem}}</style></head><body><header><h1>&#128205; Sirene — 93.11Z · 41 — 59 établissements</h1><div class="meta">Exporté le 01 octobre 2026 — API Sirene INSEE</div></header><div class="body"><div class="sb"><div class="sbh" id="sbh">59 établissements</div><div class="search-box"><input id="search" type="search" placeholder="Rechercher nom, adresse, SIRET…"/></div><div class="list" id="list"><div id="inner"></div></div></div><div id="map"></div></div><script>
+const D=[{"name":"CENTRES AQUATIQUES CCV2C","siret":"10269202700018","naf":"93.11Z","etat":"A","a1":"13 RUE DE LA PLAGE","a2":"41400 FAVEROLLES-SUR-CHER","lat":47.340938,"lon":1.18694},{"name":"CENTRES AQUATIQUES CCV2C","siret":"10269202700026","naf":"93.11Z","etat":"A","a1":"14 RUE DE LA LIBERATION","a2":"41700 LE CONTROIS-EN-SOLOGNE","lat":47.4218,"lon":1.430691},{"name":"PADEL ARENA VENDOMOIS","siret":"10331208800018","naf":"93.11Z","etat":"A","a1":"19 AVENUE SAINT-EXUPERY","a2":"41100 SAINT-OUEN","lat":47.80699,"lon":1.079363},{"name":"COMMUNAUTE COMMUNES COEUR DE SOLOGNE","siret":"20000080000082","naf":"93.11Z","etat":"A","a1":"PLACE SIMONE VEIL","a2":"41600 LAMOTTE-BEUVRON","lat":47.60146,"lon":2.025827},{"name":"CC DES TERRES DU VAL DE LOIRE","siret":"20007018300146","naf":"93.11Z","etat":"A","a1":"4 RUE DU LIEUTENANT BAU","a2":"41160 BEAUCE LA ROMAINE","lat":47.888281,"lon":1.370416},{"name":"REGIE DU POLE NAUTIQUE DE TERRITOIRES VENDOMOIS","siret":"20008115600016","naf":"93.11Z","etat":"A","a1":"PARC RONSARD","a2":"41100 VENDOME","lat":47.797921,"lon":1.047112},{"name":"COMMUNE DE BLOIS","siret":"21410018200036","naf":"93.11Z","etat":"A","a1":"QUAI SAINT- JEAN","a2":"41000 BLOIS","lat":47.588712,"lon":1.339784},{"name":"COMMUNE DE BLOIS","siret":"21410018200051","naf":"93.11Z","etat":"A","a1":"RUE SAMUEL DE CHAMPLAIN","a2":"41000 BLOIS","lat":47.596024,"lon":1.305592},{"name":"COMMUNE DE BLOIS","siret":"21410018200150","naf":"93.11Z","etat":"A","a1":"36 QUAI SAINT- JEAN","a2":"41000 BLOIS","lat":47.589444,"lon":1.341057},{"name":"COMMUNE DE ROMORANTIN LANTHENAY","siret":"21410194100265","naf":"93.11Z","etat":"A","a1":"AVENUE DE PARIS","a2":"41200 ROMORANTIN-LANTHENAY","lat":47.379072,"lon":1.73864},{"name":"COMMUNE DE ROMORANTIN LANTHENAY","siret":"21410194100323","naf":"93.11Z","etat":"A","a1":"RUE HUBERT FILLAY","a2":"41200 ROMORANTIN-LANTHENAY","lat":47.342948,"lon":1.738277},{"name":"COMMUNE DE ROMORANTIN LANTHENAY","siret":"21410194100364","naf":"93.11Z","etat":"A","a1":"AVENUE DE PARIS","a2":"41200 ROMORANTIN-LANTHENAY","lat":47.379072,"lon":1.73864},{"name":"COMMUNE DE ROMORANTIN LANTHENAY","siret":"21410194100372","naf":"93.11Z","etat":"A","a1":"RUE DES PAPILLONS","a2":"41200 ROMORANTIN-LANTHENAY","lat":47.347451,"lon":1.760104},{"name":"COMMUNE DE ROMORANTIN LANTHENAY","siret":"21410194100380","naf":"93.11Z","etat":"A","a1":"RUE SABARD","a2":"41200 ROMORANTIN-LANTHENAY","lat":47.363502,"lon":1.744174},{"name":"COMMUNE DE ROMORANTIN LANTHENAY","siret":"21410194100406","naf":"93.11Z","etat":"A","a1":"RUE DE LONG-EATON","a2":"41200 ROMORANTIN-LANTHENAY","lat":47.355906,"lon":1.756244},{"name":"CC DU GRAND CHAMBORD","siret":"24410079800234","naf":"93.11Z","etat":"A","a1":"22 AVENUE DE LA SABLIERE","a2":"41250 BRACIEUX","lat":47.551559,"lon":1.550216},{"name":"SI A VOCATION SPORTIVE ET EDUCATIVE DE VILLETRUN, COULOMMIERS-LA-TOUR, ROCE, FAYE","siret":"25410157900020","naf":"93.11Z","etat":"A","a1":"1 RUE DU PRESBYTERE","a2":"41100 ROCE","lat":47.806112,"lon":1.14654},{"name":"SI CIRCUITS EQUESTRES PEDESTRES PERCHE","siret":"25410244500023","naf":"93.11Z","etat":"A","a1":"6 RUE DE L'ABBAYE","a2":"41170 SARGE-SUR-BRAYE","lat":47.924447,"lon":0.851087},{"name":"SI VOCATION SPORTIVE REGION MARCHENOIR","siret":"25410259300012","naf":"93.11Z","etat":"A","a1":"24 PLACE DE L'EGLISE","a2":"41370 MARCHENOIR","lat":47.822845,"lon":1.396326},{"name":"SYNDICAT VAL DU BEUVRON","siret":"25410362500011","naf":"93.11Z","etat":"A","a1":"26 RUE DE L'EGLISE","a2":"41120 CELLETTES","lat":47.527695,"lon":1.384635},{"name":"LES ECURIES DE SAINT CYR","siret":"31816484500014","naf":"93.11Z","etat":"A","a1":"LE BOURG","a2":"41220 LA FERTE-SAINT-CYR","lat":47.655719,"lon":1.673606},{"name":"USV JUDO CLUB VENDOME","siret":"32076040800023","naf":"93.11Z","etat":"A","a1":"RUE GEOFFROY MARTEL","a2":"41100 VENDOME","lat":47.791239,"lon":1.072584},{"name":"COMITE DEPART DE TENNIS L ET C","siret":"32447767800043","naf":"93.11Z","etat":"A","a1":"RUE ALBERT CAMUS","a2":"41000 BLOIS","lat":47.575972,"lon":1.303265},{"name":"LES BORDES GOLF INTERNATIONAL","siret":"33166161100011","naf":"93.11Z","etat":"A","a1":"LES BORDES","a2":"41220 SAINT LAURENT NOUAN","lat":47.700567,"lon":1.588409},{"name":"SOCIETE COMMERCIALE DES TESNIERES","siret":"34774359300027","naf":"93.11Z","etat":"A","a1":"LES TESNIERES","a2":"41250 FONTAINES EN SOLOGNE","lat":47.446919,"lon":1.510368},{"name":"LES ECURIES DE LA RERE","siret":"35348596400012","naf":"93.11Z","etat":"A","a1":"LA BILLARDERIE","a2":"41300 SALBRIS","lat":47.38236,"lon":2.040067},{"name":"LES ECURIES DE LA BOULONNIERE","siret":"38277050100015","naf":"93.11Z","etat":"A","a1":"LA BOULONNIERE","a2":"41170 COUETRON-AU-PERCHE","lat":48.050568,"lon":0.860864},{"name":"SOCIETE NOUVELLE DU GOLF DU CHATEAU DE CHEVERNY","siret":"39794574200013","naf":"93.11Z","etat":"A","a1":"LA ROUSSELIERE","a2":"41700 CHEVERNY","lat":47.493677,"lon":1.423943},{"name":"DEVELOPPEMENT SPORTS ET LOISIRS","siret":"39916415100041","naf":"93.11Z","etat":"A","a1":"35 RUE DE LA REPUBLIQUE","a2":"41350 VINEUIL","lat":47.582266,"lon":1.376959},{"name":"VENDOME TRIATHLON","siret":"43452257900011","naf":"93.11Z","etat":"A","a1":"PARC RONSARD","a2":"41100 VENDOME","lat":47.797921,"lon":1.047112},{"name":"USV NATATION","siret":"43452274400029","naf":"93.11Z","etat":"A","a1":"RUE GEOFFROY MARTEL","a2":"41100 VENDOME","lat":47.791239,"lon":1.072584},{"name":"D.L.H. 41","siret":"49217346300018","naf":"93.11Z","etat":"A","a1":"18 RUE DES PONTIERES","a2":"41260 LA CHAUSSEE-SAINT-VICTOR","lat":47.60664,"lon":1.357789},{"name":"DSD 41 N","siret":"53741706500019","naf":"93.11Z","etat":"A","a1":"96 AVENUE DE VENDOME","a2":"41000 BLOIS","lat":47.600617,"lon":1.318613},{"name":"RING BLESOIS BOXE","siret":"77536857400015","naf":"93.11Z","etat":"A","a1":"5 QUAI AMEDEE CONTANT","a2":"41000 BLOIS","lat":47.584967,"lon":1.340374},{"name":"AERO CLUB DE SOLOGNE","siret":"77540795000028","naf":"93.11Z","etat":"A","a1":"LE BOIS  RIBAULT","a2":"41130 GIEVRES","lat":47.315014,"lon":1.698015},{"name":"COURSES HIPPIQUES","siret":"77541858500011","naf":"93.11Z","etat":"A","a1":"2 GRANDE RUE","a2":"41360 SAVIGNY-SUR-BRAYE","lat":47.879483,"lon":0.809118},{"name":"AIR CLUB BLOIS VENDOME","siret":"77543140600013","naf":"93.11Z","etat":"A","a1":"AEROPORT DU BREUIL","a2":"41330 VILLEFRANCOEUR","lat":47.693382,"lon":1.198331},{"name":"SARL SYMBIOSE CLUB DE SPORT","siret":"78986142400024","naf":"93.11Z","etat":"A","a1":"129 ROUTE NATIONALE","a2":"41350 SAINT-GERVAIS-LA-FORET","lat":47.562301,"lon":1.371467},{"name":"LANDES PAINTBALL","siret":"79095487900017","naf":"93.11Z","etat":"A","a1":"LA FOSSE AUX BOEUFS","a2":"41190 LANDES LE GAULOIS","lat":47.655662,"lon":1.188569},{"name":"BALL TRAP DU RABOT","siret":"79438122800020","naf":"93.11Z","etat":"A","a1":"LE RABOT","a2":"41600 VOUZON","lat":47.652311,"lon":1.987763},{"name":"LA PLACE","siret":"80158940900045","naf":"93.11Z","etat":"A","a1":"5 RUE D'ANGLETERRE","a2":"41000 BLOIS","lat":47.589355,"lon":1.331775},{"name":"AMICALE LAIQUE DE VILLERABLE","siret":"80913077600010","naf":"93.11Z","etat":"A","a1":"4 ROUTE DE PUTEAU","a2":"41100 VILLERABLE","lat":47.757456,"lon":1.031369},{"name":"PAINTBALL DU RABOT","siret":"81041175100029","naf":"93.11Z","etat":"A","a1":"LE RABOT","a2":"41600 VOUZON","lat":47.652311,"lon":1.987763},{"name":"LE GOLF DE LA BOSSE","siret":"82487226100014","naf":"93.11Z","etat":"A","a1":"LD LA GUIGNARDIERE - LA BOSSE","a2":"41290 VIEVY-LE-RAYE","lat":47.871566,"lon":1.250015},{"name":"VENDOME SPORT ORGANISATION","siret":"83302375700010","naf":"93.11Z","etat":"A","a1":"15 RUE GUSTAVE COURBET","a2":"41100 SAINT-OUEN","lat":47.81333,"lon":1.075804},{"name":"TOURS & CANOE","siret":"83485791400032","naf":"93.11Z","etat":"A","a1":"LE LAC DE LOIRE","a2":"41350 VINEUIL","lat":47.6068,"lon":1.376329},{"name":"VM 41220","siret":"84021237700013","naf":"93.11Z","etat":"A","a1":"20 RUE DES ECOLES","a2":"41220 SAINT-LAURENT-NOUAN","lat":47.716726,"lon":1.60785},{"name":"VM 41220","siret":"84021237700021","naf":"93.11Z","etat":"A","a1":"407 RUE DE LA MARTINIERE","a2":"41250 MONT-PRES-CHAMBORD","lat":47.558394,"lon":1.455108},{"name":"VM 41220","siret":"84021237700039","naf":"93.11Z","etat":"A","a1":"11 RUE ROGER BRUN","a2":"41250 BRACIEUX","lat":47.549591,"lon":1.536542},{"name":"ATLANTIKA","siret":"84146465400034","naf":"93.11Z","etat":"A","a1":"5 RUE D'ANGLETERRE","a2":"41000 BLOIS","lat":47.589355,"lon":1.331775},{"name":"ELECTRE","siret":"84812907800061","naf":"93.11Z","etat":"A","a1":"11 RUE ROGER BRUN PISCINE DE BRACIEUX","a2":"41250 BRACIEUX","lat":47.549591,"lon":1.536542},{"name":"ELECTRE","siret":"84812907800079","naf":"93.11Z","etat":"A","a1":"407 RUE DE LA MARTINIERE BAIGNADE NATURE","a2":"41250 MONT-PRES-CHAMBORD","lat":47.558394,"lon":1.455108},{"name":"ERIC DECKER","siret":"85099271000010","naf":"93.11Z","etat":"A","a1":"14 RUE DE L'EGALITE","a2":"41600 LAMOTTE-BEUVRON","lat":47.603194,"lon":2.024424},{"name":"THESEE","siret":"87987245500024","naf":"93.11Z","etat":"A","a1":"14 RUE DE LA LIBERATION CONTRES - CENTR","a2":"41120 LE CONTROIS-EN-SOLOGNE","lat":47.446254,"lon":1.341191},{"name":"THESEE","siret":"87987245500032","naf":"93.11Z","etat":"A","a1":"13 RTE DE LA PLAGE CENTRE AQUATIQUE VAL","a2":"41400 FAVEROLLES-SUR-CHER","lat":47.340938,"lon":1.18694},{"name":"GP KART CONCEPT","siret":"88796439300011","naf":"93.11Z","etat":"A","a1":"LA FOSSE AUX BOEUFS","a2":"41190 LANDES LE GAULOIS","lat":47.655662,"lon":1.188569},{"name":"L'EVIDENCE","siret":"90898132700012","naf":"93.11Z","etat":"A","a1":"LES QUATRE ROUES","a2":"41200 PRUNIERS EN SOLOGNE","lat":47.31906,"lon":1.660375},{"name":"DIGUET SPORT EVENT","siret":"91449743300013","naf":"93.11Z","etat":"A","a1":"9 RUE DES GRANDS CLOS","a2":"41330 MAROLLES","lat":47.647681,"lon":1.301969},{"name":"FIGHT & FITNESS ACADEMY","siret":"91899348600011","naf":"93.11Z","etat":"A","a1":"83 AVENUE DE VERDUN","a2":"41000 BLOIS","lat":47.594617,"lon":1.346925}];
+(function exportPageRuntime(D) {
+    var ROW = 86;
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    };
+    var map = L.map('map');
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '\u00a9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> \u00b7 donn\u00e9es INSEE SIRENE',
+      maxZoom: 19
+    }).addTo(map);
+    var cg = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
+    map.addLayer(cg);
+
+    function pin(color) {
+      return L.divIcon({
+        html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="' + color + '"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>',
+        className: '', iconSize: [24, 32], iconAnchor: [12, 32], popupAnchor: [0, -34]
+      });
+    }
+    var ICON = pin('#1a3a6b'), ICON_APPROX = pin('#8a96a8'), ICON_ACTIVE = pin('#c8342a');
+
+    function popupHtml(d) {
+      return '<div class="pname">' + esc(d.name) + '</div>'
+        + '<div class="pnaf">' + esc(d.naf) + '</div>'
+        + '<div class="paddr">' + esc([d.a1, d.a2].filter(Boolean).join(', ')) + '</div>'
+        + (d.ap ? '<div class="papprox">Position approximative (centre de la commune)</div>' : '')
+        + (d.siret ? '<a class="plink" target="_blank" rel="noopener" href="https://annuaire-entreprises.data.gouv.fr/etablissement/' + esc(d.siret) + '">Fiche annuaire-entreprises \u2192</a>' : '');
+    }
+
+    var markers = [], layers = [], nogeo = 0;
+    D.forEach(function (d, i) {
+      if (d.lat == null) { nogeo++; return; }
+      var m = L.marker([d.lat, d.lon], { icon: d.ap ? ICON_APPROX : ICON });
+      m.bindPopup(function () { return popupHtml(d); });
+      m.on('click', function () { select(i, false); });
+      markers[i] = m;
+      layers.push(m);
+    });
+    if (layers.length) { cg.addLayers(layers); map.fitBounds(cg.getBounds().pad(0.12)); }
+    else map.setView([46.6, 2.5], 6);
+
+    var box = document.getElementById('list'), inner = document.getElementById('inner');
+    var head = document.getElementById('sbh'), input = document.getElementById('search');
+    var hay = null, filtered = D.map(function (_, i) { return i; }), active = -1, queued = false;
+
+    function label() {
+      var n = D.length.toLocaleString('fr-FR') + ' \u00e9tablissement' + (D.length > 1 ? 's' : '');
+      if (filtered.length !== D.length) return filtered.length.toLocaleString('fr-FR') + ' / ' + n;
+      return n + (nogeo ? ' \u00b7 ' + nogeo.toLocaleString('fr-FR') + ' sans position' : '');
+    }
+
+    function card(i, k) {
+      var d = D[i];
+      var tag = d.lat == null ? '<span class="tpos">sans position</span>' : (d.ap ? '<span class="tpos">\u2248 commune</span>' : '');
+      return '<div class="card' + (i === active ? ' active' : '') + (d.lat == null ? ' nogeo' : '') + '" data-i="' + i + '" style="top:' + (k * ROW) + 'px">'
+        + '<div class="name" title="' + esc(d.name) + '">' + esc(d.name) + '</div>'
+        + '<div class="siret">' + esc(d.siret) + '</div>'
+        + '<div class="tags"><span class="tnaf">' + esc(d.naf) + '</span>'
+        + '<span class="tetat ' + (d.etat === 'A' ? 'actif">Actif' : 'ferme">Ferm\u00e9') + '</span>' + tag + '</div>'
+        + '<div class="addr">' + esc([d.a1, d.a2].filter(Boolean).join(', ') || '\u2014') + '</div></div>';
+    }
+
+    function render() {
+      queued = false;
+      var top = box.scrollTop, h = box.clientHeight || 600;
+      var from = Math.max(0, Math.floor(top / ROW) - 5);
+      var to = Math.min(filtered.length, Math.ceil((top + h) / ROW) + 5);
+      var html = '';
+      for (var k = from; k < to; k++) html += card(filtered[k], k);
+      inner.innerHTML = filtered.length ? html : '<div class="no-results">Aucun r\u00e9sultat</div>';
+    }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(render); } }
+
+    function applyFilter(q) {
+      var t = q.toLowerCase().trim();
+      if (!hay) hay = D.map(function (d) { return (d.name + ' ' + d.a1 + ' ' + d.a2 + ' ' + d.siret).toLowerCase(); });
+      filtered = [];
+      for (var i = 0; i < D.length; i++) if (!t || hay[i].indexOf(t) >= 0) filtered.push(i);
+      inner.style.height = (filtered.length * ROW + 8) + 'px';
+      head.textContent = label();
+      box.scrollTop = 0;
+      render();
+    }
+
+    function select(i, fromList) {
+      if (active >= 0 && markers[active]) markers[active].setIcon(D[active].ap ? ICON_APPROX : ICON);
+      active = i;
+      var m = markers[i];
+      if (m) {
+        m.setIcon(ICON_ACTIVE);
+        if (fromList) cg.zoomToShowLayer(m, function () { m.openPopup(); });
+      }
+      if (!fromList) {
+        var k = filtered.indexOf(i);
+        if (k < 0) { input.value = ''; applyFilter(''); k = i; }
+        if (k * ROW < box.scrollTop || (k + 1) * ROW > box.scrollTop + box.clientHeight) {
+          box.scrollTop = Math.max(0, k * ROW - box.clientHeight / 2 + ROW / 2);
+        }
+      }
+      render();
+    }
+
+    box.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    inner.addEventListener('click', function (e) {
+      var c = e.target.closest('.card');
+      if (c) select(+c.getAttribute('data-i'), true);
+    });
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { applyFilter(input.value); }, 150);
+    });
+    applyFilter('');
+  })(D);
+</script></body></html>

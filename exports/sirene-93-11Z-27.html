@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="sirene:count" content="66"/><meta name="sirene:geo" content="66"/><meta name="sirene:naf" content="93.11Z"/><meta name="sirene:dept" content="27"/><meta name="sirene:generated" content="2026-10-01T20:06:42.798Z"/><meta name="sirene:template" content="2"/><title>Sirene — 93.11Z · 27 — 66 établissements</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;background:#f5f3ef;color:#1a1a1a}header{background:#1a3a6b;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}h1{font-size:.95rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:.72rem;opacity:.65;margin-left:auto;white-space:nowrap}.body{display:flex;flex:1;min-height:0}.sb{width:340px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;min-height:0}.sbh{padding:9px 14px;border-bottom:1px solid #ddd;font-size:.72rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.05em}.search-box{padding:8px;border-bottom:1px solid #eee}.search-box input{width:100%;border:1px solid #ddd;border-radius:5px;padding:6px 10px;font-size:.82rem;outline:none;background:#f9f9f9}.search-box input:focus{border-color:#1a3a6b;background:#fff}.list{flex:1;overflow-y:auto;position:relative}#inner{position:relative}.no-results{padding:24px 14px;text-align:center;font-size:.8rem;color:#aaa}.card{position:absolute;left:8px;right:8px;height:80px;margin-top:6px;overflow:hidden;background:#fafaf8;border:1px solid #e5e2d9;border-left:3px solid transparent;border-radius:6px;padding:8px 12px;cursor:pointer;transition:border-color .15s}.card:hover{border-left-color:#1a3a6b}.card.active{border-left-color:#c8342a;background:#fff8f7}.card.nogeo{cursor:default;opacity:.8}.name{font-weight:600;font-size:.85rem;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.siret{font-family:monospace;font-size:.64rem;color:#888;margin-bottom:3px}.tags{display:flex;gap:4px;margin-bottom:4px}.tnaf,.tetat,.tpos{border-radius:3px;font-size:.65rem;padding:1px 6px;font-weight:600}.tnaf{background:#e8eef8;color:#1a3a6b}.tpos{background:#eee;color:#666}.actif{background:#e6f4ec;color:#2d7a50}.ferme{background:#fdecea;color:#c8342a}.addr{font-size:.75rem;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#map{flex:1;min-height:0}.leaflet-popup-content-wrapper{border-radius:6px!important;font-family:system-ui,sans-serif!important}.pname{font-weight:700;font-size:.85rem;margin-bottom:3px}.pnaf{font-family:monospace;font-size:.72rem;color:#1a3a6b;margin-bottom:4px}.paddr{font-size:.75rem;color:#777}.papprox{font-size:.7rem;color:#a06a00;margin-top:4px}.plink{display:inline-block;margin-top:6px;font-size:.72rem;color:#1a3a6b}@media (max-width:700px){.body{flex-direction:column-reverse}.sb{width:auto;height:42%;border-right:0;border-top:1px solid #ddd}header{padding:8px 12px}.meta{display:none}h1{font-size:.85rem}}</style></head><body><header><h1>&#128205; Sirene — 93.11Z · 27 — 66 établissements</h1><div class="meta">Exporté le 01 octobre 2026 — API Sirene INSEE</div></header><div class="body"><div class="sb"><div class="sbh" id="sbh">66 établissements</div><div class="search-box"><input id="search" type="search" placeholder="Rechercher nom, adresse, SIRET…"/></div><div class="list" id="list"><div id="inner"></div></div></div><div id="map"></div></div><script>
+const D=[{"name":"SAS EQUILIBRE 360","siret":"10861350600014","naf":"93.11Z","etat":"A","a1":"38 RUE DE PACEL","a2":"27120 PACY-SUR-EURE","lat":49.01345,"lon":1.384408},{"name":"COMMUNE DE BRIONNE","siret":"21270116300157","naf":"93.11Z","etat":"A","a1":"38 RUE EMILE NEUVILLE","a2":"27800 BRIONNE","lat":49.199058,"lon":0.714998},{"name":"COMMUNE DE EVREUX","siret":"21270229400035","naf":"93.11Z","etat":"A","a1":"RUE DE RUSSELSHEIM","a2":"27000 EVREUX","lat":49.008443,"lon":1.161329},{"name":"COMMUNE DE EVREUX","siret":"21270229400043","naf":"93.11Z","etat":"A","a1":"AVENUE ARISTIDE BRIAND","a2":"27000 EVREUX","lat":49.017176,"lon":1.126719},{"name":"TOURNAFOND ET CIE","siret":"30536534800021","naf":"93.11Z","etat":"A","a1":"14 VAL DE DURCOEUR","a2":"27300 MENNEVAL","lat":49.101747,"lon":0.596773},{"name":"LOUIS ROUAULT DE COLIGNY","siret":"31552271400015","naf":"93.11Z","etat":"A","a1":"","a2":"27580 BOURTH","lat":48.764242,"lon":0.806051,"ap":1},{"name":"LIONEL ROGER DU TRANOY","siret":"32568713500013","naf":"93.11Z","etat":"A","a1":"RTE DU GOULET","a2":"27920 SAINT-PIERRE-DE-BAILLEUL","lat":49.125562,"lon":1.396285},{"name":"COMITE DEP DE L EURE DE TENNIS","siret":"32589307100044","naf":"93.11Z","etat":"A","a1":"RUE DE L'EGLISE","a2":"27740 POSES","lat":49.295512,"lon":1.25212},{"name":"MARTINE COLLET","siret":"32737878200020","naf":"93.11Z","etat":"A","a1":"CHE DE L'EGLISE","a2":"27370 LE THUIT DE L'OISON","lat":49.261469,"lon":0.911423},{"name":"ASS DE GESTION DE LA BASE DE LOISIRS","siret":"33852953000010","naf":"93.11Z","etat":"A","a1":"RUE DE LA SOIE","a2":"27800 BRIONNE","lat":49.194384,"lon":0.720513},{"name":"OFFICE INTERMUNICIPAL ANIMATION LOISIRS","siret":"33901817800022","naf":"93.11Z","etat":"A","a1":"","a2":"27190 LA BONNEVILLE-SUR-ITON","lat":48.995053,"lon":1.040565,"ap":1},{"name":"OFFICE MUNICIPAL DES SPORTS","siret":"33937818400016","naf":"93.11Z","etat":"A","a1":"PLACE DU GENERAL DE GAULLE","a2":"27000 EVREUX","lat":49.027346,"lon":1.150782},{"name":"ALM EVREUX BASKET EURE","siret":"35290526900036","naf":"93.11Z","etat":"A","a1":"1 AVENUE ARISTIDE BRIAND","a2":"27000 EVREUX","lat":49.022101,"lon":1.139046},{"name":"CLUB NAUTIQUE DE TOUTAINVILLE","siret":"37789545300019","naf":"93.11Z","etat":"A","a1":"","a2":"27500 TOUTAINVILLE","lat":49.35235,"lon":0.45568,"ap":1},{"name":"GYMNAST BOURG ACHARD DETENTE RELAXE","siret":"37911728600029","naf":"93.11Z","etat":"A","a1":"451 RUE LE BOIS DU NOFY","a2":"27310 BOURG-ACHARD","lat":49.342878,"lon":0.827787},{"name":"ASSOCIATION DU CHATEAU DE MARBEUF","siret":"37970669000011","naf":"93.11Z","etat":"A","a1":"RUE DUMONTIER","a2":"27110 MARBEUF","lat":49.155436,"lon":0.965679},{"name":"ASS PLEIN AIR NATURE ECOL PUBL VALLEE RI","siret":"38055279400014","naf":"93.11Z","etat":"A","a1":"ECOLE PUBLIQUE BP 16","a2":"27760 LA FERRIERE-SUR-RISLE","lat":48.977678,"lon":0.786132},{"name":"SARL DES GOLFS NORMANDS","siret":"38141932400011","naf":"93.11Z","etat":"A","a1":"CHATEAU DU CHAMP DE BATAIL","a2":"27110 LE NEUBOURG","lat":49.149491,"lon":0.8996},{"name":"EVREUX ETUDIANTS CERCLE","siret":"38151915600024","naf":"93.11Z","etat":"A","a1":"RUE DU CANADA","a2":"27000 EVREUX","lat":49.011964,"lon":1.136979},{"name":"TENNIS CLUB PERRIERS S ANDELLE","siret":"38375484300019","naf":"93.11Z","etat":"A","a1":"46 RUE DU GENERAL DE GAULLE","a2":"27910 PERRIERS-SUR-ANDELLE","lat":49.412786,"lon":1.370375},{"name":"GYMNIX","siret":"38426883500012","naf":"93.11Z","etat":"A","a1":"70 RUE GRANDE","a2":"27100 VAL-DE-REUIL","lat":49.272849,"lon":1.216663},{"name":"VERT MARINE","siret":"38442547600361","naf":"93.11Z","etat":"A","a1":"RUE DE L'INDUSTRIE","a2":"27930 GRAVIGNY","lat":49.057011,"lon":1.164961},{"name":"ASS SPORTIVE DU GOLF CLUB DE GAILLON","siret":"38446179400016","naf":"93.11Z","etat":"A","a1":"LES ARTAIGNES","a2":"27600 GAILLON","lat":49.164517,"lon":1.351599},{"name":"TENNIS CLUB DE ST JUST","siret":"38515784700018","naf":"93.11Z","etat":"A","a1":"","a2":"27950 LA CHAPELLE-LONGUEVILLE","lat":49.117188,"lon":1.428559,"ap":1},{"name":"SOCIETE DES COURSES HIPPIQUES","siret":"38760052100018","naf":"93.11Z","etat":"A","a1":"3 PL MODESTE LEROY","a2":"27130 VERNEUIL D'AVRE ET D'ITON","lat":48.739486,"lon":0.911647},{"name":"ASSOCIATION SPORTIVE ST PIERRE LA GARENN","siret":"38804877900010","naf":"93.11Z","etat":"A","a1":"MAIRIE","a2":"27600 SAINT-PIERRE-LA-GARENNE","lat":49.149993,"lon":1.396098,"ap":1},{"name":"SOCIETE DU GOLF DE L AMIRAUTE","siret":"38843272600015","naf":"93.11Z","etat":"A","a1":"CORNEVILLE SUR RISLE","a2":"27500 CORNEVILLE-SUR-RISLE","lat":49.348557,"lon":0.566599},{"name":"LA FRANCAISE RISLOISE","siret":"38868942400017","naf":"93.11Z","etat":"A","a1":"AV DES SPORTS","a2":"27500 PONT-AUDEMER","lat":49.350578,"lon":0.534156},{"name":"TENNIS CLUB DE PONT AUDEMER","siret":"40107148500015","naf":"93.11Z","etat":"A","a1":"14 RUE DU PRE BARON","a2":"27500 PONT-AUDEMER","lat":49.350914,"lon":0.512907},{"name":"TENNIS CLUB AUDOENIEN","siret":"40204785600016","naf":"93.11Z","etat":"A","a1":"","a2":"27670 SAINT-OUEN-DU-TILLEUL","lat":49.294522,"lon":0.949593,"ap":1},{"name":"MARPHI","siret":"40882436500048","naf":"93.11Z","etat":"A","a1":"320 IMPASSE DU VILLAGE","a2":"27310 HONGUEMARE-GUENOUVILLE","lat":49.372352,"lon":0.812415},{"name":"SOCIETE D'EXPLOITATION DU GOLF DU VAUDREUIL","siret":"41999876000013","naf":"93.11Z","etat":"A","a1":"26 AVENUE MARC DE LA HAYE","a2":"27100 LE VAUDREUIL","lat":49.260348,"lon":1.222519},{"name":"SARL LES ECURIES DE BORD LOUVIERS","siret":"42232899700024","naf":"93.11Z","etat":"A","a1":"2 AVENUE DE LA RIVETTE","a2":"27400 LOUVIERS","lat":49.207727,"lon":1.16951},{"name":"ASS  EQUESTRE DU RELAIS DU CHAUSSE","siret":"42784148100018","naf":"93.11Z","etat":"A","a1":"","a2":"27800 SAINT VICTOR D'EPINE","lat":49.211349,"lon":0.602999,"ap":1},{"name":"ASS  ALM SECTION VOLLEY BALL","siret":"43092220300012","naf":"93.11Z","etat":"A","a1":"12 RUE DE L'ESPERANTO","a2":"27000 EVREUX","lat":49.008464,"lon":1.154197},{"name":"ASS  A L M SECTION NATATION","siret":"43092221100015","naf":"93.11Z","etat":"A","a1":"10 RUE DE LA FEDERATION","a2":"27000 EVREUX","lat":49.0039,"lon":1.151217},{"name":"SOCIETE NOUVELLE DU GOLF DU CHAMP DE BATAILLE","siret":"43392856100011","naf":"93.11Z","etat":"A","a1":"LD CHAMP DE BATAILLE","a2":"27110 LE NEUBOURG","lat":49.149491,"lon":0.8996},{"name":"FETES ET LOISIRS D'HACQUEVILLE","siret":"45093732100013","naf":"93.11Z","etat":"A","a1":"","a2":"27150 HACQUEVILLE","lat":49.277363,"lon":1.550518,"ap":1},{"name":"ASSOCIATION TENNIS COMBON","siret":"49857879800015","naf":"93.11Z","etat":"A","a1":"17 RUE DE LA MAIRIE","a2":"27170 COMBON","lat":49.096949,"lon":0.889093},{"name":"LS PORTES DE L'EURE  LOISIRS SPORTIFS PORTES DE L'EURE","siret":"51883934500023","naf":"93.11Z","etat":"A","a1":"RUE ALBERT CAMUS","a2":"27120 PACY-SUR-EURE","lat":49.023115,"lon":1.377386},{"name":"LS PORTES DE L'EURE  LOISIRS SPORTIFS PORTES DE L'EURE","siret":"51883934500049","naf":"93.11Z","etat":"A","a1":"1 RUE LOUIS BLERIOT","a2":"27950 SAINT-MARCEL","lat":49.098663,"lon":1.458469},{"name":"PROSTORE PAINTBALL","siret":"75236645000027","naf":"93.11Z","etat":"A","a1":"LA FORET D'IVRY","a2":"27220 SAINT-ANDRE-DE-L'EURE","lat":48.900366,"lon":1.299634},{"name":"BASE NAUTIQUE LES ANDELYS","siret":"78077837900013","naf":"93.11Z","etat":"A","a1":"58 RUE DE LA MADELEINE","a2":"27700 LES ANDELYS","lat":49.248003,"lon":1.413886},{"name":"BASE NAUTIQUE LES ANDELYS","siret":"78077837900021","naf":"93.11Z","etat":"A","a1":"RUE DU PORT DE PLAISANCE","a2":"27700 LES ANDELYS","lat":49.253436,"lon":1.440247},{"name":"OFFICE MUNICIPAL DES SPORTS","siret":"78083025300016","naf":"93.11Z","etat":"A","a1":"2 PLACE FERRAND","a2":"27110 LE NEUBOURG","lat":49.151098,"lon":0.905679},{"name":"SPORT C.P EVREUX","siret":"79975300900023","naf":"93.11Z","etat":"A","a1":"9 RUE DULONG","a2":"27000 EVREUX","lat":49.022826,"lon":1.149426},{"name":"UNION SPORTIVE DU COLLEGE D'ENSEIGNEMENT SECONDAIRE","siret":"82140301100017","naf":"93.11Z","etat":"A","a1":"9 RUE DE LA JUSTICE","a2":"27000 EVREUX","lat":49.023948,"lon":1.159982},{"name":"KRATOS","siret":"83370474500029","naf":"93.11Z","etat":"A","a1":"RUE DU CANAL","a2":"27400 LOUVIERS","lat":49.215916,"lon":1.178966},{"name":"VM 27950","siret":"83783865500079","naf":"93.11Z","etat":"A","a1":"1 RUE LOUIS BLERIOT","a2":"27950 SAINT-MARCEL","lat":49.098663,"lon":1.458469},{"name":"VM 27950","siret":"83783865500087","naf":"93.11Z","etat":"A","a1":"RUE ALBERT CAMUS","a2":"27120 PACY-SUR-EURE","lat":49.023115,"lon":1.377386},{"name":"OPARK","siret":"84182081400025","naf":"93.11Z","etat":"A","a1":"43 AVENUE ALBERT FORCINAL","a2":"27140 GISORS","lat":49.28703,"lon":1.796962},{"name":"VAUDREUIL GOLF MANAGEMENT","siret":"85264981300015","naf":"93.11Z","etat":"A","a1":"26 AVENUE MARC DE LA HAYE","a2":"27100 LE VAUDREUIL","lat":49.260348,"lon":1.222519},{"name":"NARCISSE","siret":"87998762600022","naf":"93.11Z","etat":"A","a1":"RUE DU CANAL","a2":"27400 LOUVIERS","lat":49.215916,"lon":1.178966},{"name":"SOCIETE D'EXPLOITATION DU GOLF DE LERY POSES","siret":"89405784300027","naf":"93.11Z","etat":"A","a1":"D 110","a2":"27740 POSES","lat":49.296802,"lon":1.24705,"ap":1},{"name":"O'SPARE","siret":"90333623800014","naf":"93.11Z","etat":"A","a1":"207 ALLEE VINCENT VAN GOGH","a2":"27310 BOURG-ACHARD","lat":49.346686,"lon":0.81216},{"name":"O'SPARE","siret":"90333623800022","naf":"93.11Z","etat":"A","a1":"830 RUE DU DOCTEUR DUVRAC","a2":"27310 HONGUEMARE GUENOUVILLE","lat":49.362151,"lon":0.825264},{"name":"PADEL ROUGE","siret":"90961922300011","naf":"93.11Z","etat":"A","a1":"6 RUE RENE DAUPLAY","a2":"27540 IVRY LA BATAILLE","lat":48.884312,"lon":1.461124},{"name":"CWF-COWORKFIT","siret":"91388245200018","naf":"93.11Z","etat":"A","a1":"7 RUE EMILE BEYNE","a2":"27140 GISORS","lat":49.279172,"lon":1.758697},{"name":"SPORTING EVREUX","siret":"93838062300018","naf":"93.11Z","etat":"A","a1":"281 RUE VULCAIN","a2":"27000 EVREUX","lat":49.019478,"lon":1.175679},{"name":"HTX","siret":"93915072800011","naf":"93.11Z","etat":"A","a1":"530 RUE DE BOURGTHEROULDE","a2":"27670 BOSROUMOIS","lat":49.297481,"lon":0.913015},{"name":"FITNESS VERNON","siret":"94041654800011","naf":"93.11Z","etat":"A","a1":"10 AVENUE WINSTON CHURCHILL","a2":"27200 VERNON","lat":49.098318,"lon":1.471198},{"name":"LD16I","siret":"94479196100013","naf":"93.11Z","etat":"A","a1":"502 CHEMIN DU MESNILLET","a2":"27340 CRIQUEBEUF-SUR-SEINE","lat":49.302583,"lon":1.082689},{"name":"CASEO 27","siret":"94489031800016","naf":"93.11Z","etat":"A","a1":"RUE DU CANAL","a2":"27400 LOUVIERS","lat":49.215916,"lon":1.178966},{"name":"VM 27300","siret":"99046177400020","naf":"93.11Z","etat":"A","a1":"204 RUE LUDOVIC DESCAMPS","a2":"27300 MENNEVAL","lat":49.105512,"lon":0.594869},{"name":"2OBC","siret":"99247722400024","naf":"93.11Z","etat":"A","a1":"255 ZONE ARTISANALE LA BELLERIE","a2":"27260 EPAIGNES","lat":49.283418,"lon":0.427038},{"name":"D&L PHOENIX GYM","siret":"99382045500018","naf":"93.11Z","etat":"A","a1":"80 RUE DE LA FORET","a2":"27000 EVREUX","lat":49.009284,"lon":1.153422}];
+(function exportPageRuntime(D) {
+    var ROW = 86;
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    };
+    var map = L.map('map');
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '\u00a9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> \u00b7 donn\u00e9es INSEE SIRENE',
+      maxZoom: 19
+    }).addTo(map);
+    var cg = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
+    map.addLayer(cg);
+
+    function pin(color) {
+      return L.divIcon({
+        html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="' + color + '"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>',
+        className: '', iconSize: [24, 32], iconAnchor: [12, 32], popupAnchor: [0, -34]
+      });
+    }
+    var ICON = pin('#1a3a6b'), ICON_APPROX = pin('#8a96a8'), ICON_ACTIVE = pin('#c8342a');
+
+    function popupHtml(d) {
+      return '<div class="pname">' + esc(d.name) + '</div>'
+        + '<div class="pnaf">' + esc(d.naf) + '</div>'
+        + '<div class="paddr">' + esc([d.a1, d.a2].filter(Boolean).join(', ')) + '</div>'
+        + (d.ap ? '<div class="papprox">Position approximative (centre de la commune)</div>' : '')
+        + (d.siret ? '<a class="plink" target="_blank" rel="noopener" href="https://annuaire-entreprises.data.gouv.fr/etablissement/' + esc(d.siret) + '">Fiche annuaire-entreprises \u2192</a>' : '');
+    }
+
+    var markers = [], layers = [], nogeo = 0;
+    D.forEach(function (d, i) {
+      if (d.lat == null) { nogeo++; return; }
+      var m = L.marker([d.lat, d.lon], { icon: d.ap ? ICON_APPROX : ICON });
+      m.bindPopup(function () { return popupHtml(d); });
+      m.on('click', function () { select(i, false); });
+      markers[i] = m;
+      layers.push(m);
+    });
+    if (layers.length) { cg.addLayers(layers); map.fitBounds(cg.getBounds().pad(0.12)); }
+    else map.setView([46.6, 2.5], 6);
+
+    var box = document.getElementById('list'), inner = document.getElementById('inner');
+    var head = document.getElementById('sbh'), input = document.getElementById('search');
+    var hay = null, filtered = D.map(function (_, i) { return i; }), active = -1, queued = false;
+
+    function label() {
+      var n = D.length.toLocaleString('fr-FR') + ' \u00e9tablissement' + (D.length > 1 ? 's' : '');
+      if (filtered.length !== D.length) return filtered.length.toLocaleString('fr-FR') + ' / ' + n;
+      return n + (nogeo ? ' \u00b7 ' + nogeo.toLocaleString('fr-FR') + ' sans position' : '');
+    }
+
+    function card(i, k) {
+      var d = D[i];
+      var tag = d.lat == null ? '<span class="tpos">sans position</span>' : (d.ap ? '<span class="tpos">\u2248 commune</span>' : '');
+      return '<div class="card' + (i === active ? ' active' : '') + (d.lat == null ? ' nogeo' : '') + '" data-i="' + i + '" style="top:' + (k * ROW) + 'px">'
+        + '<div class="name" title="' + esc(d.name) + '">' + esc(d.name) + '</div>'
+        + '<div class="siret">' + esc(d.siret) + '</div>'
+        + '<div class="tags"><span class="tnaf">' + esc(d.naf) + '</span>'
+        + '<span class="tetat ' + (d.etat === 'A' ? 'actif">Actif' : 'ferme">Ferm\u00e9') + '</span>' + tag + '</div>'
+        + '<div class="addr">' + esc([d.a1, d.a2].filter(Boolean).join(', ') || '\u2014') + '</div></div>';
+    }
+
+    function render() {
+      queued = false;
+      var top = box.scrollTop, h = box.clientHeight || 600;
+      var from = Math.max(0, Math.floor(top / ROW) - 5);
+      var to = Math.min(filtered.length, Math.ceil((top + h) / ROW) + 5);
+      var html = '';
+      for (var k = from; k < to; k++) html += card(filtered[k], k);
+      inner.innerHTML = filtered.length ? html : '<div class="no-results">Aucun r\u00e9sultat</div>';
+    }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(render); } }
+
+    function applyFilter(q) {
+      var t = q.toLowerCase().trim();
+      if (!hay) hay = D.map(function (d) { return (d.name + ' ' + d.a1 + ' ' + d.a2 + ' ' + d.siret).toLowerCase(); });
+      filtered = [];
+      for (var i = 0; i < D.length; i++) if (!t || hay[i].indexOf(t) >= 0) filtered.push(i);
+      inner.style.height = (filtered.length * ROW + 8) + 'px';
+      head.textContent = label();
+      box.scrollTop = 0;
+      render();
+    }
+
+    function select(i, fromList) {
+      if (active >= 0 && markers[active]) markers[active].setIcon(D[active].ap ? ICON_APPROX : ICON);
+      active = i;
+      var m = markers[i];
+      if (m) {
+        m.setIcon(ICON_ACTIVE);
+        if (fromList) cg.zoomToShowLayer(m, function () { m.openPopup(); });
+      }
+      if (!fromList) {
+        var k = filtered.indexOf(i);
+        if (k < 0) { input.value = ''; applyFilter(''); k = i; }
+        if (k * ROW < box.scrollTop || (k + 1) * ROW > box.scrollTop + box.clientHeight) {
+          box.scrollTop = Math.max(0, k * ROW - box.clientHeight / 2 + ROW / 2);
+        }
+      }
+      render();
+    }
+
+    box.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    inner.addEventListener('click', function (e) {
+      var c = e.target.closest('.card');
+      if (c) select(+c.getAttribute('data-i'), true);
+    });
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { applyFilter(input.value); }, 150);
+    });
+    applyFilter('');
+  })(D);
+</script></body></html>

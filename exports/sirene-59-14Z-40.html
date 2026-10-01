@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="sirene:count" content="32"/><meta name="sirene:geo" content="32"/><meta name="sirene:naf" content="59.14Z"/><meta name="sirene:dept" content="40"/><meta name="sirene:generated" content="2026-10-01T19:55:10.877Z"/><meta name="sirene:template" content="2"/><title>Sirene — 59.14Z · 40 — 32 établissements</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;background:#f5f3ef;color:#1a1a1a}header{background:#1a3a6b;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}h1{font-size:.95rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:.72rem;opacity:.65;margin-left:auto;white-space:nowrap}.body{display:flex;flex:1;min-height:0}.sb{width:340px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;min-height:0}.sbh{padding:9px 14px;border-bottom:1px solid #ddd;font-size:.72rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.05em}.search-box{padding:8px;border-bottom:1px solid #eee}.search-box input{width:100%;border:1px solid #ddd;border-radius:5px;padding:6px 10px;font-size:.82rem;outline:none;background:#f9f9f9}.search-box input:focus{border-color:#1a3a6b;background:#fff}.list{flex:1;overflow-y:auto;position:relative}#inner{position:relative}.no-results{padding:24px 14px;text-align:center;font-size:.8rem;color:#aaa}.card{position:absolute;left:8px;right:8px;height:80px;margin-top:6px;overflow:hidden;background:#fafaf8;border:1px solid #e5e2d9;border-left:3px solid transparent;border-radius:6px;padding:8px 12px;cursor:pointer;transition:border-color .15s}.card:hover{border-left-color:#1a3a6b}.card.active{border-left-color:#c8342a;background:#fff8f7}.card.nogeo{cursor:default;opacity:.8}.name{font-weight:600;font-size:.85rem;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.siret{font-family:monospace;font-size:.64rem;color:#888;margin-bottom:3px}.tags{display:flex;gap:4px;margin-bottom:4px}.tnaf,.tetat,.tpos{border-radius:3px;font-size:.65rem;padding:1px 6px;font-weight:600}.tnaf{background:#e8eef8;color:#1a3a6b}.tpos{background:#eee;color:#666}.actif{background:#e6f4ec;color:#2d7a50}.ferme{background:#fdecea;color:#c8342a}.addr{font-size:.75rem;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#map{flex:1;min-height:0}.leaflet-popup-content-wrapper{border-radius:6px!important;font-family:system-ui,sans-serif!important}.pname{font-weight:700;font-size:.85rem;margin-bottom:3px}.pnaf{font-family:monospace;font-size:.72rem;color:#1a3a6b;margin-bottom:4px}.paddr{font-size:.75rem;color:#777}.papprox{font-size:.7rem;color:#a06a00;margin-top:4px}.plink{display:inline-block;margin-top:6px;font-size:.72rem;color:#1a3a6b}@media (max-width:700px){.body{flex-direction:column-reverse}.sb{width:auto;height:42%;border-right:0;border-top:1px solid #ddd}header{padding:8px 12px}.meta{display:none}h1{font-size:.85rem}}</style></head><body><header><h1>&#128205; Sirene — 59.14Z · 40 — 32 établissements</h1><div class="meta">Exporté le 01 octobre 2026 — API Sirene INSEE</div></header><div class="body"><div class="sb"><div class="sbh" id="sbh">32 établissements</div><div class="search-box"><input id="search" type="search" placeholder="Rechercher nom, adresse, SIRET…"/></div><div class="list" id="list"><div id="inner"></div></div></div><div id="map"></div></div><script>
+const D=[{"name":"NOUVELLES ONDES","siret":"10647656700016","naf":"59.14Z","etat":"A","a1":"39 RUE DES AVOCETTES","a2":"40170 SAINT-JULIEN-EN-BORN","lat":44.091371,"lon":-1.321292},{"name":"COMMUNE DE SAINT VINCENT DE TYROSSE","siret":"21400284200109","naf":"59.14Z","etat":"A","a1":"24 AVENUE NATIONALE","a2":"40230 SAINT-VINCENT-DE-TYROSSE","lat":43.660752,"lon":-1.304343},{"name":"COMMUNE DE SOORTS HOSSEGOR","siret":"21400304800060","naf":"59.14Z","etat":"A","a1":"18 AVENUE DE PARIS","a2":"40150 SOORTS-HOSSEGOR","lat":43.658337,"lon":-1.4274},{"name":"CINE CLUB","siret":"30448824000017","naf":"59.14Z","etat":"A","a1":"PL ARISTIDE BRIAND","a2":"40110 MORCENX-LA-NOUVELLE","lat":44.033341,"lon":-0.910252},{"name":"SARL PEI","siret":"33406748500055","naf":"59.14Z","etat":"A","a1":"PLACE DE LA POSTE","a2":"40150 SOORTS-HOSSEGOR","lat":43.664227,"lon":-1.394842},{"name":"SARL PEI","siret":"33406748500071","naf":"59.14Z","etat":"A","a1":"22 ALL MARINES","a2":"40130 CAPBRETON","lat":43.641506,"lon":-1.432653},{"name":"SARL PEI","siret":"33406748500089","naf":"59.14Z","etat":"A","a1":"11 AVENUE DU SABLAR","a2":"40100 DAX","lat":43.714905,"lon":-1.055684},{"name":"ASSOCIATION ENTRACTE","siret":"34991879700011","naf":"59.14Z","etat":"A","a1":"PLACE FREDERIC BASTIAT","a2":"40250 MUGRON","lat":43.750528,"lon":-0.749888},{"name":"SARL LE CLUB","siret":"38406329300045","naf":"59.14Z","etat":"A","a1":"11 AVENUE DU SABLAR","a2":"40100 DAX","lat":43.714905,"lon":-1.055684},{"name":"LANESMOND","siret":"41457542300028","naf":"59.14Z","etat":"A","a1":"BOULEVARD JACQUES DUCLOS","a2":"40220 TARNOS","lat":43.536501,"lon":-1.46111},{"name":"ASSOC CULTURELLE DE LABOUHEYRE","siret":"42072576400013","naf":"59.14Z","etat":"A","a1":"42 RUE DE L'HOTEL DE VILLE","a2":"40210 LABOUHEYRE","lat":44.212025,"lon":-0.9191},{"name":"KURSAAL","siret":"42316028200012","naf":"59.14Z","etat":"A","a1":"PL E LAUDOUAT","a2":"40260 CASTETS","lat":43.882039,"lon":-1.145294},{"name":"CINELINX CLUB 3EME AGE","siret":"42400166700015","naf":"59.14Z","etat":"A","a1":"AU BOURG","a2":"40260 LINXE","lat":43.913052,"lon":-1.19969},{"name":"CINETYR","siret":"42409519800018","naf":"59.14Z","etat":"A","a1":"AVENUE NATIONALE 10","a2":"40230 SAINT-VINCENT-DE-TYROSSE","lat":43.660315,"lon":-1.30563},{"name":"ASSOCIATION TANOC AQUITAINE","siret":"48288911000011","naf":"59.14Z","etat":"A","a1":"22 AV PASTEUR","a2":"40110 MORCENX-LA-NOUVELLE","lat":44.029861,"lon":-0.910711},{"name":"ACQS ET TOILES","siret":"50160909300015","naf":"59.14Z","etat":"A","a1":"690 RUE DE MONTEILS","a2":"40180 OEYRELUY","lat":43.666227,"lon":-1.088628},{"name":"CINEMAGIN ACTION","siret":"50264420600026","naf":"59.14Z","etat":"A","a1":"409 ROUTE DE DAUGNAGUE","a2":"40410 PISSOS","lat":44.305249,"lon":-0.781674},{"name":"ASSOCIATION CINEMA KURSAAL","siret":"50429188100028","naf":"59.14Z","etat":"A","a1":"40 PLACE EDOUARD LAUDOUAT","a2":"40260 CASTETS","lat":43.882021,"lon":-1.145093},{"name":"CINEPHILANDES","siret":"52978350800029","naf":"59.14Z","etat":"A","a1":"21 AV DU VINGT ET UN AOUT","a2":"40280 SAINT-PIERRE-DU-MONT","lat":43.882306,"lon":-0.5249},{"name":"ASSOCIATION CINELIT","siret":"75232425100012","naf":"59.14Z","etat":"A","a1":"23 RUE DE L'EGLISE","a2":"40170 LIT-ET-MIXE","lat":44.032837,"lon":-1.257642},{"name":"CIN ORTHE","siret":"79981000700028","naf":"59.14Z","etat":"A","a1":"146 PLACE ARISTIDE BRIAND","a2":"40300 PEYREHORADE","lat":43.545174,"lon":-1.102823},{"name":"FAMASO","siret":"80164839500011","naf":"59.14Z","etat":"A","a1":"1663 ROUTE DE COUDOSSE","a2":"40380 GAMARDE-LES-BAINS","lat":43.730854,"lon":-0.840994},{"name":"FAMASO","siret":"80164839500029","naf":"59.14Z","etat":"A","a1":"PLACE ROBERT LASSALLE","a2":"40140 SOUSTONS","lat":43.753655,"lon":-1.327338},{"name":"PASCAL BEC","siret":"80226497800023","naf":"59.14Z","etat":"A","a1":"21 LOTISSEMENT JEANDEMAY","a2":"40700 HAGETMAU","lat":43.644221,"lon":-0.602276},{"name":"L ECRAN DES PINS","siret":"82497799500029","naf":"59.14Z","etat":"A","a1":"128 AV DU QUATORZE JUILLET","a2":"40600 BISCARROSSE","lat":44.395571,"lon":-1.166782},{"name":"CINELANDES","siret":"83857286500023","naf":"59.14Z","etat":"A","a1":"447 AVENUE DU CORPS FRANC POMMIES","a2":"40280 SAINT-PIERRE-DU-MONT","lat":43.885423,"lon":-0.522282},{"name":"DCPMC EXPLOITATION","siret":"84796768400022","naf":"59.14Z","etat":"A","a1":"PL DE LA MAIRIE","a2":"40210 LABOUHEYRE","lat":44.213294,"lon":-0.919816},{"name":"DCPMC EXPLOITATION","siret":"84796768400048","naf":"59.14Z","etat":"A","a1":"12 AVENUE DE LA GARE","a2":"40100 DAX","lat":43.720089,"lon":-1.05081},{"name":"CINE KULT","siret":"92315361300016","naf":"59.14Z","etat":"A","a1":"9 RUE DE PIRIC","a2":"40140 SOUSTONS","lat":43.743373,"lon":-1.31154},{"name":"LES CINEMAS DE MDM","siret":"93814330200025","naf":"59.14Z","etat":"A","a1":"64 BOULEVARD DE LA REPUBLIQUE","a2":"40000 MONT-DE-MARSAN","lat":43.887152,"lon":-0.50088},{"name":"LES CINEMAS DE MACS","siret":"99025620800010","naf":"59.14Z","etat":"A","a1":"11 AVENUE DU SABLAR","a2":"40100 DAX","lat":43.714905,"lon":-1.055684},{"name":"LES CINEMAS DE MACS","siret":"99025620800028","naf":"59.14Z","etat":"A","a1":"PLACE ROBERT LASSALLE","a2":"40140 SOUSTONS","lat":43.753655,"lon":-1.327338}];
+(function exportPageRuntime(D) {
+    var ROW = 86;
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    };
+    var map = L.map('map');
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '\u00a9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> \u00b7 donn\u00e9es INSEE SIRENE',
+      maxZoom: 19
+    }).addTo(map);
+    var cg = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
+    map.addLayer(cg);
+
+    function pin(color) {
+      return L.divIcon({
+        html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="' + color + '"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>',
+        className: '', iconSize: [24, 32], iconAnchor: [12, 32], popupAnchor: [0, -34]
+      });
+    }
+    var ICON = pin('#1a3a6b'), ICON_APPROX = pin('#8a96a8'), ICON_ACTIVE = pin('#c8342a');
+
+    function popupHtml(d) {
+      return '<div class="pname">' + esc(d.name) + '</div>'
+        + '<div class="pnaf">' + esc(d.naf) + '</div>'
+        + '<div class="paddr">' + esc([d.a1, d.a2].filter(Boolean).join(', ')) + '</div>'
+        + (d.ap ? '<div class="papprox">Position approximative (centre de la commune)</div>' : '')
+        + (d.siret ? '<a class="plink" target="_blank" rel="noopener" href="https://annuaire-entreprises.data.gouv.fr/etablissement/' + esc(d.siret) + '">Fiche annuaire-entreprises \u2192</a>' : '');
+    }
+
+    var markers = [], layers = [], nogeo = 0;
+    D.forEach(function (d, i) {
+      if (d.lat == null) { nogeo++; return; }
+      var m = L.marker([d.lat, d.lon], { icon: d.ap ? ICON_APPROX : ICON });
+      m.bindPopup(function () { return popupHtml(d); });
+      m.on('click', function () { select(i, false); });
+      markers[i] = m;
+      layers.push(m);
+    });
+    if (layers.length) { cg.addLayers(layers); map.fitBounds(cg.getBounds().pad(0.12)); }
+    else map.setView([46.6, 2.5], 6);
+
+    var box = document.getElementById('list'), inner = document.getElementById('inner');
+    var head = document.getElementById('sbh'), input = document.getElementById('search');
+    var hay = null, filtered = D.map(function (_, i) { return i; }), active = -1, queued = false;
+
+    function label() {
+      var n = D.length.toLocaleString('fr-FR') + ' \u00e9tablissement' + (D.length > 1 ? 's' : '');
+      if (filtered.length !== D.length) return filtered.length.toLocaleString('fr-FR') + ' / ' + n;
+      return n + (nogeo ? ' \u00b7 ' + nogeo.toLocaleString('fr-FR') + ' sans position' : '');
+    }
+
+    function card(i, k) {
+      var d = D[i];
+      var tag = d.lat == null ? '<span class="tpos">sans position</span>' : (d.ap ? '<span class="tpos">\u2248 commune</span>' : '');
+      return '<div class="card' + (i === active ? ' active' : '') + (d.lat == null ? ' nogeo' : '') + '" data-i="' + i + '" style="top:' + (k * ROW) + 'px">'
+        + '<div class="name" title="' + esc(d.name) + '">' + esc(d.name) + '</div>'
+        + '<div class="siret">' + esc(d.siret) + '</div>'
+        + '<div class="tags"><span class="tnaf">' + esc(d.naf) + '</span>'
+        + '<span class="tetat ' + (d.etat === 'A' ? 'actif">Actif' : 'ferme">Ferm\u00e9') + '</span>' + tag + '</div>'
+        + '<div class="addr">' + esc([d.a1, d.a2].filter(Boolean).join(', ') || '\u2014') + '</div></div>';
+    }
+
+    function render() {
+      queued = false;
+      var top = box.scrollTop, h = box.clientHeight || 600;
+      var from = Math.max(0, Math.floor(top / ROW) - 5);
+      var to = Math.min(filtered.length, Math.ceil((top + h) / ROW) + 5);
+      var html = '';
+      for (var k = from; k < to; k++) html += card(filtered[k], k);
+      inner.innerHTML = filtered.length ? html : '<div class="no-results">Aucun r\u00e9sultat</div>';
+    }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(render); } }
+
+    function applyFilter(q) {
+      var t = q.toLowerCase().trim();
+      if (!hay) hay = D.map(function (d) { return (d.name + ' ' + d.a1 + ' ' + d.a2 + ' ' + d.siret).toLowerCase(); });
+      filtered = [];
+      for (var i = 0; i < D.length; i++) if (!t || hay[i].indexOf(t) >= 0) filtered.push(i);
+      inner.style.height = (filtered.length * ROW + 8) + 'px';
+      head.textContent = label();
+      box.scrollTop = 0;
+      render();
+    }
+
+    function select(i, fromList) {
+      if (active >= 0 && markers[active]) markers[active].setIcon(D[active].ap ? ICON_APPROX : ICON);
+      active = i;
+      var m = markers[i];
+      if (m) {
+        m.setIcon(ICON_ACTIVE);
+        if (fromList) cg.zoomToShowLayer(m, function () { m.openPopup(); });
+      }
+      if (!fromList) {
+        var k = filtered.indexOf(i);
+        if (k < 0) { input.value = ''; applyFilter(''); k = i; }
+        if (k * ROW < box.scrollTop || (k + 1) * ROW > box.scrollTop + box.clientHeight) {
+          box.scrollTop = Math.max(0, k * ROW - box.clientHeight / 2 + ROW / 2);
+        }
+      }
+      render();
+    }
+
+    box.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    inner.addEventListener('click', function (e) {
+      var c = e.target.closest('.card');
+      if (c) select(+c.getAttribute('data-i'), true);
+    });
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { applyFilter(input.value); }, 150);
+    });
+    applyFilter('');
+  })(D);
+</script></body></html>

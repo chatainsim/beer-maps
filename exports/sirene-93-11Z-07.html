@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="sirene:count" content="36"/><meta name="sirene:geo" content="35"/><meta name="sirene:naf" content="93.11Z"/><meta name="sirene:dept" content="07"/><meta name="sirene:generated" content="2026-10-01T20:06:00.888Z"/><meta name="sirene:template" content="2"/><title>Sirene — 93.11Z · 07 — 36 établissements</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;background:#f5f3ef;color:#1a1a1a}header{background:#1a3a6b;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}h1{font-size:.95rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:.72rem;opacity:.65;margin-left:auto;white-space:nowrap}.body{display:flex;flex:1;min-height:0}.sb{width:340px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;min-height:0}.sbh{padding:9px 14px;border-bottom:1px solid #ddd;font-size:.72rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.05em}.search-box{padding:8px;border-bottom:1px solid #eee}.search-box input{width:100%;border:1px solid #ddd;border-radius:5px;padding:6px 10px;font-size:.82rem;outline:none;background:#f9f9f9}.search-box input:focus{border-color:#1a3a6b;background:#fff}.list{flex:1;overflow-y:auto;position:relative}#inner{position:relative}.no-results{padding:24px 14px;text-align:center;font-size:.8rem;color:#aaa}.card{position:absolute;left:8px;right:8px;height:80px;margin-top:6px;overflow:hidden;background:#fafaf8;border:1px solid #e5e2d9;border-left:3px solid transparent;border-radius:6px;padding:8px 12px;cursor:pointer;transition:border-color .15s}.card:hover{border-left-color:#1a3a6b}.card.active{border-left-color:#c8342a;background:#fff8f7}.card.nogeo{cursor:default;opacity:.8}.name{font-weight:600;font-size:.85rem;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.siret{font-family:monospace;font-size:.64rem;color:#888;margin-bottom:3px}.tags{display:flex;gap:4px;margin-bottom:4px}.tnaf,.tetat,.tpos{border-radius:3px;font-size:.65rem;padding:1px 6px;font-weight:600}.tnaf{background:#e8eef8;color:#1a3a6b}.tpos{background:#eee;color:#666}.actif{background:#e6f4ec;color:#2d7a50}.ferme{background:#fdecea;color:#c8342a}.addr{font-size:.75rem;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#map{flex:1;min-height:0}.leaflet-popup-content-wrapper{border-radius:6px!important;font-family:system-ui,sans-serif!important}.pname{font-weight:700;font-size:.85rem;margin-bottom:3px}.pnaf{font-family:monospace;font-size:.72rem;color:#1a3a6b;margin-bottom:4px}.paddr{font-size:.75rem;color:#777}.papprox{font-size:.7rem;color:#a06a00;margin-top:4px}.plink{display:inline-block;margin-top:6px;font-size:.72rem;color:#1a3a6b}@media (max-width:700px){.body{flex-direction:column-reverse}.sb{width:auto;height:42%;border-right:0;border-top:1px solid #ddd}header{padding:8px 12px}.meta{display:none}h1{font-size:.85rem}}</style></head><body><header><h1>&#128205; Sirene — 93.11Z · 07 — 36 établissements</h1><div class="meta">Exporté le 01 octobre 2026 — API Sirene INSEE</div></header><div class="body"><div class="sb"><div class="sbh" id="sbh">36 établissements</div><div class="search-box"><input id="search" type="search" placeholder="Rechercher nom, adresse, SIRET…"/></div><div class="list" id="list"><div id="inner"></div></div></div><div id="map"></div></div><script>
+const D=[{"name":"CHIQUITA PADEL","siret":"10134167500011","naf":"93.11Z","etat":"A","a1":"886 CHEMIN DES HELVIENS","a2":"07400 LE TEIL","lat":44.551141,"lon":4.667425},{"name":"STAND DE TIR RYKA","siret":"10488962100025","naf":"93.11Z","etat":"A","a1":"ROUTE DE PLANCE","a2":"07700 SAINT-REMEZE","lat":44.363227,"lon":4.500414},{"name":"PADEL 07","siret":"10627286700016","naf":"93.11Z","etat":"A","a1":"CHEMIN DE FAVIER","a2":"07400 MEYSSE","lat":44.625617,"lon":4.74615},{"name":"GOAT PADEL","siret":"10735534900013","naf":"93.11Z","etat":"A","a1":"368 ROUTE D'ALBARY","a2":"07140 LES ASSIONS","lat":44.42089,"lon":4.160938},{"name":"SM D'ETUDES DES MONTS ET VALLEES D'ARDECHE (SEMVA)","siret":"20002540100023","naf":"93.11Z","etat":"A","a1":"1 CHEMIN DU COTON","a2":"07200 AUBENAS","lat":44.624862,"lon":4.38777},{"name":"SIVU POUR LA CONSTRUCTION ET LA GESTION D'UN COMPLEXE MULTI-ACTIVITES A VOCATIONS SPORTIVE, CULTURELLE ET DE SERVICES","siret":"20003336300017","naf":"93.11Z","etat":"A","a1":"36 PLACE DE L'EGLISE","a2":"07340 PEAUGRES","lat":45.286615,"lon":4.729049},{"name":"SYNDICAT MIXTE DE L'ARDECHE MERIDIONALE","siret":"20007523200013","naf":"93.11Z","etat":"A","a1":"QUA DE LA RAZE","a2":"07230 LABLACHERE","lat":44.467331,"lon":4.208062},{"name":"SIVU \"COMPLEXE SPORTIF DE BRENIEUX\"","siret":"20009595800019","naf":"93.11Z","etat":"A","a1":"35 PLACE DE LA MAIRIE","a2":"07290 SAINT-ROMAIN-D'AY","lat":45.163565,"lon":4.66228},{"name":"COMMUNE D ANNONAY","siret":"21070010000030","naf":"93.11Z","etat":"A","a1":"ROUTE LEVERT","a2":"07100 ANNONAY","lat":45.230873,"lon":4.673088},{"name":"COMMUNE DU LAC D ISSARLES","siret":"21070119900072","naf":"93.11Z","etat":"A","a1":"38 RUE DU LAVOIR","a2":"07470 LE LAC-D'ISSARLES","lat":44.821224,"lon":4.061657},{"name":"COMMUNE D ORGNAC L AVEN","siret":"21070168600045","naf":"93.11Z","etat":"A","a1":"25 ROUTE DE PONT ST ESPRIT","a2":"07150 ORGNAC-L'AVEN","lat":44.305949,"lon":4.433},{"name":"COMMUNE DE SAINT FELICIEN","siret":"21070236100077","naf":"93.11Z","etat":"A","a1":"1360 ROUTE DE BRINTENAS","a2":"07410 SAINT-FELICIEN","lat":45.076394,"lon":4.640159},{"name":"TENNIS CLUB AUBENAS","siret":"30805050900014","naf":"93.11Z","etat":"A","a1":"QUA ROQUA","a2":"07200 AUBENAS","lat":44.628055,"lon":4.388679},{"name":"TENNIS-CLUB D ANNONAY","siret":"32378924800016","naf":"93.11Z","etat":"A","a1":"LA LOMBARDIERE","a2":"07430 DAVEZIEUX","lat":45.251544,"lon":4.694861},{"name":"CASTOR CANOE","siret":"32877825300018","naf":"93.11Z","etat":"A","a1":"666 ROUTE DES GORGES","a2":"07150 VALLON-PONT-D'ARC","lat":44.398313,"lon":4.395714},{"name":"JEAN-CLAUDE ROTIVAL","siret":"33176372200013","naf":"93.11Z","etat":"A","a1":"DOMAINE DU CHATEAU DE ROUR","a2":"07120 GROSPIERRES","lat":44.406153,"lon":4.281682},{"name":"DOMINIQUE CLAIR","siret":"34125934900023","naf":"93.11Z","etat":"A","a1":"VERDUS","a2":"07000 FREYSSENET","lat":44.703334,"lon":4.574862},{"name":"ASS YOGA ET MIEUX ETRE","siret":"34282254100021","naf":"93.11Z","etat":"A","a1":"21 AVENUE CHOMERAC","a2":"07000 PRIVAS","lat":44.733738,"lon":4.596601},{"name":"BOWLING ET LOISIRS SARL","siret":"34336176200010","naf":"93.11Z","etat":"A","a1":"47 BOULEVARD MARECHAL LECLERC","a2":"07200 AUBENAS","lat":44.612007,"lon":4.389539},{"name":"TENNIS CLUB DE GUILHERAND GRANGES TOULAUD","siret":"38366340800011","naf":"93.11Z","etat":"A","a1":"RUE DE CRUSSOL","a2":"07500 GUILHERAND-GRANGES","lat":44.932894,"lon":4.876916},{"name":"ASS FOYER AMICALISTE DE CNSPN CREPS","siret":"38499746600014","naf":"93.11Z","etat":"A","a1":"PAS DE LA PREMIERE ARMEE","a2":"07150 VALLON PONT D'ARC","lat":44.40397,"lon":4.389389},{"name":"BRUNO TREILLE","siret":"40773953100025","naf":"93.11Z","etat":"A","a1":"55 CHEMIN DE CHAPOUTIER","a2":"07790 SAINT-ALBAN-D'AY","lat":45.183356,"lon":4.622299},{"name":"ASSOCIATION SPORTIVE DU COLLEGE LES PERRIERES","siret":"50212125400010","naf":"93.11Z","etat":"A","a1":"LES PERRIERES","a2":"07100 ANNONAY","lat":45.250356,"lon":4.673389},{"name":"ASSOCIATION SPORTIVE COLLEGE LES VANS","siret":"50354720000017","naf":"93.11Z","etat":"A","a1":"1 ROUTE DU ROUSSILLON","a2":"07140 LES VANS","lat":44.40807,"lon":4.134022},{"name":"OLYMPIQUE LAMASTROISE","siret":"50830974700014","naf":"93.11Z","etat":"A","a1":"CRS COMPLEMENTAIRE PRIVE DE GARCONS","a2":"07270 LAMASTRE","lat":44.985672,"lon":4.578233},{"name":"ASSOCIATION SPORTIVE DU COLLEGE DE SAINT AGREVE","siret":"50982045200019","naf":"93.11Z","etat":"A","a1":"RUE DES ECOLES","a2":"07320 SAINT-AGREVE","lat":45.005874,"lon":4.403822},{"name":"ASSOCIATION GRANIC","siret":"78806238800012","naf":"93.11Z","etat":"A","a1":"QUARTIER DU FABRICOU","a2":"07000 COUX","lat":44.73569,"lon":4.620038},{"name":"SF 07","siret":"83083751400017","naf":"93.11Z","etat":"A","a1":"11 RUE DENIS PAPIN","a2":"07200 AUBENAS","lat":44.610753,"lon":4.393349},{"name":"SARL GOLF DE BOURNET","siret":"84927532600015","naf":"93.11Z","etat":"A","a1":"10 CHEMIN DU PLOT","a2":"07120 GROSPIERRES","lat":44.406992,"lon":4.279219},{"name":"CROSS & FIT","siret":"90195313300013","naf":"93.11Z","etat":"A","a1":"56 AVENUE DE L'EUROPE","a2":"07100 ANNONAY","lat":45.244744,"lon":4.668399},{"name":"BODY KUSTOMS","siret":"90993197400028","naf":"93.11Z","etat":"A","a1":"82 RUE JULES ROMAIN","a2":"07430 DAVEZIEUX","lat":45.253566,"lon":4.690094},{"name":"MILO TIZOT","siret":"92378807900013","naf":"93.11Z","etat":"A","a1":"615 CHEMIN DE L'ILE BLANC","a2":"07400 ROCHEMAURE","lat":44.5886,"lon":4.733571},{"name":"BODY FORM","siret":"94826080700029","naf":"93.11Z","etat":"A","a1":"825 ROUTE D'ANNONAY","a2":"07100 ROIFFIEUX","lat":45.231523,"lon":4.67125},{"name":"[ND]","siret":"98372999700012","naf":"93.11Z","etat":"A","a1":"[ND] [ND] [ND]","a2":"[ND] LABEGUDE","lat":null,"lon":null},{"name":"UNIK GROUPE","siret":"99087169100012","naf":"93.11Z","etat":"A","a1":"1 RUE LE GRAND MAIL","a2":"07130 SAINT-PERAY","lat":44.941384,"lon":4.858873},{"name":"SPL DES STATIONS D'ARDECHE","siret":"99330641400018","naf":"93.11Z","etat":"A","a1":"620 RUE DE LA ZONE ARTISANALE","a2":"07470 COUCOURON","lat":44.800291,"lon":3.968555}];
+(function exportPageRuntime(D) {
+    var ROW = 86;
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    };
+    var map = L.map('map');
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '\u00a9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> \u00b7 donn\u00e9es INSEE SIRENE',
+      maxZoom: 19
+    }).addTo(map);
+    var cg = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
+    map.addLayer(cg);
+
+    function pin(color) {
+      return L.divIcon({
+        html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="' + color + '"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>',
+        className: '', iconSize: [24, 32], iconAnchor: [12, 32], popupAnchor: [0, -34]
+      });
+    }
+    var ICON = pin('#1a3a6b'), ICON_APPROX = pin('#8a96a8'), ICON_ACTIVE = pin('#c8342a');
+
+    function popupHtml(d) {
+      return '<div class="pname">' + esc(d.name) + '</div>'
+        + '<div class="pnaf">' + esc(d.naf) + '</div>'
+        + '<div class="paddr">' + esc([d.a1, d.a2].filter(Boolean).join(', ')) + '</div>'
+        + (d.ap ? '<div class="papprox">Position approximative (centre de la commune)</div>' : '')
+        + (d.siret ? '<a class="plink" target="_blank" rel="noopener" href="https://annuaire-entreprises.data.gouv.fr/etablissement/' + esc(d.siret) + '">Fiche annuaire-entreprises \u2192</a>' : '');
+    }
+
+    var markers = [], layers = [], nogeo = 0;
+    D.forEach(function (d, i) {
+      if (d.lat == null) { nogeo++; return; }
+      var m = L.marker([d.lat, d.lon], { icon: d.ap ? ICON_APPROX : ICON });
+      m.bindPopup(function () { return popupHtml(d); });
+      m.on('click', function () { select(i, false); });
+      markers[i] = m;
+      layers.push(m);
+    });
+    if (layers.length) { cg.addLayers(layers); map.fitBounds(cg.getBounds().pad(0.12)); }
+    else map.setView([46.6, 2.5], 6);
+
+    var box = document.getElementById('list'), inner = document.getElementById('inner');
+    var head = document.getElementById('sbh'), input = document.getElementById('search');
+    var hay = null, filtered = D.map(function (_, i) { return i; }), active = -1, queued = false;
+
+    function label() {
+      var n = D.length.toLocaleString('fr-FR') + ' \u00e9tablissement' + (D.length > 1 ? 's' : '');
+      if (filtered.length !== D.length) return filtered.length.toLocaleString('fr-FR') + ' / ' + n;
+      return n + (nogeo ? ' \u00b7 ' + nogeo.toLocaleString('fr-FR') + ' sans position' : '');
+    }
+
+    function card(i, k) {
+      var d = D[i];
+      var tag = d.lat == null ? '<span class="tpos">sans position</span>' : (d.ap ? '<span class="tpos">\u2248 commune</span>' : '');
+      return '<div class="card' + (i === active ? ' active' : '') + (d.lat == null ? ' nogeo' : '') + '" data-i="' + i + '" style="top:' + (k * ROW) + 'px">'
+        + '<div class="name" title="' + esc(d.name) + '">' + esc(d.name) + '</div>'
+        + '<div class="siret">' + esc(d.siret) + '</div>'
+        + '<div class="tags"><span class="tnaf">' + esc(d.naf) + '</span>'
+        + '<span class="tetat ' + (d.etat === 'A' ? 'actif">Actif' : 'ferme">Ferm\u00e9') + '</span>' + tag + '</div>'
+        + '<div class="addr">' + esc([d.a1, d.a2].filter(Boolean).join(', ') || '\u2014') + '</div></div>';
+    }
+
+    function render() {
+      queued = false;
+      var top = box.scrollTop, h = box.clientHeight || 600;
+      var from = Math.max(0, Math.floor(top / ROW) - 5);
+      var to = Math.min(filtered.length, Math.ceil((top + h) / ROW) + 5);
+      var html = '';
+      for (var k = from; k < to; k++) html += card(filtered[k], k);
+      inner.innerHTML = filtered.length ? html : '<div class="no-results">Aucun r\u00e9sultat</div>';
+    }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(render); } }
+
+    function applyFilter(q) {
+      var t = q.toLowerCase().trim();
+      if (!hay) hay = D.map(function (d) { return (d.name + ' ' + d.a1 + ' ' + d.a2 + ' ' + d.siret).toLowerCase(); });
+      filtered = [];
+      for (var i = 0; i < D.length; i++) if (!t || hay[i].indexOf(t) >= 0) filtered.push(i);
+      inner.style.height = (filtered.length * ROW + 8) + 'px';
+      head.textContent = label();
+      box.scrollTop = 0;
+      render();
+    }
+
+    function select(i, fromList) {
+      if (active >= 0 && markers[active]) markers[active].setIcon(D[active].ap ? ICON_APPROX : ICON);
+      active = i;
+      var m = markers[i];
+      if (m) {
+        m.setIcon(ICON_ACTIVE);
+        if (fromList) cg.zoomToShowLayer(m, function () { m.openPopup(); });
+      }
+      if (!fromList) {
+        var k = filtered.indexOf(i);
+        if (k < 0) { input.value = ''; applyFilter(''); k = i; }
+        if (k * ROW < box.scrollTop || (k + 1) * ROW > box.scrollTop + box.clientHeight) {
+          box.scrollTop = Math.max(0, k * ROW - box.clientHeight / 2 + ROW / 2);
+        }
+      }
+      render();
+    }
+
+    box.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    inner.addEventListener('click', function (e) {
+      var c = e.target.closest('.card');
+      if (c) select(+c.getAttribute('data-i'), true);
+    });
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { applyFilter(input.value); }, 150);
+    });
+    applyFilter('');
+  })(D);
+</script></body></html>

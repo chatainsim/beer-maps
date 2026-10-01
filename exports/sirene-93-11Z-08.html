@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="sirene:count" content="56"/><meta name="sirene:geo" content="56"/><meta name="sirene:naf" content="93.11Z"/><meta name="sirene:dept" content="08"/><meta name="sirene:generated" content="2026-10-01T20:06:02.864Z"/><meta name="sirene:template" content="2"/><title>Sirene — 93.11Z · 08 — 56 établissements</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;background:#f5f3ef;color:#1a1a1a}header{background:#1a3a6b;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}h1{font-size:.95rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:.72rem;opacity:.65;margin-left:auto;white-space:nowrap}.body{display:flex;flex:1;min-height:0}.sb{width:340px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;min-height:0}.sbh{padding:9px 14px;border-bottom:1px solid #ddd;font-size:.72rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.05em}.search-box{padding:8px;border-bottom:1px solid #eee}.search-box input{width:100%;border:1px solid #ddd;border-radius:5px;padding:6px 10px;font-size:.82rem;outline:none;background:#f9f9f9}.search-box input:focus{border-color:#1a3a6b;background:#fff}.list{flex:1;overflow-y:auto;position:relative}#inner{position:relative}.no-results{padding:24px 14px;text-align:center;font-size:.8rem;color:#aaa}.card{position:absolute;left:8px;right:8px;height:80px;margin-top:6px;overflow:hidden;background:#fafaf8;border:1px solid #e5e2d9;border-left:3px solid transparent;border-radius:6px;padding:8px 12px;cursor:pointer;transition:border-color .15s}.card:hover{border-left-color:#1a3a6b}.card.active{border-left-color:#c8342a;background:#fff8f7}.card.nogeo{cursor:default;opacity:.8}.name{font-weight:600;font-size:.85rem;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.siret{font-family:monospace;font-size:.64rem;color:#888;margin-bottom:3px}.tags{display:flex;gap:4px;margin-bottom:4px}.tnaf,.tetat,.tpos{border-radius:3px;font-size:.65rem;padding:1px 6px;font-weight:600}.tnaf{background:#e8eef8;color:#1a3a6b}.tpos{background:#eee;color:#666}.actif{background:#e6f4ec;color:#2d7a50}.ferme{background:#fdecea;color:#c8342a}.addr{font-size:.75rem;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#map{flex:1;min-height:0}.leaflet-popup-content-wrapper{border-radius:6px!important;font-family:system-ui,sans-serif!important}.pname{font-weight:700;font-size:.85rem;margin-bottom:3px}.pnaf{font-family:monospace;font-size:.72rem;color:#1a3a6b;margin-bottom:4px}.paddr{font-size:.75rem;color:#777}.papprox{font-size:.7rem;color:#a06a00;margin-top:4px}.plink{display:inline-block;margin-top:6px;font-size:.72rem;color:#1a3a6b}@media (max-width:700px){.body{flex-direction:column-reverse}.sb{width:auto;height:42%;border-right:0;border-top:1px solid #ddd}header{padding:8px 12px}.meta{display:none}h1{font-size:.85rem}}</style></head><body><header><h1>&#128205; Sirene — 93.11Z · 08 — 56 établissements</h1><div class="meta">Exporté le 01 octobre 2026 — API Sirene INSEE</div></header><div class="body"><div class="sb"><div class="sbh" id="sbh">56 établissements</div><div class="search-box"><input id="search" type="search" placeholder="Rechercher nom, adresse, SIRET…"/></div><div class="list" id="list"><div id="inner"></div></div></div><div id="map"></div></div><script>
+const D=[{"name":"SPL ARGONA","siret":"10343010400010","naf":"93.11Z","etat":"A","a1":"44 RUE DU CHEMIN SALE","a2":"08400 VOUZIERS","lat":49.397727,"lon":4.694916},{"name":"SPL ARGONA","siret":"10343010400028","naf":"93.11Z","etat":"A","a1":"RUE CHARLES DEVENDEVILLE","a2":"08400 VOUZIERS","lat":49.401457,"lon":4.693204},{"name":"COMMUNAUTE DE COMMUNES DU PAYS RETHELOIS","siret":"20004315600021","naf":"93.11Z","etat":"A","a1":"30 AVENUE DE BOURGOIN","a2":"08300 SAULT-LES-RETHEL","lat":49.497981,"lon":4.364298},{"name":"COMMUNE DE VOUZIERS","siret":"20006238800109","naf":"93.11Z","etat":"A","a1":"14 RUE VERTE","a2":"08400 VOUZIERS","lat":49.403853,"lon":4.697504},{"name":"COMMUNE DE VOUZIERS","siret":"20006238800125","naf":"93.11Z","etat":"A","a1":"3 RUE DE LA FUSION","a2":"08400 VOUZIERS","lat":49.402861,"lon":4.695822},{"name":"CC VALLEES ET PLATEAU D'ARDENNE","siret":"20006775900130","naf":"93.11Z","etat":"A","a1":"13 AVENUE DU GENERAL MOREAU","a2":"08230 ROCROI","lat":49.920853,"lon":4.519535},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096700072","naf":"93.11Z","etat":"A","a1":"RUE DES PAQUIS","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.779976,"lon":4.729133},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096700908","naf":"93.11Z","etat":"A","a1":"RUE PIERRE DE COUBERTIN","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.774793,"lon":4.704025},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096700916","naf":"93.11Z","etat":"A","a1":"RUE DU GYMNASE","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.772884,"lon":4.728172},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096700932","naf":"93.11Z","etat":"A","a1":"RUE DU BOIS D'AMOUR","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.760517,"lon":4.710035},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096700940","naf":"93.11Z","etat":"A","a1":"RUE DES CAPUCINES","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.743841,"lon":4.715503},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096700957","naf":"93.11Z","etat":"A","a1":"PLACE DU CHATEAU","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.760879,"lon":4.717575},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096700965","naf":"93.11Z","etat":"A","a1":"14 RUE MADAME DE SEVIGNE","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.770431,"lon":4.716752},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096700973","naf":"93.11Z","etat":"A","a1":"RUE ROUGET DE LISLE","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.786174,"lon":4.716698},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096700981","naf":"93.11Z","etat":"A","a1":"2 RUE MOZART","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.781658,"lon":4.711118},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096700999","naf":"93.11Z","etat":"A","a1":"RUE DE L'EUROPE","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.780052,"lon":4.703441},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096701005","naf":"93.11Z","etat":"A","a1":"1 RUE DES MESANGES","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.748839,"lon":4.721056},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096701013","naf":"93.11Z","etat":"A","a1":"RUE DU GYMNASE","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.772884,"lon":4.728172},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096701021","naf":"93.11Z","etat":"A","a1":"10 RUE MARYSE BASTIE","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.763623,"lon":4.691612},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096701039","naf":"93.11Z","etat":"A","a1":"2 AVENUE LOUIS TIRMAN","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.762155,"lon":4.715204},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096701047","naf":"93.11Z","etat":"A","a1":"24 RUE DUBOIS CRANCE","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.771008,"lon":4.714914},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096701070","naf":"93.11Z","etat":"A","a1":"5 RUE FELICIEN WAUTELET","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.752361,"lon":4.721331},{"name":"COMMUNE DE CHARLEVILLE-MEZIERES","siret":"21080096701138","naf":"93.11Z","etat":"A","a1":"PROMENADE DE LA WARENNE","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.760074,"lon":4.687779},{"name":"COMMUNE DE RETHEL","siret":"21080326800171","naf":"93.11Z","etat":"A","a1":"30 RUE DE L'AGRICULTURE","a2":"08300 RETHEL","lat":49.514551,"lon":4.365952},{"name":"COMMUNE DE SEDAN","siret":"21080372200078","naf":"93.11Z","etat":"A","a1":"10 RUE DE THIONVILLE","a2":"08200 SEDAN","lat":49.699083,"lon":4.947616},{"name":"COMMUNE DE SEDAN","siret":"21080372200342","naf":"93.11Z","etat":"A","a1":"ESPLANADE DU LAC","a2":"08200 SEDAN","lat":49.693286,"lon":4.943114},{"name":"COMMUNE DE SEDAN","siret":"21080372200359","naf":"93.11Z","etat":"A","a1":"4 AVENUE ARISTIDE BRIAND","a2":"08200 SEDAN","lat":49.703723,"lon":4.948458},{"name":"COMMUNE DE SEDAN","siret":"21080372200367","naf":"93.11Z","etat":"A","a1":"3 RUE ANCIENNE PORTE DE BALAN","a2":"08200 SEDAN","lat":49.696717,"lon":4.953295},{"name":"COMMUNE DE SEDAN","siret":"21080372200375","naf":"93.11Z","etat":"A","a1":"RUE ANCIENNE PORTE DE BALAN","a2":"08200 SEDAN","lat":49.696679,"lon":4.953211},{"name":"COMMUNE DE SEDAN","siret":"21080372200391","naf":"93.11Z","etat":"A","a1":"ESPLANADE DU LAC","a2":"08200 SEDAN","lat":49.693286,"lon":4.943114},{"name":"DEPARTEMENT DES ARDENNES","siret":"22080004900169","naf":"93.11Z","etat":"A","a1":"2 RUE LUCIEN HUBERT","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.761077,"lon":4.719441},{"name":"COMMUNAUTE COMMUNES ARGONNE ARDENNAISE","siret":"24080092000128","naf":"93.11Z","etat":"A","a1":"44 RUE DU CHEMIN SALE","a2":"08400 VOUZIERS","lat":49.397727,"lon":4.694916},{"name":"NADINE STACKLER","siret":"34136678900012","naf":"93.11Z","etat":"A","a1":"LA CHENAIE","a2":"08200 GIVONNE","lat":49.736919,"lon":5.010244},{"name":"DENIS ERCEG","siret":"38298595000015","naf":"93.11Z","etat":"A","a1":"BOULEVARD DE LATTRE DE TASSIGNY","a2":"08200 SEDAN","lat":49.696325,"lon":4.93922},{"name":"CHARLEVILLE MEZIERES SPORTS DE GLACE","siret":"39016107300015","naf":"93.11Z","etat":"A","a1":"PROMENADE DE LA WARENNE","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.760074,"lon":4.687779},{"name":"ASS RELAIS EQUESTRE","siret":"39306108000015","naf":"93.11Z","etat":"A","a1":"RUE HAUTE","a2":"08150 HARCY","lat":49.834526,"lon":4.56212},{"name":"WILLY PIERMEE","siret":"40312641000022","naf":"93.11Z","etat":"A","a1":"20 RUE DE LA GARE","a2":"08150 LONNY","lat":49.805139,"lon":4.590973},{"name":"CENTRE DE RANDONNEE EQUESTRE LE RETOURNE","siret":"40805854300013","naf":"93.11Z","etat":"A","a1":"","a2":"08310 MONT-SAINT-REMY","lat":49.388742,"lon":4.482717,"ap":1},{"name":"FEDERATION SPORTIVE ET CULTURELLE DE FRANCE - LIGUE REGIONALE DE CHAMPAGNE-ARDENNE","siret":"41131396800041","naf":"93.11Z","etat":"A","a1":"1 RUE JULES CARDOT","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.776589,"lon":4.716042},{"name":"GOLF DES ARDENNES SPORTS LOISIRS ET SERVICES","siret":"52043927400017","naf":"93.11Z","etat":"A","a1":"LD DOMAINE DES POURSAUDES","a2":"08430 VILLERS-LE-TILLEUL","lat":49.622016,"lon":4.722312},{"name":"ARDUINNA 08 MARGUT","siret":"52182913500016","naf":"93.11Z","etat":"A","a1":"1 PLACE TROUSLARD","a2":"08370 MARGUT","lat":49.584891,"lon":5.264447},{"name":"OFFICE MUNICIPAL DES ASSOCIATIONS DE VILLE SUR LUMES","siret":"52345459300014","naf":"93.11Z","etat":"A","a1":"1 RUE DE L'EGLISE","a2":"08440 VILLE-SUR-LUMES","lat":49.753521,"lon":4.789332},{"name":"UNION SPORTIVE LAFRANCHEVILLE","siret":"52755102200017","naf":"93.11Z","etat":"A","a1":"","a2":"08000 LA FRANCHEVILLE","lat":49.72709,"lon":4.70918,"ap":1},{"name":"POURU EQUITATION","siret":"53278545800011","naf":"93.11Z","etat":"A","a1":"17 ROUTE D'ESCOMBRES","a2":"08140 POURU-SAINT-REMY","lat":49.678972,"lon":5.088972},{"name":"SPL RIVES DE MEUSE","siret":"53313500000016","naf":"93.11Z","etat":"A","a1":"29 RUE MEHUL","a2":"08600 GIVET","lat":50.136877,"lon":4.823738},{"name":"ALLAIN","siret":"80976411100013","naf":"93.11Z","etat":"A","a1":"LES POURSAUDES","a2":"08430 VILLERS-LE-TILLEUL","lat":49.622016,"lon":4.722312},{"name":"SARL GALEA","siret":"81797001500019","naf":"93.11Z","etat":"A","a1":"RUE NORMANDIE NIEMEN","a2":"08300 RETHEL","lat":49.516497,"lon":4.372401},{"name":"BOWLING DE DOUZY","siret":"82439831700019","naf":"93.11Z","etat":"A","a1":"RTE DE MOUZON","a2":"08140 DOUZY","lat":49.662622,"lon":5.042066},{"name":"O2 SPORTS","siret":"85009823700025","naf":"93.11Z","etat":"A","a1":"5 RUE DE L'INDUSTRIE","a2":"08350 DONCHERY","lat":49.695458,"lon":4.877284},{"name":"ARENA","siret":"87862261200017","naf":"93.11Z","etat":"A","a1":"27 RUE DU BELVEDERE","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.78189,"lon":4.723094},{"name":"CENTRE AQUATIQUE ARGONA","siret":"90014374400010","naf":"93.11Z","etat":"A","a1":"RUE CHARLES DEVENDEVILLE","a2":"08400 VOUZIERS","lat":49.401457,"lon":4.693204},{"name":"COMITE DE GESTION DU BOULODROME ROGES MAS","siret":"91758141500028","naf":"93.11Z","etat":"A","a1":"6 AVENUE DU GENERAL TEISSIER","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.763865,"lon":4.715926},{"name":"FONTAINEBLOC","siret":"93529934700010","naf":"93.11Z","etat":"A","a1":"28 RUE LA FONTAINE","a2":"08090 BELVAL","lat":49.77558,"lon":4.637869},{"name":"ARDEN'PADEL","siret":"93832876200019","naf":"93.11Z","etat":"A","a1":"24 RUE DU 18 JUIN 1940","a2":"08230 ROCROI","lat":49.928881,"lon":4.530601},{"name":"FIT'GIRLS","siret":"93871237900016","naf":"93.11Z","etat":"A","a1":"4 RUE DES CAPUCINES","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.744361,"lon":4.714714},{"name":"FIT'GIRLS","siret":"93871237900024","naf":"93.11Z","etat":"A","a1":"12 RUE PAULIN RICHIER","a2":"08000 CHARLEVILLE-MEZIERES","lat":49.737763,"lon":4.701032}];
+(function exportPageRuntime(D) {
+    var ROW = 86;
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    };
+    var map = L.map('map');
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '\u00a9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> \u00b7 donn\u00e9es INSEE SIRENE',
+      maxZoom: 19
+    }).addTo(map);
+    var cg = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
+    map.addLayer(cg);
+
+    function pin(color) {
+      return L.divIcon({
+        html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="' + color + '"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>',
+        className: '', iconSize: [24, 32], iconAnchor: [12, 32], popupAnchor: [0, -34]
+      });
+    }
+    var ICON = pin('#1a3a6b'), ICON_APPROX = pin('#8a96a8'), ICON_ACTIVE = pin('#c8342a');
+
+    function popupHtml(d) {
+      return '<div class="pname">' + esc(d.name) + '</div>'
+        + '<div class="pnaf">' + esc(d.naf) + '</div>'
+        + '<div class="paddr">' + esc([d.a1, d.a2].filter(Boolean).join(', ')) + '</div>'
+        + (d.ap ? '<div class="papprox">Position approximative (centre de la commune)</div>' : '')
+        + (d.siret ? '<a class="plink" target="_blank" rel="noopener" href="https://annuaire-entreprises.data.gouv.fr/etablissement/' + esc(d.siret) + '">Fiche annuaire-entreprises \u2192</a>' : '');
+    }
+
+    var markers = [], layers = [], nogeo = 0;
+    D.forEach(function (d, i) {
+      if (d.lat == null) { nogeo++; return; }
+      var m = L.marker([d.lat, d.lon], { icon: d.ap ? ICON_APPROX : ICON });
+      m.bindPopup(function () { return popupHtml(d); });
+      m.on('click', function () { select(i, false); });
+      markers[i] = m;
+      layers.push(m);
+    });
+    if (layers.length) { cg.addLayers(layers); map.fitBounds(cg.getBounds().pad(0.12)); }
+    else map.setView([46.6, 2.5], 6);
+
+    var box = document.getElementById('list'), inner = document.getElementById('inner');
+    var head = document.getElementById('sbh'), input = document.getElementById('search');
+    var hay = null, filtered = D.map(function (_, i) { return i; }), active = -1, queued = false;
+
+    function label() {
+      var n = D.length.toLocaleString('fr-FR') + ' \u00e9tablissement' + (D.length > 1 ? 's' : '');
+      if (filtered.length !== D.length) return filtered.length.toLocaleString('fr-FR') + ' / ' + n;
+      return n + (nogeo ? ' \u00b7 ' + nogeo.toLocaleString('fr-FR') + ' sans position' : '');
+    }
+
+    function card(i, k) {
+      var d = D[i];
+      var tag = d.lat == null ? '<span class="tpos">sans position</span>' : (d.ap ? '<span class="tpos">\u2248 commune</span>' : '');
+      return '<div class="card' + (i === active ? ' active' : '') + (d.lat == null ? ' nogeo' : '') + '" data-i="' + i + '" style="top:' + (k * ROW) + 'px">'
+        + '<div class="name" title="' + esc(d.name) + '">' + esc(d.name) + '</div>'
+        + '<div class="siret">' + esc(d.siret) + '</div>'
+        + '<div class="tags"><span class="tnaf">' + esc(d.naf) + '</span>'
+        + '<span class="tetat ' + (d.etat === 'A' ? 'actif">Actif' : 'ferme">Ferm\u00e9') + '</span>' + tag + '</div>'
+        + '<div class="addr">' + esc([d.a1, d.a2].filter(Boolean).join(', ') || '\u2014') + '</div></div>';
+    }
+
+    function render() {
+      queued = false;
+      var top = box.scrollTop, h = box.clientHeight || 600;
+      var from = Math.max(0, Math.floor(top / ROW) - 5);
+      var to = Math.min(filtered.length, Math.ceil((top + h) / ROW) + 5);
+      var html = '';
+      for (var k = from; k < to; k++) html += card(filtered[k], k);
+      inner.innerHTML = filtered.length ? html : '<div class="no-results">Aucun r\u00e9sultat</div>';
+    }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(render); } }
+
+    function applyFilter(q) {
+      var t = q.toLowerCase().trim();
+      if (!hay) hay = D.map(function (d) { return (d.name + ' ' + d.a1 + ' ' + d.a2 + ' ' + d.siret).toLowerCase(); });
+      filtered = [];
+      for (var i = 0; i < D.length; i++) if (!t || hay[i].indexOf(t) >= 0) filtered.push(i);
+      inner.style.height = (filtered.length * ROW + 8) + 'px';
+      head.textContent = label();
+      box.scrollTop = 0;
+      render();
+    }
+
+    function select(i, fromList) {
+      if (active >= 0 && markers[active]) markers[active].setIcon(D[active].ap ? ICON_APPROX : ICON);
+      active = i;
+      var m = markers[i];
+      if (m) {
+        m.setIcon(ICON_ACTIVE);
+        if (fromList) cg.zoomToShowLayer(m, function () { m.openPopup(); });
+      }
+      if (!fromList) {
+        var k = filtered.indexOf(i);
+        if (k < 0) { input.value = ''; applyFilter(''); k = i; }
+        if (k * ROW < box.scrollTop || (k + 1) * ROW > box.scrollTop + box.clientHeight) {
+          box.scrollTop = Math.max(0, k * ROW - box.clientHeight / 2 + ROW / 2);
+        }
+      }
+      render();
+    }
+
+    box.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    inner.addEventListener('click', function (e) {
+      var c = e.target.closest('.card');
+      if (c) select(+c.getAttribute('data-i'), true);
+    });
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { applyFilter(input.value); }, 150);
+    });
+    applyFilter('');
+  })(D);
+</script></body></html>

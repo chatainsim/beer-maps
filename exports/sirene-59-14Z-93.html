@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="sirene:count" content="31"/><meta name="sirene:geo" content="28"/><meta name="sirene:naf" content="59.14Z"/><meta name="sirene:dept" content="93"/><meta name="sirene:generated" content="2026-10-01T19:57:02.007Z"/><meta name="sirene:template" content="2"/><title>Sirene — 59.14Z · 93 — 31 établissements</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;background:#f5f3ef;color:#1a1a1a}header{background:#1a3a6b;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}h1{font-size:.95rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:.72rem;opacity:.65;margin-left:auto;white-space:nowrap}.body{display:flex;flex:1;min-height:0}.sb{width:340px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;min-height:0}.sbh{padding:9px 14px;border-bottom:1px solid #ddd;font-size:.72rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.05em}.search-box{padding:8px;border-bottom:1px solid #eee}.search-box input{width:100%;border:1px solid #ddd;border-radius:5px;padding:6px 10px;font-size:.82rem;outline:none;background:#f9f9f9}.search-box input:focus{border-color:#1a3a6b;background:#fff}.list{flex:1;overflow-y:auto;position:relative}#inner{position:relative}.no-results{padding:24px 14px;text-align:center;font-size:.8rem;color:#aaa}.card{position:absolute;left:8px;right:8px;height:80px;margin-top:6px;overflow:hidden;background:#fafaf8;border:1px solid #e5e2d9;border-left:3px solid transparent;border-radius:6px;padding:8px 12px;cursor:pointer;transition:border-color .15s}.card:hover{border-left-color:#1a3a6b}.card.active{border-left-color:#c8342a;background:#fff8f7}.card.nogeo{cursor:default;opacity:.8}.name{font-weight:600;font-size:.85rem;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.siret{font-family:monospace;font-size:.64rem;color:#888;margin-bottom:3px}.tags{display:flex;gap:4px;margin-bottom:4px}.tnaf,.tetat,.tpos{border-radius:3px;font-size:.65rem;padding:1px 6px;font-weight:600}.tnaf{background:#e8eef8;color:#1a3a6b}.tpos{background:#eee;color:#666}.actif{background:#e6f4ec;color:#2d7a50}.ferme{background:#fdecea;color:#c8342a}.addr{font-size:.75rem;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#map{flex:1;min-height:0}.leaflet-popup-content-wrapper{border-radius:6px!important;font-family:system-ui,sans-serif!important}.pname{font-weight:700;font-size:.85rem;margin-bottom:3px}.pnaf{font-family:monospace;font-size:.72rem;color:#1a3a6b;margin-bottom:4px}.paddr{font-size:.75rem;color:#777}.papprox{font-size:.7rem;color:#a06a00;margin-top:4px}.plink{display:inline-block;margin-top:6px;font-size:.72rem;color:#1a3a6b}@media (max-width:700px){.body{flex-direction:column-reverse}.sb{width:auto;height:42%;border-right:0;border-top:1px solid #ddd}header{padding:8px 12px}.meta{display:none}h1{font-size:.85rem}}</style></head><body><header><h1>&#128205; Sirene — 59.14Z · 93 — 31 établissements</h1><div class="meta">Exporté le 01 octobre 2026 — API Sirene INSEE</div></header><div class="body"><div class="sb"><div class="sbh" id="sbh">31 établissements</div><div class="search-box"><input id="search" type="search" placeholder="Rechercher nom, adresse, SIRET…"/></div><div class="list" id="list"><div id="inner"></div></div></div><div id="map"></div></div><script>
+const D=[{"name":"NICOLAS METAYER","siret":"10915380900016","naf":"59.14Z","etat":"A","a1":"21 RUE MICHELET","a2":"93100 MONTREUIL","lat":48.852584,"lon":2.432934},{"name":"PREMIEREPROJO (1RE PROJO)","siret":"10972190200012","naf":"59.14Z","etat":"A","a1":"31 RUE PASTEUR","a2":"93400 SAINT-OUEN-SUR-SEINE","lat":48.902352,"lon":2.328777},{"name":"COMMUNE DE MONTREUIL","siret":"21930048000775","naf":"59.14Z","etat":"A","a1":"PLACE JEAN JAURES","a2":"93100 MONTREUIL","lat":48.862489,"lon":2.442318},{"name":"COMMUNE DE NOISY LE GRAND","siret":"21930051400623","naf":"59.14Z","etat":"A","a1":"PLACE DE LA LIBERATION","a2":"93160 NOISY-LE-GRAND","lat":48.849021,"lon":2.552482},{"name":"EPINAY CINEMA PROMOTION","siret":"32630255100014","naf":"59.14Z","etat":"A","a1":"3 RUE QUETIGNY","a2":"93800 EPINAY-SUR-SEINE","lat":48.951627,"lon":2.314907},{"name":"EPINAY CINEMA PROMOTION","siret":"32630255100022","naf":"59.14Z","etat":"A","a1":"RUE DU GENERAL JULIEN","a2":"93800 EPINAY-SUR-SEINE","lat":48.954169,"lon":2.312061},{"name":"ASSOC TREMBLAYSIENNE POUR LE CINEMA","siret":"32761354300013","naf":"59.14Z","etat":"A","a1":"29 AVENUE DU GENERAL DE GAULLE","a2":"93290 TREMBLAY-EN-FRANCE","lat":48.941091,"lon":2.570399},{"name":"VILLERAY","siret":"32988126200045","naf":"59.14Z","etat":"A","a1":"RUE FELIX MERLIN","a2":"93800 EPINAY-SUR-SEINE","lat":48.955517,"lon":2.295426},{"name":"CINEMA L'ECRAN","siret":"33474800100024","naf":"59.14Z","etat":"A","a1":"14 PASSAGE DE L'AQUEDUC","a2":"93200 SAINT-DENIS","lat":48.936624,"lon":2.358936},{"name":"UGC CINE CITE","siret":"34780600200130","naf":"59.14Z","etat":"A","a1":"CENTRE COMMERCIAL LES ARCADES","a2":"93160 NOISY-LE-GRAND","lat":48.840113,"lon":2.546596},{"name":"UGC CINE CITE","siret":"34780600200551","naf":"59.14Z","etat":"A","a1":"CENTRE COMMERCIAL PARINOR","a2":"93600 AULNAY-SOUS-BOIS","lat":48.956718,"lon":2.476239},{"name":"UGC CINE CITE ILE DE FRANCE","siret":"39525144000040","naf":"59.14Z","etat":"A","a1":"1 CTRE COMMERCIAL ROSNY 2","a2":"93110 ROSNY-SOUS-BOIS","lat":48.861417,"lon":2.493591},{"name":"ASSOCIATION CINEMA LE STUDIO","siret":"39873406100011","naf":"59.14Z","etat":"A","a1":"2 RUE EDOUARD POISSON","a2":"93300 AUBERVILLIERS","lat":48.910766,"lon":2.383775},{"name":"PATHE CINEMAS FRANCE","siret":"44456712700089","naf":"59.14Z","etat":"A","a1":"30 RUE DES BUISSONS","a2":"93290 TREMBLAY-EN-FRANCE","lat":48.99401,"lon":2.523915},{"name":"PATHE CINEMAS FRANCE","siret":"44456712700188","naf":"59.14Z","etat":"A","a1":"8 RUE DU MONDIAL 1998","a2":"93210 SAINT-DENIS","lat":48.925457,"lon":2.363466},{"name":"TELE BO KAY","siret":"44935948800011","naf":"59.14Z","etat":"A","a1":"76 RUE DU ONZE NOVEMBRE","a2":"93330 NEUILLY SUR MARNE","lat":48.86382,"lon":2.526925},{"name":"QUIQUEMPOIX PRODUCTIONS","siret":"48414518000010","naf":"59.14Z","etat":"A","a1":"3 RUE LAVOISIER","a2":"93500 PANTIN","lat":48.88932,"lon":2.417837},{"name":"S.T.P. FILMS","siret":"48761131100019","naf":"59.14Z","etat":"A","a1":"82 AVENUE DE LA RESISTANCE","a2":"93340 LE RAINCY","lat":48.895255,"lon":2.51405},{"name":"[ND]","siret":"52934558900020","naf":"59.14Z","etat":"A","a1":"[ND] [ND] [ND]","a2":"[ND] LE BLANC-MESNIL","lat":null,"lon":null},{"name":"[ND]","siret":"83452597400020","naf":"59.14Z","etat":"A","a1":"[ND] [ND] [ND]","a2":"[ND] BOBIGNY","lat":null,"lon":null},{"name":"CINEMATOGRAPHIC EXPLORATION","siret":"83483723900013","naf":"59.14Z","etat":"A","a1":"27 RUE DE LA FRATERNITE","a2":"93170 BAGNOLET","lat":48.860936,"lon":2.42219},{"name":"ROP SYSTEMS","siret":"84074064100021","naf":"59.14Z","etat":"A","a1":"36 AVENUE CARNOT","a2":"93360 NEUILLY-PLAISANCE","lat":48.863258,"lon":2.502819},{"name":"SANDRO GABRIEL CALIXTE","siret":"84416569600015","naf":"59.14Z","etat":"A","a1":"11 RUE LEO FERRE","a2":"93380 PIERREFITTE-SUR-SEINE","lat":48.96274,"lon":2.353214},{"name":"VIVRE LE CINEMA","siret":"84885895700014","naf":"59.14Z","etat":"A","a1":"3 RUE RAMEAU","a2":"93000 BOBIGNY","lat":48.91044,"lon":2.417507},{"name":"ASSOCIATION ITINERANCE CULTURELLE EN AFRIQUE ET DANS LE 93","siret":"88759491900011","naf":"59.14Z","etat":"A","a1":"182 RUE JEAN JAURES","a2":"93230 ROMAINVILLE","lat":48.877538,"lon":2.447311},{"name":"[ND]","siret":"93119323900015","naf":"59.14Z","etat":"A","a1":"[ND] [ND] [ND]","a2":"[ND] SAINT-DENIS","lat":null,"lon":null},{"name":"RACHID BOUZIANE","siret":"93320639300011","naf":"59.14Z","etat":"A","a1":"3 ALLEE MONTPENSIER","a2":"93190 LIVRY-GARGAN","lat":48.918437,"lon":2.521981},{"name":"W XOOL","siret":"98838066300019","naf":"59.14Z","etat":"A","a1":"16 RUE BERTHIER","a2":"93500 PANTIN","lat":48.901348,"lon":2.393206},{"name":"YAMA PROD","siret":"99070424900012","naf":"59.14Z","etat":"A","a1":"88 RUE GABRIEL HUSSON","a2":"93230 ROMAINVILLE","lat":48.881412,"lon":2.436122},{"name":"LUCIE BOURGES","siret":"99361603600014","naf":"59.14Z","etat":"A","a1":"3 RUE DU JARDIN ECOLE","a2":"93100 MONTREUIL","lat":48.858462,"lon":2.458569},{"name":"ZONE DE CLAP","siret":"99398825200017","naf":"59.14Z","etat":"A","a1":"6 AVENUE JULES GUESDE","a2":"93240 STAINS","lat":48.962016,"lon":2.383507}];
+(function exportPageRuntime(D) {
+    var ROW = 86;
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    };
+    var map = L.map('map');
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '\u00a9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> \u00b7 donn\u00e9es INSEE SIRENE',
+      maxZoom: 19
+    }).addTo(map);
+    var cg = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
+    map.addLayer(cg);
+
+    function pin(color) {
+      return L.divIcon({
+        html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="' + color + '"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>',
+        className: '', iconSize: [24, 32], iconAnchor: [12, 32], popupAnchor: [0, -34]
+      });
+    }
+    var ICON = pin('#1a3a6b'), ICON_APPROX = pin('#8a96a8'), ICON_ACTIVE = pin('#c8342a');
+
+    function popupHtml(d) {
+      return '<div class="pname">' + esc(d.name) + '</div>'
+        + '<div class="pnaf">' + esc(d.naf) + '</div>'
+        + '<div class="paddr">' + esc([d.a1, d.a2].filter(Boolean).join(', ')) + '</div>'
+        + (d.ap ? '<div class="papprox">Position approximative (centre de la commune)</div>' : '')
+        + (d.siret ? '<a class="plink" target="_blank" rel="noopener" href="https://annuaire-entreprises.data.gouv.fr/etablissement/' + esc(d.siret) + '">Fiche annuaire-entreprises \u2192</a>' : '');
+    }
+
+    var markers = [], layers = [], nogeo = 0;
+    D.forEach(function (d, i) {
+      if (d.lat == null) { nogeo++; return; }
+      var m = L.marker([d.lat, d.lon], { icon: d.ap ? ICON_APPROX : ICON });
+      m.bindPopup(function () { return popupHtml(d); });
+      m.on('click', function () { select(i, false); });
+      markers[i] = m;
+      layers.push(m);
+    });
+    if (layers.length) { cg.addLayers(layers); map.fitBounds(cg.getBounds().pad(0.12)); }
+    else map.setView([46.6, 2.5], 6);
+
+    var box = document.getElementById('list'), inner = document.getElementById('inner');
+    var head = document.getElementById('sbh'), input = document.getElementById('search');
+    var hay = null, filtered = D.map(function (_, i) { return i; }), active = -1, queued = false;
+
+    function label() {
+      var n = D.length.toLocaleString('fr-FR') + ' \u00e9tablissement' + (D.length > 1 ? 's' : '');
+      if (filtered.length !== D.length) return filtered.length.toLocaleString('fr-FR') + ' / ' + n;
+      return n + (nogeo ? ' \u00b7 ' + nogeo.toLocaleString('fr-FR') + ' sans position' : '');
+    }
+
+    function card(i, k) {
+      var d = D[i];
+      var tag = d.lat == null ? '<span class="tpos">sans position</span>' : (d.ap ? '<span class="tpos">\u2248 commune</span>' : '');
+      return '<div class="card' + (i === active ? ' active' : '') + (d.lat == null ? ' nogeo' : '') + '" data-i="' + i + '" style="top:' + (k * ROW) + 'px">'
+        + '<div class="name" title="' + esc(d.name) + '">' + esc(d.name) + '</div>'
+        + '<div class="siret">' + esc(d.siret) + '</div>'
+        + '<div class="tags"><span class="tnaf">' + esc(d.naf) + '</span>'
+        + '<span class="tetat ' + (d.etat === 'A' ? 'actif">Actif' : 'ferme">Ferm\u00e9') + '</span>' + tag + '</div>'
+        + '<div class="addr">' + esc([d.a1, d.a2].filter(Boolean).join(', ') || '\u2014') + '</div></div>';
+    }
+
+    function render() {
+      queued = false;
+      var top = box.scrollTop, h = box.clientHeight || 600;
+      var from = Math.max(0, Math.floor(top / ROW) - 5);
+      var to = Math.min(filtered.length, Math.ceil((top + h) / ROW) + 5);
+      var html = '';
+      for (var k = from; k < to; k++) html += card(filtered[k], k);
+      inner.innerHTML = filtered.length ? html : '<div class="no-results">Aucun r\u00e9sultat</div>';
+    }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(render); } }
+
+    function applyFilter(q) {
+      var t = q.toLowerCase().trim();
+      if (!hay) hay = D.map(function (d) { return (d.name + ' ' + d.a1 + ' ' + d.a2 + ' ' + d.siret).toLowerCase(); });
+      filtered = [];
+      for (var i = 0; i < D.length; i++) if (!t || hay[i].indexOf(t) >= 0) filtered.push(i);
+      inner.style.height = (filtered.length * ROW + 8) + 'px';
+      head.textContent = label();
+      box.scrollTop = 0;
+      render();
+    }
+
+    function select(i, fromList) {
+      if (active >= 0 && markers[active]) markers[active].setIcon(D[active].ap ? ICON_APPROX : ICON);
+      active = i;
+      var m = markers[i];
+      if (m) {
+        m.setIcon(ICON_ACTIVE);
+        if (fromList) cg.zoomToShowLayer(m, function () { m.openPopup(); });
+      }
+      if (!fromList) {
+        var k = filtered.indexOf(i);
+        if (k < 0) { input.value = ''; applyFilter(''); k = i; }
+        if (k * ROW < box.scrollTop || (k + 1) * ROW > box.scrollTop + box.clientHeight) {
+          box.scrollTop = Math.max(0, k * ROW - box.clientHeight / 2 + ROW / 2);
+        }
+      }
+      render();
+    }
+
+    box.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    inner.addEventListener('click', function (e) {
+      var c = e.target.closest('.card');
+      if (c) select(+c.getAttribute('data-i'), true);
+    });
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { applyFilter(input.value); }, 150);
+    });
+    applyFilter('');
+  })(D);
+</script></body></html>

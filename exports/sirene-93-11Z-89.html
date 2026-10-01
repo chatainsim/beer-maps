@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="sirene:count" content="29"/><meta name="sirene:geo" content="28"/><meta name="sirene:naf" content="93.11Z"/><meta name="sirene:dept" content="89"/><meta name="sirene:generated" content="2026-10-01T20:08:53.006Z"/><meta name="sirene:template" content="2"/><title>Sirene — 93.11Z · 89 — 29 établissements</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;background:#f5f3ef;color:#1a1a1a}header{background:#1a3a6b;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}h1{font-size:.95rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:.72rem;opacity:.65;margin-left:auto;white-space:nowrap}.body{display:flex;flex:1;min-height:0}.sb{width:340px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;min-height:0}.sbh{padding:9px 14px;border-bottom:1px solid #ddd;font-size:.72rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.05em}.search-box{padding:8px;border-bottom:1px solid #eee}.search-box input{width:100%;border:1px solid #ddd;border-radius:5px;padding:6px 10px;font-size:.82rem;outline:none;background:#f9f9f9}.search-box input:focus{border-color:#1a3a6b;background:#fff}.list{flex:1;overflow-y:auto;position:relative}#inner{position:relative}.no-results{padding:24px 14px;text-align:center;font-size:.8rem;color:#aaa}.card{position:absolute;left:8px;right:8px;height:80px;margin-top:6px;overflow:hidden;background:#fafaf8;border:1px solid #e5e2d9;border-left:3px solid transparent;border-radius:6px;padding:8px 12px;cursor:pointer;transition:border-color .15s}.card:hover{border-left-color:#1a3a6b}.card.active{border-left-color:#c8342a;background:#fff8f7}.card.nogeo{cursor:default;opacity:.8}.name{font-weight:600;font-size:.85rem;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.siret{font-family:monospace;font-size:.64rem;color:#888;margin-bottom:3px}.tags{display:flex;gap:4px;margin-bottom:4px}.tnaf,.tetat,.tpos{border-radius:3px;font-size:.65rem;padding:1px 6px;font-weight:600}.tnaf{background:#e8eef8;color:#1a3a6b}.tpos{background:#eee;color:#666}.actif{background:#e6f4ec;color:#2d7a50}.ferme{background:#fdecea;color:#c8342a}.addr{font-size:.75rem;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#map{flex:1;min-height:0}.leaflet-popup-content-wrapper{border-radius:6px!important;font-family:system-ui,sans-serif!important}.pname{font-weight:700;font-size:.85rem;margin-bottom:3px}.pnaf{font-family:monospace;font-size:.72rem;color:#1a3a6b;margin-bottom:4px}.paddr{font-size:.75rem;color:#777}.papprox{font-size:.7rem;color:#a06a00;margin-top:4px}.plink{display:inline-block;margin-top:6px;font-size:.72rem;color:#1a3a6b}@media (max-width:700px){.body{flex-direction:column-reverse}.sb{width:auto;height:42%;border-right:0;border-top:1px solid #ddd}header{padding:8px 12px}.meta{display:none}h1{font-size:.85rem}}</style></head><body><header><h1>&#128205; Sirene — 93.11Z · 89 — 29 établissements</h1><div class="meta">Exporté le 01 octobre 2026 — API Sirene INSEE</div></header><div class="body"><div class="sb"><div class="sbh" id="sbh">29 établissements</div><div class="search-box"><input id="search" type="search" placeholder="Rechercher nom, adresse, SIRET…"/></div><div class="list" id="list"><div id="inner"></div></div></div><div id="map"></div></div><script>
+const D=[{"name":"CLAIRIS GOLF CLUB","siret":"10081833500018","naf":"93.11Z","etat":"A","a1":"DOMAINE DE CLAIRIS","a2":"89150 SAVIGNY-SUR-CLAIRIS","lat":48.081024,"lon":3.079255},{"name":"PADEL MANA","siret":"10679434000021","naf":"93.11Z","etat":"A","a1":"HAM LE CROISIL","a2":"89350 CHAMPIGNELLES","lat":47.766684,"lon":3.07601},{"name":"CC SEREIN ET ARMANCE","siret":"20006730400127","naf":"93.11Z","etat":"A","a1":"5 ROUTE DE CHAMPLANDRY","a2":"89600 SAINT-FLORENTIN","lat":47.999032,"lon":3.741064},{"name":"COMMUNE D'AUXERRE","siret":"21890024900523","naf":"93.11Z","etat":"A","a1":"83 AVENUE YVER","a2":"89000 AUXERRE","lat":47.789298,"lon":3.587323},{"name":"COMMUNE DE SAINT SAUVEUR EN PUISAYE","siret":"21890368000104","naf":"93.11Z","etat":"A","a1":"","a2":"89520 SAINT-SAUVEUR-EN-PUISAYE","lat":47.635505,"lon":3.210447,"ap":1},{"name":"COMMUNAUTE DE COMMUNES DU JOVINIEN","siret":"24890093800049","naf":"93.11Z","etat":"A","a1":"RUE LAVOISIER","a2":"89300 JOIGNY","lat":47.978707,"lon":3.418581},{"name":"SOCIETE DU DOMAINE DE BRANNAY","siret":"30904683700014","naf":"93.11Z","etat":"A","a1":"DOM DOMAINE DE BRANNAY","a2":"89150 BRANNAY","lat":48.231365,"lon":3.143672},{"name":"LE CLUB DES NEUF","siret":"32311925500020","naf":"93.11Z","etat":"A","a1":"1 RUE DE LA METAIRIE","a2":"89440 MASSANGIS","lat":47.605313,"lon":3.988342},{"name":"CASI PARIS SUD-EST","siret":"33468911400224","naf":"93.11Z","etat":"A","a1":"RUE BLANQUI","a2":"89400 MIGENNES","lat":47.960257,"lon":3.531437},{"name":"TANLAY LOISIRS ENTREPRISE","siret":"35185306400027","naf":"93.11Z","etat":"A","a1":"CHATEAU","a2":"89430 TANLAY","lat":47.856971,"lon":4.071023},{"name":"MIGENNES NATATION","siret":"38323380600017","naf":"93.11Z","etat":"A","a1":"PLACE DE L'HOTEL DE VILLE","a2":"89400 MIGENNES","lat":47.965068,"lon":3.522319},{"name":"SPORTIVE DU GOLF DE TANLAY","siret":"39755249800016","naf":"93.11Z","etat":"A","a1":"PARC DU CHATEAU","a2":"89430 TANLAY","lat":47.85534,"lon":4.070951},{"name":"CYBERGLACE","siret":"40840211300018","naf":"93.11Z","etat":"A","a1":"4 RUE DE LONDRES","a2":"89470 MONETEAU","lat":47.847507,"lon":3.551719},{"name":"BL 99","siret":"42943843500035","naf":"93.11Z","etat":"A","a1":"30 AVENUE JEAN MERMOZ","a2":"89000 AUXERRE","lat":47.815516,"lon":3.585422},{"name":"COMITE DE GESTION DU BOULODROME DEPARTEMENTAL D'AUXERRE","siret":"51024292800016","naf":"93.11Z","etat":"A","a1":"27 RUE DE PREUILLY","a2":"89000 AUXERRE","lat":47.789675,"lon":3.583026},{"name":"KARTING AND LASER","siret":"52377102000014","naf":"93.11Z","etat":"A","a1":"19 BOULEVARD DU PONT NEUF","a2":"89100 SENS","lat":48.203706,"lon":3.270153},{"name":"CENTRE HIPPIQUE AUXERROIS","siret":"77864861800016","naf":"93.11Z","etat":"A","a1":"3 ROUTE DE VALLAN","a2":"89000 AUXERRE","lat":47.785821,"lon":3.565621},{"name":"ASSOCIATION JEUNESSE AUXERROISE FOOTBALL","siret":"77864872500035","naf":"93.11Z","etat":"A","a1":"62 AVENUE YVER","a2":"89000 AUXERRE","lat":47.788351,"lon":3.585562},{"name":"VM 89130","siret":"83045065600046","naf":"93.11Z","etat":"A","a1":"36 RUE DU PATIS","a2":"89130 TOUCY","lat":47.728162,"lon":3.298145},{"name":"GOLF DU SENONAIS","siret":"84391992900011","naf":"93.11Z","etat":"A","a1":"BOIS DES URSULES","a2":"89140 LIXY","lat":48.251193,"lon":3.127648},{"name":"SOCIETE D'EXPLOITATION DU GOLF DE TANLAY","siret":"84457519100011","naf":"93.11Z","etat":"A","a1":"PARC DU CHATEAU","a2":"89430 TANLAY","lat":47.85534,"lon":4.070951},{"name":"SAS AUXERRE BARBELL CROSS","siret":"84828178800010","naf":"93.11Z","etat":"A","a1":"9 RUE LOUISE WEISS","a2":"89000 AUXERRE","lat":47.812355,"lon":3.563638},{"name":"[ND]","siret":"88504854600026","naf":"93.11Z","etat":"A","a1":"[ND] [ND] [ND]","a2":"[ND] CRY","lat":null,"lon":null},{"name":"WALL-E","siret":"90779852400027","naf":"93.11Z","etat":"A","a1":"59 AVENUE JEAN MERMOZ","a2":"89000 AUXERRE","lat":47.816923,"lon":3.584588},{"name":"LES PRES VERTS","siret":"91885459700021","naf":"93.11Z","etat":"A","a1":"14 RUE DES PRES VERTS","a2":"89113 CHARBUY","lat":47.817061,"lon":3.461334},{"name":"SPORTS IN D'OR","siret":"92783506600014","naf":"93.11Z","etat":"A","a1":"1 RUE DES BAS MUSATS","a2":"89100 MALAY-LE-GRAND","lat":48.186707,"lon":3.319281},{"name":"ROMA SPORT","siret":"94048593100015","naf":"93.11Z","etat":"A","a1":"2 CHEMIN DES VIOLETTES","a2":"89100 ROSOY","lat":48.156155,"lon":3.306774},{"name":"MMA FIGHT PERFORMANCE","siret":"97792879500029","naf":"93.11Z","etat":"A","a1":"ROUTE NATIONALE 6","a2":"89290 VINCELLES","lat":47.705151,"lon":3.626973},{"name":"LF4P 89","siret":"99502162300013","naf":"93.11Z","etat":"A","a1":"56 AVENUE JEAN JAURES","a2":"89000 AUXERRE","lat":47.803628,"lon":3.582681}];
+(function exportPageRuntime(D) {
+    var ROW = 86;
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    };
+    var map = L.map('map');
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '\u00a9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> \u00b7 donn\u00e9es INSEE SIRENE',
+      maxZoom: 19
+    }).addTo(map);
+    var cg = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
+    map.addLayer(cg);
+
+    function pin(color) {
+      return L.divIcon({
+        html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="' + color + '"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>',
+        className: '', iconSize: [24, 32], iconAnchor: [12, 32], popupAnchor: [0, -34]
+      });
+    }
+    var ICON = pin('#1a3a6b'), ICON_APPROX = pin('#8a96a8'), ICON_ACTIVE = pin('#c8342a');
+
+    function popupHtml(d) {
+      return '<div class="pname">' + esc(d.name) + '</div>'
+        + '<div class="pnaf">' + esc(d.naf) + '</div>'
+        + '<div class="paddr">' + esc([d.a1, d.a2].filter(Boolean).join(', ')) + '</div>'
+        + (d.ap ? '<div class="papprox">Position approximative (centre de la commune)</div>' : '')
+        + (d.siret ? '<a class="plink" target="_blank" rel="noopener" href="https://annuaire-entreprises.data.gouv.fr/etablissement/' + esc(d.siret) + '">Fiche annuaire-entreprises \u2192</a>' : '');
+    }
+
+    var markers = [], layers = [], nogeo = 0;
+    D.forEach(function (d, i) {
+      if (d.lat == null) { nogeo++; return; }
+      var m = L.marker([d.lat, d.lon], { icon: d.ap ? ICON_APPROX : ICON });
+      m.bindPopup(function () { return popupHtml(d); });
+      m.on('click', function () { select(i, false); });
+      markers[i] = m;
+      layers.push(m);
+    });
+    if (layers.length) { cg.addLayers(layers); map.fitBounds(cg.getBounds().pad(0.12)); }
+    else map.setView([46.6, 2.5], 6);
+
+    var box = document.getElementById('list'), inner = document.getElementById('inner');
+    var head = document.getElementById('sbh'), input = document.getElementById('search');
+    var hay = null, filtered = D.map(function (_, i) { return i; }), active = -1, queued = false;
+
+    function label() {
+      var n = D.length.toLocaleString('fr-FR') + ' \u00e9tablissement' + (D.length > 1 ? 's' : '');
+      if (filtered.length !== D.length) return filtered.length.toLocaleString('fr-FR') + ' / ' + n;
+      return n + (nogeo ? ' \u00b7 ' + nogeo.toLocaleString('fr-FR') + ' sans position' : '');
+    }
+
+    function card(i, k) {
+      var d = D[i];
+      var tag = d.lat == null ? '<span class="tpos">sans position</span>' : (d.ap ? '<span class="tpos">\u2248 commune</span>' : '');
+      return '<div class="card' + (i === active ? ' active' : '') + (d.lat == null ? ' nogeo' : '') + '" data-i="' + i + '" style="top:' + (k * ROW) + 'px">'
+        + '<div class="name" title="' + esc(d.name) + '">' + esc(d.name) + '</div>'
+        + '<div class="siret">' + esc(d.siret) + '</div>'
+        + '<div class="tags"><span class="tnaf">' + esc(d.naf) + '</span>'
+        + '<span class="tetat ' + (d.etat === 'A' ? 'actif">Actif' : 'ferme">Ferm\u00e9') + '</span>' + tag + '</div>'
+        + '<div class="addr">' + esc([d.a1, d.a2].filter(Boolean).join(', ') || '\u2014') + '</div></div>';
+    }
+
+    function render() {
+      queued = false;
+      var top = box.scrollTop, h = box.clientHeight || 600;
+      var from = Math.max(0, Math.floor(top / ROW) - 5);
+      var to = Math.min(filtered.length, Math.ceil((top + h) / ROW) + 5);
+      var html = '';
+      for (var k = from; k < to; k++) html += card(filtered[k], k);
+      inner.innerHTML = filtered.length ? html : '<div class="no-results">Aucun r\u00e9sultat</div>';
+    }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(render); } }
+
+    function applyFilter(q) {
+      var t = q.toLowerCase().trim();
+      if (!hay) hay = D.map(function (d) { return (d.name + ' ' + d.a1 + ' ' + d.a2 + ' ' + d.siret).toLowerCase(); });
+      filtered = [];
+      for (var i = 0; i < D.length; i++) if (!t || hay[i].indexOf(t) >= 0) filtered.push(i);
+      inner.style.height = (filtered.length * ROW + 8) + 'px';
+      head.textContent = label();
+      box.scrollTop = 0;
+      render();
+    }
+
+    function select(i, fromList) {
+      if (active >= 0 && markers[active]) markers[active].setIcon(D[active].ap ? ICON_APPROX : ICON);
+      active = i;
+      var m = markers[i];
+      if (m) {
+        m.setIcon(ICON_ACTIVE);
+        if (fromList) cg.zoomToShowLayer(m, function () { m.openPopup(); });
+      }
+      if (!fromList) {
+        var k = filtered.indexOf(i);
+        if (k < 0) { input.value = ''; applyFilter(''); k = i; }
+        if (k * ROW < box.scrollTop || (k + 1) * ROW > box.scrollTop + box.clientHeight) {
+          box.scrollTop = Math.max(0, k * ROW - box.clientHeight / 2 + ROW / 2);
+        }
+      }
+      render();
+    }
+
+    box.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    inner.addEventListener('click', function (e) {
+      var c = e.target.closest('.card');
+      if (c) select(+c.getAttribute('data-i'), true);
+    });
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { applyFilter(input.value); }, 150);
+    });
+    applyFilter('');
+  })(D);
+</script></body></html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="sirene:count" content="23"/><meta name="sirene:geo" content="23"/><meta name="sirene:naf" content="59.14Z"/><meta name="sirene:dept" content="19"/><meta name="sirene:generated" content="2026-10-01T19:54:26.797Z"/><meta name="sirene:template" content="2"/><title>Sirene — 59.14Z · 19 — 23 établissements</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;background:#f5f3ef;color:#1a1a1a}header{background:#1a3a6b;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}h1{font-size:.95rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:.72rem;opacity:.65;margin-left:auto;white-space:nowrap}.body{display:flex;flex:1;min-height:0}.sb{width:340px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;min-height:0}.sbh{padding:9px 14px;border-bottom:1px solid #ddd;font-size:.72rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.05em}.search-box{padding:8px;border-bottom:1px solid #eee}.search-box input{width:100%;border:1px solid #ddd;border-radius:5px;padding:6px 10px;font-size:.82rem;outline:none;background:#f9f9f9}.search-box input:focus{border-color:#1a3a6b;background:#fff}.list{flex:1;overflow-y:auto;position:relative}#inner{position:relative}.no-results{padding:24px 14px;text-align:center;font-size:.8rem;color:#aaa}.card{position:absolute;left:8px;right:8px;height:80px;margin-top:6px;overflow:hidden;background:#fafaf8;border:1px solid #e5e2d9;border-left:3px solid transparent;border-radius:6px;padding:8px 12px;cursor:pointer;transition:border-color .15s}.card:hover{border-left-color:#1a3a6b}.card.active{border-left-color:#c8342a;background:#fff8f7}.card.nogeo{cursor:default;opacity:.8}.name{font-weight:600;font-size:.85rem;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.siret{font-family:monospace;font-size:.64rem;color:#888;margin-bottom:3px}.tags{display:flex;gap:4px;margin-bottom:4px}.tnaf,.tetat,.tpos{border-radius:3px;font-size:.65rem;padding:1px 6px;font-weight:600}.tnaf{background:#e8eef8;color:#1a3a6b}.tpos{background:#eee;color:#666}.actif{background:#e6f4ec;color:#2d7a50}.ferme{background:#fdecea;color:#c8342a}.addr{font-size:.75rem;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#map{flex:1;min-height:0}.leaflet-popup-content-wrapper{border-radius:6px!important;font-family:system-ui,sans-serif!important}.pname{font-weight:700;font-size:.85rem;margin-bottom:3px}.pnaf{font-family:monospace;font-size:.72rem;color:#1a3a6b;margin-bottom:4px}.paddr{font-size:.75rem;color:#777}.papprox{font-size:.7rem;color:#a06a00;margin-top:4px}.plink{display:inline-block;margin-top:6px;font-size:.72rem;color:#1a3a6b}@media (max-width:700px){.body{flex-direction:column-reverse}.sb{width:auto;height:42%;border-right:0;border-top:1px solid #ddd}header{padding:8px 12px}.meta{display:none}h1{font-size:.85rem}}</style></head><body><header><h1>&#128205; Sirene — 59.14Z · 19 — 23 établissements</h1><div class="meta">Exporté le 01 octobre 2026 — API Sirene INSEE</div></header><div class="body"><div class="sb"><div class="sbh" id="sbh">23 établissements</div><div class="search-box"><input id="search" type="search" placeholder="Rechercher nom, adresse, SIRET…"/></div><div class="list" id="list"><div id="inner"></div></div></div><div id="map"></div></div><script>
+const D=[{"name":"CINE CLUB VEZERE","siret":"10749141700013","naf":"59.14Z","etat":"A","a1":"2 PLACE DE LA REPUBLIQUE","a2":"19240 ALLASSAC","lat":45.257012,"lon":1.475662},{"name":"COMMUNE DE ARGENTAT-SUR-DORDOGNE","siret":"20006302200079","naf":"59.14Z","etat":"A","a1":"AVENUE RAYMOND POINCARE","a2":"19400 ARGENTAT-SUR-DORDOGNE","lat":45.091923,"lon":1.944122},{"name":"COMMUNE DE BORT LES ORGUES","siret":"21190280400189","naf":"59.14Z","etat":"A","a1":"117 PLACE MARMONTEL","a2":"19110 BORT-LES-ORGUES","lat":45.401291,"lon":2.498664},{"name":"COMMUNE DE BRIVE LA GAILLARDE","siret":"21190310901065","naf":"59.14Z","etat":"A","a1":"BOULEVARD GEN KOENIG","a2":"19100 BRIVE-LA-GAILLARDE","lat":45.159382,"lon":1.530963},{"name":"COMMUNE D UZERCHE","siret":"21192760300095","naf":"59.14Z","etat":"A","a1":"20 PLACE DE LA LIBERATION","a2":"19140 UZERCHE","lat":45.424724,"lon":1.562882},{"name":"BRIVE MEDIA CULTURE","siret":"32454959100034","naf":"59.14Z","etat":"A","a1":"3 BOULEVARD GEN KOENIG","a2":"19100 BRIVE-LA-GAILLARDE","lat":45.157714,"lon":1.529724},{"name":"CINE PLUS CORREZE","siret":"37948948700015","naf":"59.14Z","etat":"A","a1":"AV RAYMOND POINCARE","a2":"19320 ARGENTAT-SUR-DORDOGNE","lat":45.150076,"lon":1.953467},{"name":"ASSOC  LE SEPTIEME ART","siret":"39225527900011","naf":"59.14Z","etat":"A","a1":"66 AVENUE CARNOT","a2":"19200 USSEL","lat":45.549549,"lon":2.312147},{"name":"ASSOC  LE SEPTIEME ART","siret":"39225527900029","naf":"59.14Z","etat":"A","a1":"PLACE MARMONTEL","a2":"19110 BORT-LES-ORGUES","lat":45.401291,"lon":2.498664},{"name":"VEO-CINEMAS","siret":"39969192200096","naf":"59.14Z","etat":"A","a1":"AVENUE CARNOT","a2":"19200 USSEL","lat":45.549994,"lon":2.312374},{"name":"VEO-CINEMAS","siret":"39969192200120","naf":"59.14Z","etat":"A","a1":"RUE DE SARRAN","a2":"19300 EGLETONS","lat":45.402316,"lon":2.035729},{"name":"VEO - SAGEC - CINE 32","siret":"42133389900043","naf":"59.14Z","etat":"A","a1":"RUE DE SARRAN","a2":"19300 EGLETONS","lat":45.402316,"lon":2.035729},{"name":"VEO-MURET","siret":"51060429100037","naf":"59.14Z","etat":"A","a1":"RUE DE SARRAN","a2":"19300 EGLETONS","lat":45.402316,"lon":2.035729},{"name":"ASSOCIATION PANDORA","siret":"53904985800027","naf":"59.14Z","etat":"A","a1":"18 BOULEVARD EDOUARD LACHAUD","a2":"19100 BRIVE-LA-GAILLARDE","lat":45.157315,"lon":1.530179},{"name":"CINEMA THEATRE LE SPLENDID","siret":"67562040500042","naf":"59.14Z","etat":"A","a1":"AV JACQUES ET B CHIRAC","a2":"19100 BRIVE LA GAILLARDE","lat":45.167212,"lon":1.548629},{"name":"CENTRE CULTUREL ET SPORTIF EGLETONNAIS","siret":"77793389600030","naf":"59.14Z","etat":"A","a1":"20 PLACE DES ANCIENS COMBATTANTS","a2":"19300 EGLETONS","lat":45.406055,"lon":2.04638},{"name":"VEO TULLE","siret":"79782594000027","naf":"59.14Z","etat":"A","a1":"36 AVENUE VENTADOUR","a2":"19000 TULLE","lat":45.271939,"lon":1.777066},{"name":"VEO URFOL SAINT-CHAMOND","siret":"83115556900013","naf":"59.14Z","etat":"A","a1":"RUE DE SARRAN","a2":"19300 EGLETONS","lat":45.402316,"lon":2.035729},{"name":"VEO BASSIN DE THAU","siret":"84425879800017","naf":"59.14Z","etat":"A","a1":"1292 RUE DE SARRAN","a2":"19300 EGLETONS","lat":45.402316,"lon":2.035729},{"name":"VEO COLOMIERS","siret":"85146943700012","naf":"59.14Z","etat":"A","a1":"1292 RUE DE SARRAN","a2":"19300 EGLETONS","lat":45.402316,"lon":2.035729},{"name":"VEO-LENA-SAINTONGE","siret":"90776262900018","naf":"59.14Z","etat":"A","a1":"1292 RUE DE SARRAN","a2":"19300 EGLETONS","lat":45.402316,"lon":2.035729},{"name":"GUERET CINEMA","siret":"93274887400017","naf":"59.14Z","etat":"A","a1":"1292 RUE DE SARRAN","a2":"19300 EGLETONS","lat":45.402316,"lon":2.035729},{"name":"CINEXIST","siret":"94876946800026","naf":"59.14Z","etat":"A","a1":"1292 RUE DE SARRAN","a2":"19300 EGLETONS","lat":45.402316,"lon":2.035729}];
+(function exportPageRuntime(D) {
+    var ROW = 86;
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    };
+    var map = L.map('map');
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '\u00a9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> \u00b7 donn\u00e9es INSEE SIRENE',
+      maxZoom: 19
+    }).addTo(map);
+    var cg = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
+    map.addLayer(cg);
+
+    function pin(color) {
+      return L.divIcon({
+        html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="' + color + '"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>',
+        className: '', iconSize: [24, 32], iconAnchor: [12, 32], popupAnchor: [0, -34]
+      });
+    }
+    var ICON = pin('#1a3a6b'), ICON_APPROX = pin('#8a96a8'), ICON_ACTIVE = pin('#c8342a');
+
+    function popupHtml(d) {
+      return '<div class="pname">' + esc(d.name) + '</div>'
+        + '<div class="pnaf">' + esc(d.naf) + '</div>'
+        + '<div class="paddr">' + esc([d.a1, d.a2].filter(Boolean).join(', ')) + '</div>'
+        + (d.ap ? '<div class="papprox">Position approximative (centre de la commune)</div>' : '')
+        + (d.siret ? '<a class="plink" target="_blank" rel="noopener" href="https://annuaire-entreprises.data.gouv.fr/etablissement/' + esc(d.siret) + '">Fiche annuaire-entreprises \u2192</a>' : '');
+    }
+
+    var markers = [], layers = [], nogeo = 0;
+    D.forEach(function (d, i) {
+      if (d.lat == null) { nogeo++; return; }
+      var m = L.marker([d.lat, d.lon], { icon: d.ap ? ICON_APPROX : ICON });
+      m.bindPopup(function () { return popupHtml(d); });
+      m.on('click', function () { select(i, false); });
+      markers[i] = m;
+      layers.push(m);
+    });
+    if (layers.length) { cg.addLayers(layers); map.fitBounds(cg.getBounds().pad(0.12)); }
+    else map.setView([46.6, 2.5], 6);
+
+    var box = document.getElementById('list'), inner = document.getElementById('inner');
+    var head = document.getElementById('sbh'), input = document.getElementById('search');
+    var hay = null, filtered = D.map(function (_, i) { return i; }), active = -1, queued = false;
+
+    function label() {
+      var n = D.length.toLocaleString('fr-FR') + ' \u00e9tablissement' + (D.length > 1 ? 's' : '');
+      if (filtered.length !== D.length) return filtered.length.toLocaleString('fr-FR') + ' / ' + n;
+      return n + (nogeo ? ' \u00b7 ' + nogeo.toLocaleString('fr-FR') + ' sans position' : '');
+    }
+
+    function card(i, k) {
+      var d = D[i];
+      var tag = d.lat == null ? '<span class="tpos">sans position</span>' : (d.ap ? '<span class="tpos">\u2248 commune</span>' : '');
+      return '<div class="card' + (i === active ? ' active' : '') + (d.lat == null ? ' nogeo' : '') + '" data-i="' + i + '" style="top:' + (k * ROW) + 'px">'
+        + '<div class="name" title="' + esc(d.name) + '">' + esc(d.name) + '</div>'
+        + '<div class="siret">' + esc(d.siret) + '</div>'
+        + '<div class="tags"><span class="tnaf">' + esc(d.naf) + '</span>'
+        + '<span class="tetat ' + (d.etat === 'A' ? 'actif">Actif' : 'ferme">Ferm\u00e9') + '</span>' + tag + '</div>'
+        + '<div class="addr">' + esc([d.a1, d.a2].filter(Boolean).join(', ') || '\u2014') + '</div></div>';
+    }
+
+    function render() {
+      queued = false;
+      var top = box.scrollTop, h = box.clientHeight || 600;
+      var from = Math.max(0, Math.floor(top / ROW) - 5);
+      var to = Math.min(filtered.length, Math.ceil((top + h) / ROW) + 5);
+      var html = '';
+      for (var k = from; k < to; k++) html += card(filtered[k], k);
+      inner.innerHTML = filtered.length ? html : '<div class="no-results">Aucun r\u00e9sultat</div>';
+    }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(render); } }
+
+    function applyFilter(q) {
+      var t = q.toLowerCase().trim();
+      if (!hay) hay = D.map(function (d) { return (d.name + ' ' + d.a1 + ' ' + d.a2 + ' ' + d.siret).toLowerCase(); });
+      filtered = [];
+      for (var i = 0; i < D.length; i++) if (!t || hay[i].indexOf(t) >= 0) filtered.push(i);
+      inner.style.height = (filtered.length * ROW + 8) + 'px';
+      head.textContent = label();
+      box.scrollTop = 0;
+      render();
+    }
+
+    function select(i, fromList) {
+      if (active >= 0 && markers[active]) markers[active].setIcon(D[active].ap ? ICON_APPROX : ICON);
+      active = i;
+      var m = markers[i];
+      if (m) {
+        m.setIcon(ICON_ACTIVE);
+        if (fromList) cg.zoomToShowLayer(m, function () { m.openPopup(); });
+      }
+      if (!fromList) {
+        var k = filtered.indexOf(i);
+        if (k < 0) { input.value = ''; applyFilter(''); k = i; }
+        if (k * ROW < box.scrollTop || (k + 1) * ROW > box.scrollTop + box.clientHeight) {
+          box.scrollTop = Math.max(0, k * ROW - box.clientHeight / 2 + ROW / 2);
+        }
+      }
+      render();
+    }
+
+    box.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    inner.addEventListener('click', function (e) {
+      var c = e.target.closest('.card');
+      if (c) select(+c.getAttribute('data-i'), true);
+    });
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { applyFilter(input.value); }, 150);
+    });
+    applyFilter('');
+  })(D);
+</script></body></html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="sirene:count" content="80"/><meta name="sirene:geo" content="79"/><meta name="sirene:naf" content="93.11Z"/><meta name="sirene:dept" content="85"/><meta name="sirene:generated" content="2026-10-01T20:08:45.094Z"/><meta name="sirene:template" content="2"/><title>Sirene — 93.11Z · 85 — 80 établissements</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;background:#f5f3ef;color:#1a1a1a}header{background:#1a3a6b;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}h1{font-size:.95rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:.72rem;opacity:.65;margin-left:auto;white-space:nowrap}.body{display:flex;flex:1;min-height:0}.sb{width:340px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;min-height:0}.sbh{padding:9px 14px;border-bottom:1px solid #ddd;font-size:.72rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.05em}.search-box{padding:8px;border-bottom:1px solid #eee}.search-box input{width:100%;border:1px solid #ddd;border-radius:5px;padding:6px 10px;font-size:.82rem;outline:none;background:#f9f9f9}.search-box input:focus{border-color:#1a3a6b;background:#fff}.list{flex:1;overflow-y:auto;position:relative}#inner{position:relative}.no-results{padding:24px 14px;text-align:center;font-size:.8rem;color:#aaa}.card{position:absolute;left:8px;right:8px;height:80px;margin-top:6px;overflow:hidden;background:#fafaf8;border:1px solid #e5e2d9;border-left:3px solid transparent;border-radius:6px;padding:8px 12px;cursor:pointer;transition:border-color .15s}.card:hover{border-left-color:#1a3a6b}.card.active{border-left-color:#c8342a;background:#fff8f7}.card.nogeo{cursor:default;opacity:.8}.name{font-weight:600;font-size:.85rem;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.siret{font-family:monospace;font-size:.64rem;color:#888;margin-bottom:3px}.tags{display:flex;gap:4px;margin-bottom:4px}.tnaf,.tetat,.tpos{border-radius:3px;font-size:.65rem;padding:1px 6px;font-weight:600}.tnaf{background:#e8eef8;color:#1a3a6b}.tpos{background:#eee;color:#666}.actif{background:#e6f4ec;color:#2d7a50}.ferme{background:#fdecea;color:#c8342a}.addr{font-size:.75rem;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#map{flex:1;min-height:0}.leaflet-popup-content-wrapper{border-radius:6px!important;font-family:system-ui,sans-serif!important}.pname{font-weight:700;font-size:.85rem;margin-bottom:3px}.pnaf{font-family:monospace;font-size:.72rem;color:#1a3a6b;margin-bottom:4px}.paddr{font-size:.75rem;color:#777}.papprox{font-size:.7rem;color:#a06a00;margin-top:4px}.plink{display:inline-block;margin-top:6px;font-size:.72rem;color:#1a3a6b}@media (max-width:700px){.body{flex-direction:column-reverse}.sb{width:auto;height:42%;border-right:0;border-top:1px solid #ddd}header{padding:8px 12px}.meta{display:none}h1{font-size:.85rem}}</style></head><body><header><h1>&#128205; Sirene — 93.11Z · 85 — 80 établissements</h1><div class="meta">Exporté le 01 octobre 2026 — API Sirene INSEE</div></header><div class="body"><div class="sb"><div class="sbh" id="sbh">80 établissements</div><div class="search-box"><input id="search" type="search" placeholder="Rechercher nom, adresse, SIRET…"/></div><div class="list" id="list"><div id="inner"></div></div></div><div id="map"></div></div><script>
+const D=[{"name":"ASSOCIATION PURE PADEL MONTAIGU","siret":"10539795400014","naf":"93.11Z","etat":"A","a1":"4 RUE DENIS PAPIN","a2":"85600 MONTAIGU-VENDEE","lat":46.969556,"lon":-1.32782},{"name":"PAYS DE SAINT-GILLES-CROIX-DE-VIE AGGLOMERATION","siret":"20002377800315","naf":"93.11Z","etat":"A","a1":"4 MARAIS GUITTON","a2":"85270 SAINT-HILAIRE-DE-RIEZ","lat":46.710694,"lon":-1.945242},{"name":"COMMUNE DE DOIX LES FONTAINES","siret":"20005767700060","naf":"93.11Z","etat":"A","a1":"PL DE LA MAIRIE","a2":"85200 DOIX LES FONTAINES","lat":46.422043,"lon":-0.8203},{"name":"CC CHALLANS-GOIS COMMUNAUTE","siret":"20007162900071","naf":"93.11Z","etat":"A","a1":"48 RUE DU STADE","a2":"85230 BEAUVOIR-SUR-MER","lat":46.918761,"lon":-2.037059},{"name":"CC DU PAYS DE SAINT-FULGENT - LES ESSARTS","siret":"20007191800177","naf":"93.11Z","etat":"A","a1":"RPT DE BRETAGNE","a2":"85250 SAINT-FULGENT","lat":46.857048,"lon":-1.182111},{"name":"CC PAYS DE FONTENAY-VENDEE","siret":"20007193400042","naf":"93.11Z","etat":"A","a1":"16 RUE DE L'INNOVATION","a2":"85200 FONTENAY-LE-COMTE","lat":46.447744,"lon":-0.81497},{"name":"COMMUNE DE L'AIGUILLON-LA-PRESQU'ILE","siret":"20009683200072","naf":"93.11Z","etat":"A","a1":"2 PL DU DOCTEUR GIRAUDET","a2":"85460 L'AIGUILLON-LA-PRESQU'ILE","lat":46.334221,"lon":-1.307636},{"name":"COMMUNE DE NOIRMOUTIER-EN-L'ILE","siret":"21850163300083","naf":"93.11Z","etat":"A","a1":"PLACE DE L'HOTEL DE VILLE","a2":"85330 NOIRMOUTIER-EN-L'ILE","lat":46.99995,"lon":-2.244172},{"name":"COMMUNE DE NOIRMOUTIER-EN-L'ILE","siret":"21850163300232","naf":"93.11Z","etat":"A","a1":"52 AVENUE DU MARECHAL JOFFRE","a2":"85330 NOIRMOUTIER-EN-L'ILE","lat":47.0093,"lon":-2.233975},{"name":"COMMUNAUTE DE COMMUNES DE L ILE DE NOIRMOUTIER","siret":"24850019100072","naf":"93.11Z","etat":"A","a1":"ZONE DES OUDINIERES","a2":"85740 L'EPINE","lat":46.975964,"lon":-2.264577},{"name":"COMMUNAUTE DE COMMUNES DU PAYS DE POUZAUGES","siret":"24850046400024","naf":"93.11Z","etat":"A","a1":"RUE BUFFON","a2":"85700 POUZAUGES","lat":46.77374,"lon":-0.838011},{"name":"COMMUNAUTE DE COMMUNES DU PAYS DES ACHARDS","siret":"24850053000121","naf":"93.11Z","etat":"A","a1":"ANCIENNE ROUTE DE SAINT MATHURIN","a2":"85150 LES ACHARDS","lat":46.563678,"lon":-1.695663},{"name":"JEAN-PAUL GUITTONNEAU","siret":"34199492900014","naf":"93.11Z","etat":"A","a1":"LE PAS DE LISIERE","a2":"85740 EPINE (L')","lat":46.980949,"lon":-2.276911},{"name":"LOISIRS DES MARINES","siret":"34251729900018","naf":"93.11Z","etat":"A","a1":"AVENUE DES EPINES","a2":"85160 SAINT-JEAN-DE-MONTS","lat":46.760908,"lon":-2.007686},{"name":"GOLF ET TOURISME","siret":"34451323900014","naf":"93.11Z","etat":"A","a1":"AVENUE DES PAYS DE LA LOIRE","a2":"85160 SAINT-JEAN-DE-MONTS","lat":46.793571,"lon":-2.089014},{"name":"SARL BCBG","siret":"34779248300021","naf":"93.11Z","etat":"A","a1":"BOULEVARD DON QUICHOTTE","a2":"85000 LA ROCHE-SUR-YON","lat":46.667115,"lon":-1.404316},{"name":"LE PRE DANSEUR","siret":"34784268400024","naf":"93.11Z","etat":"A","a1":"L'ANEDRET","a2":"85440 TALMONT-SAINT-HILAIRE","lat":46.490559,"lon":-1.669559},{"name":"DELOMECA","siret":"35100882600023","naf":"93.11Z","etat":"A","a1":"RTE DE CHALLANS","a2":"85340 L'ILE-D'OLONNE","lat":46.568271,"lon":-1.77118,"ap":1},{"name":"LES ECURIES DU CLOS","siret":"35155365600023","naf":"93.11Z","etat":"A","a1":"RUE DU PUITS NAMER","a2":"85330 NOIRMOUTIER-EN-L'ILE","lat":47.013814,"lon":-2.285823},{"name":"BLUEGREEN OUEST","siret":"37937935700203","naf":"93.11Z","etat":"A","a1":"RTE DE COEX","a2":"85220 L'AIGUILLON-SUR-VIE","lat":46.6783,"lon":-1.837133},{"name":"BLUEGREEN OUEST","siret":"37937935700211","naf":"93.11Z","etat":"A","a1":"RTE DE LA ROCHELLE","a2":"85310 NESMY","lat":46.594362,"lon":-1.406095},{"name":"VERT MARINE","siret":"38442547600932","naf":"93.11Z","etat":"A","a1":"85 RUE DES PLESSES","a2":"85100 LES SABLES D'OLONNE","lat":46.492398,"lon":-1.766042},{"name":"ASS GESTION COMPLEXE SPORTIF SOCIO CULTU","siret":"39133903300014","naf":"93.11Z","etat":"A","a1":"RUE PIERRE ET MARIE CURIE","a2":"85370 NALLIERS","lat":46.470567,"lon":-1.030715},{"name":"COMITE DEPARTEMENT OLYMPIQUE ET SPORTIF","siret":"39137459200023","naf":"93.11Z","etat":"A","a1":"202 BOULEVARD ARISTIDE BRIAND","a2":"85000 LA ROCHE-SUR-YON","lat":46.665049,"lon":-1.429675},{"name":"SARL DURO","siret":"40445368000013","naf":"93.11Z","etat":"A","a1":"ALL DE PIERRE LEVEE","a2":"85100 LES SABLES D'OLONNE","lat":46.492594,"lon":-1.773215},{"name":"PIERRE-YVES LESSOURD","siret":"41760975700022","naf":"93.11Z","etat":"A","a1":"9 AVENUE DES NOLLEAUX","a2":"85360 LA TRANCHE-SUR-MER","lat":46.347389,"lon":-1.405846},{"name":"DECAFORME","siret":"42199921000022","naf":"93.11Z","etat":"A","a1":"10 RUE ROBERT BOTHEREAU","a2":"85000 LA ROCHE-SUR-YON","lat":46.679401,"lon":-1.408541},{"name":"PIERRE PLICHON","siret":"42820615500015","naf":"93.11Z","etat":"A","a1":"71 RUE DE LA BELLE POULE","a2":"85350 L'ILE-D'YEU","lat":46.717685,"lon":-2.34293},{"name":"LB","siret":"43143662500054","naf":"93.11Z","etat":"A","a1":"LES 4 CHEMINS","a2":"85400 SAINTE-GEMME-LA-PLAINE","lat":46.467169,"lon":-1.109844},{"name":"\"CENTRE SPORTS ET LOISIRS\"","siret":"43750495400011","naf":"93.11Z","etat":"A","a1":"50 IMPASSE JOSEPH GUILLEMOT","a2":"85000 LA ROCHE-SUR-YON","lat":46.667002,"lon":-1.444264},{"name":"A C WIN - S","siret":"44816335200033","naf":"93.11Z","etat":"A","a1":"16 CORNICHE DU NOUCH","a2":"85100 LES SABLES D'OLONNE","lat":46.48912,"lon":-1.800237},{"name":"COMITE DEPARTEMENTAL DE VENDEE DE BOWLING","siret":"48517378500018","naf":"93.11Z","etat":"A","a1":"10 BD DU SOUVENIR FRANCAIS","a2":"85100 LES SABLES D'OLONNE","lat":46.503516,"lon":-1.796512},{"name":"VENDEE KART","siret":"48825918500012","naf":"93.11Z","etat":"A","a1":"RUE DES ARTISANS","a2":"85540 LA JONCHERE","lat":46.424714,"lon":-1.393002},{"name":"LE PALET DES MONTS","siret":"49771451900012","naf":"93.11Z","etat":"A","a1":"16 RUE DU BOCAGE","a2":"85700 MONTOURNAIS","lat":46.741281,"lon":-0.7653},{"name":"FUTASSMON (FUTSAL ASSOCIATION MONTAIGU)","siret":"50246773100019","naf":"93.11Z","etat":"A","a1":"7 RUE DU PETIT PLANTY","a2":"85600 MONTAIGU-VENDEE","lat":46.96673,"lon":-1.299803},{"name":"VENDEE SECURITE COURSE","siret":"50822402900027","naf":"93.11Z","etat":"A","a1":"8 RUE DE LA MOTTE","a2":"85250 VENDRENNES","lat":46.826451,"lon":-1.119258},{"name":"L'UNIVHER","siret":"52099084700011","naf":"93.11Z","etat":"A","a1":"42 RUE DE LA PREE AUX DUCS","a2":"85330 NOIRMOUTIER-EN-L'ILE","lat":47.002169,"lon":-2.251967},{"name":"SOCIETE D'ECONOMIE MIXTE LOCALE INNOVATION AUTOMOBILE SUD VENDEE","siret":"52357166900028","naf":"93.11Z","etat":"A","a1":"60 RUE DE CHAMBOUIN","a2":"85200 FONTENAY-LE-COMTE","lat":46.437861,"lon":-0.789333},{"name":"SOCIETE D'ECONOMIE MIXTE LOCALE INNOVATION AUTOMOBILE SUD VENDEE","siret":"52357166900044","naf":"93.11Z","etat":"A","a1":"LA MICHETTERIE","a2":"85200 FONTENAY LE COMTE","lat":46.446872,"lon":-0.773218},{"name":"JRS FITNESS","siret":"53069394400049","naf":"93.11Z","etat":"A","a1":"6 RUE AMPERE","a2":"85500 LES HERBIERS","lat":46.862485,"lon":-1.028829},{"name":"NIORGYM","siret":"53954545900015","naf":"93.11Z","etat":"A","a1":"10 RUE ANTOINE LAVOISIER","a2":"85190 VENANSAULT","lat":46.679763,"lon":-1.520587},{"name":"SARL MOUVNKITE","siret":"53959886200016","naf":"93.11Z","etat":"A","a1":"8 RUE DES COQUELICOTS","a2":"85630 BARBATRE","lat":46.943186,"lon":-2.176085},{"name":"CHRISTIAN GAMORY DUBOURDEAU","siret":"78417187800019","naf":"93.11Z","etat":"A","a1":"14 RUE BARNABE BRISSON","a2":"85200 FONTENAY-LE-COMTE","lat":46.466082,"lon":-0.812771},{"name":"CHRISTIAN GAMORY DUBOURDEAU","siret":"78417187800043","naf":"93.11Z","etat":"A","a1":"12 RUE DE LA SABLIERE","a2":"85200 FONTENAY-LE-COMTE","lat":46.467945,"lon":-0.794404},{"name":"KEEP SOCCER","siret":"79290854300012","naf":"93.11Z","etat":"A","a1":"4 RUE MARCEL DASSAULT","a2":"85100 LES SABLES D'OLONNE","lat":46.490074,"lon":-1.770546},{"name":"ALF","siret":"79425338500023","naf":"93.11Z","etat":"A","a1":"66 RUE DES SABLES","a2":"85000 LA ROCHE-SUR-YON","lat":46.663075,"lon":-1.458313},{"name":"ALF","siret":"79425338500049","naf":"93.11Z","etat":"A","a1":"36 RUE PIERRE GILLES DE GENNES","a2":"85300 CHALLANS","lat":46.835567,"lon":-1.884269},{"name":"SAINT HILAIRE NAUTISME","siret":"81033618000015","naf":"93.11Z","etat":"A","a1":"RUE DE L'EGALITE","a2":"85270 SAINT-HILAIRE-DE-RIEZ","lat":46.719852,"lon":-1.943748},{"name":"LRY BOWLING","siret":"81871730800014","naf":"93.11Z","etat":"A","a1":"BOULEVARD DON QUICHOTTE","a2":"85000 LA ROCHE-SUR-YON","lat":46.667115,"lon":-1.404316},{"name":"DESTINATION LES SABLES D'OLONNE","siret":"82435924400103","naf":"93.11Z","etat":"A","a1":"2 RUE DU BONHEUR","a2":"85340 LES SABLES-D'OLONNE","lat":46.519244,"lon":-1.752303},{"name":"DESTINATION LES SABLES D'OLONNE","siret":"82435924400111","naf":"93.11Z","etat":"A","a1":"LA JEANNIERE","a2":"85150 SAINTE-FOY","lat":46.521711,"lon":-1.695286},{"name":"MATHIAS LEMONNIER","siret":"82767532300014","naf":"93.11Z","etat":"A","a1":"40 RUE EMILE GABORY","a2":"85000 LA ROCHE-SUR-YON","lat":46.663858,"lon":-1.408475},{"name":"WIZZARD","siret":"82864425200011","naf":"93.11Z","etat":"A","a1":"111 RUE JACQUES-YVES COUSTEAU","a2":"85000 MOUILLERON-LE-CAPTIF","lat":46.709805,"lon":-1.427534},{"name":"CMV TRAINING","siret":"85116436800017","naf":"93.11Z","etat":"A","a1":"61 BOULEVARD CLEMENCEAU","a2":"85300 CHALLANS","lat":46.85146,"lon":-1.888259},{"name":"JODIN FORM","siret":"85134965400018","naf":"93.11Z","etat":"A","a1":"15 RUE DU GEN DE MONTCALM","a2":"85100 LES SABLES D'OLONNE","lat":46.500389,"lon":-1.783527},{"name":"ALSOBP 85","siret":"85219001600018","naf":"93.11Z","etat":"A","a1":"RUE JEAN BAPTISTE COLBERT","a2":"85700 POUZAUGES","lat":46.780832,"lon":-0.82913},{"name":"VM 85160","siret":"85288789200010","naf":"93.11Z","etat":"A","a1":"PLACE DE L'EUROPE","a2":"85160 SAINT-JEAN-DE-MONTS","lat":46.779433,"lon":-2.063656},{"name":"SARL COTE&FITNESS","siret":"87958076900013","naf":"93.11Z","etat":"A","a1":"RUE DU HUIT MAI 1945","a2":"85100 LES SABLES D'OLONNE","lat":46.495412,"lon":-1.784505},{"name":"BOURGENAY GOLF CLUB","siret":"88492952200024","naf":"93.11Z","etat":"A","a1":"AVENUE DE LA MINE","a2":"85440 TALMONT-SAINT-HILAIRE","lat":46.448165,"lon":-1.681779},{"name":"CENTRE AQUATIQUE L'ODYSS","siret":"90190351800016","naf":"93.11Z","etat":"A","a1":"40 RUE DE LA PLAINE","a2":"85110 CHANTONNAY","lat":46.689264,"lon":-1.038683},{"name":"OG FITNESS","siret":"90216413600027","naf":"93.11Z","etat":"A","a1":"47 AVENUE GEORGES CLEMENCEAU","a2":"85110 CHANTONNAY","lat":46.680819,"lon":-1.048581},{"name":"OG FITNESS","siret":"90216413600035","naf":"93.11Z","etat":"A","a1":"5 RUE SAINT LOUIS","a2":"85260 MONTREVERD","lat":46.906926,"lon":-1.453288},{"name":"LE GARAGE 85","siret":"91059353200021","naf":"93.11Z","etat":"A","a1":"24 RUE CLAUDE CHAPPE","a2":"85100 LES SABLES D'OLONNE","lat":46.497272,"lon":-1.79848},{"name":"EQUIPEMENTS AQUATIQUES DE CHALLANS ET BEAUVOIR","siret":"91449285500012","naf":"93.11Z","etat":"A","a1":"2 RUE DES PETITS CANARDS","a2":"85300 CHALLANS","lat":46.866547,"lon":-1.867817},{"name":"CRUX","siret":"92166369600018","naf":"93.11Z","etat":"A","a1":"51 RUE LOUISE DE BETTIGNIES","a2":"85000 LA ROCHE-SUR-YON","lat":46.655447,"lon":-1.453821},{"name":"[ND]","siret":"93052839300018","naf":"93.11Z","etat":"A","a1":"[ND] [ND] [ND]","a2":"[ND] SAINT-VINCENT-SUR-GRAON","lat":null,"lon":null},{"name":"SPAIR ONE","siret":"93081304300013","naf":"93.11Z","etat":"A","a1":"78 IMPASSE GOZOLA","a2":"85000 LA ROCHE-SUR-YON","lat":46.66738,"lon":-1.356856},{"name":"PHEDRE","siret":"93095804600037","naf":"93.11Z","etat":"A","a1":"PLACE DE L'EUROPE","a2":"85160 SAINT-JEAN-DE-MONTS","lat":46.779433,"lon":-2.063656},{"name":"VM 85500","siret":"93124988200016","naf":"93.11Z","etat":"A","a1":"RUE DU BARON PIERRE DE COUBERTIN","a2":"85500 LES HERBIERS","lat":46.862844,"lon":-1.015553},{"name":"WK LES SABLES","siret":"93852649800010","naf":"93.11Z","etat":"A","a1":"9 IMPASSE PAUL ELUARD","a2":"85180 LES SABLES-D'OLONNE","lat":46.491338,"lon":-1.748374},{"name":"LE SPOT SABLAIS","siret":"94197509600020","naf":"93.11Z","etat":"A","a1":"30 RUE ELISA DEROCHE","a2":"85180 LES SABLES-D'OLONNE","lat":46.492408,"lon":-1.714837},{"name":"PEMAN","siret":"94261433000010","naf":"93.11Z","etat":"A","a1":"107 RUE DE LA ROCHE","a2":"85190 AIZENAY","lat":46.734642,"lon":-1.592853},{"name":"EAGLE TRAINING","siret":"95320788300018","naf":"93.11Z","etat":"A","a1":"4 RUE DU CREUX JAUNE","a2":"85520 JARD-SUR-MER","lat":46.425046,"lon":-1.571357},{"name":"JOHANN COLLIN","siret":"95387051600010","naf":"93.11Z","etat":"A","a1":"4 RUE JEAN GIONO","a2":"85300 CHALLANS","lat":46.856858,"lon":-1.870081},{"name":"PHILOSPORTS","siret":"97950413100017","naf":"93.11Z","etat":"A","a1":"SQUARE MAURICE FILLONNEAU","a2":"85300 SALLERTAINE","lat":46.854661,"lon":-1.903725},{"name":"GOLF DE LA PRESQUILE","siret":"98511822300017","naf":"93.11Z","etat":"A","a1":"13 CHEMIN DES RELAIS DE MER","a2":"85460 L'AIGUILLON-LA-PRESQU'ILE","lat":46.320892,"lon":-1.30664},{"name":"MAXARENA","siret":"99204111100012","naf":"93.11Z","etat":"A","a1":"6 COUR BEAU SOLEIL","a2":"85200 FONTENAY-LE-COMTE","lat":46.457845,"lon":-0.805257},{"name":"KARTAL GROUP","siret":"99355863400016","naf":"93.11Z","etat":"A","a1":"111 RUE JACQUES-YVES COUSTEAU","a2":"85000 MOUILLERON-LE-CAPTIF","lat":46.709805,"lon":-1.427534},{"name":"SPAIR TWO","siret":"99384219400017","naf":"93.11Z","etat":"A","a1":"20 RUE ELISA DEROCHE","a2":"85190 AIZENAY","lat":46.752618,"lon":-1.626615},{"name":"REGIE DES ACTIVITES NAUTIQUES DE SAINT GILLES CROIX DE VIE","siret":"99490562800016","naf":"93.11Z","etat":"A","a1":"86 QUAI DE LA REPUBLIQUE","a2":"85800 SAINT-GILLES-CROIX-DE-VIE","lat":46.697604,"lon":-1.944691}];
+(function exportPageRuntime(D) {
+    var ROW = 86;
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    };
+    var map = L.map('map');
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '\u00a9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> \u00b7 donn\u00e9es INSEE SIRENE',
+      maxZoom: 19
+    }).addTo(map);
+    var cg = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
+    map.addLayer(cg);
+
+    function pin(color) {
+      return L.divIcon({
+        html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="' + color + '"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>',
+        className: '', iconSize: [24, 32], iconAnchor: [12, 32], popupAnchor: [0, -34]
+      });
+    }
+    var ICON = pin('#1a3a6b'), ICON_APPROX = pin('#8a96a8'), ICON_ACTIVE = pin('#c8342a');
+
+    function popupHtml(d) {
+      return '<div class="pname">' + esc(d.name) + '</div>'
+        + '<div class="pnaf">' + esc(d.naf) + '</div>'
+        + '<div class="paddr">' + esc([d.a1, d.a2].filter(Boolean).join(', ')) + '</div>'
+        + (d.ap ? '<div class="papprox">Position approximative (centre de la commune)</div>' : '')
+        + (d.siret ? '<a class="plink" target="_blank" rel="noopener" href="https://annuaire-entreprises.data.gouv.fr/etablissement/' + esc(d.siret) + '">Fiche annuaire-entreprises \u2192</a>' : '');
+    }
+
+    var markers = [], layers = [], nogeo = 0;
+    D.forEach(function (d, i) {
+      if (d.lat == null) { nogeo++; return; }
+      var m = L.marker([d.lat, d.lon], { icon: d.ap ? ICON_APPROX : ICON });
+      m.bindPopup(function () { return popupHtml(d); });
+      m.on('click', function () { select(i, false); });
+      markers[i] = m;
+      layers.push(m);
+    });
+    if (layers.length) { cg.addLayers(layers); map.fitBounds(cg.getBounds().pad(0.12)); }
+    else map.setView([46.6, 2.5], 6);
+
+    var box = document.getElementById('list'), inner = document.getElementById('inner');
+    var head = document.getElementById('sbh'), input = document.getElementById('search');
+    var hay = null, filtered = D.map(function (_, i) { return i; }), active = -1, queued = false;
+
+    function label() {
+      var n = D.length.toLocaleString('fr-FR') + ' \u00e9tablissement' + (D.length > 1 ? 's' : '');
+      if (filtered.length !== D.length) return filtered.length.toLocaleString('fr-FR') + ' / ' + n;
+      return n + (nogeo ? ' \u00b7 ' + nogeo.toLocaleString('fr-FR') + ' sans position' : '');
+    }
+
+    function card(i, k) {
+      var d = D[i];
+      var tag = d.lat == null ? '<span class="tpos">sans position</span>' : (d.ap ? '<span class="tpos">\u2248 commune</span>' : '');
+      return '<div class="card' + (i === active ? ' active' : '') + (d.lat == null ? ' nogeo' : '') + '" data-i="' + i + '" style="top:' + (k * ROW) + 'px">'
+        + '<div class="name" title="' + esc(d.name) + '">' + esc(d.name) + '</div>'
+        + '<div class="siret">' + esc(d.siret) + '</div>'
+        + '<div class="tags"><span class="tnaf">' + esc(d.naf) + '</span>'
+        + '<span class="tetat ' + (d.etat === 'A' ? 'actif">Actif' : 'ferme">Ferm\u00e9') + '</span>' + tag + '</div>'
+        + '<div class="addr">' + esc([d.a1, d.a2].filter(Boolean).join(', ') || '\u2014') + '</div></div>';
+    }
+
+    function render() {
+      queued = false;
+      var top = box.scrollTop, h = box.clientHeight || 600;
+      var from = Math.max(0, Math.floor(top / ROW) - 5);
+      var to = Math.min(filtered.length, Math.ceil((top + h) / ROW) + 5);
+      var html = '';
+      for (var k = from; k < to; k++) html += card(filtered[k], k);
+      inner.innerHTML = filtered.length ? html : '<div class="no-results">Aucun r\u00e9sultat</div>';
+    }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(render); } }
+
+    function applyFilter(q) {
+      var t = q.toLowerCase().trim();
+      if (!hay) hay = D.map(function (d) { return (d.name + ' ' + d.a1 + ' ' + d.a2 + ' ' + d.siret).toLowerCase(); });
+      filtered = [];
+      for (var i = 0; i < D.length; i++) if (!t || hay[i].indexOf(t) >= 0) filtered.push(i);
+      inner.style.height = (filtered.length * ROW + 8) + 'px';
+      head.textContent = label();
+      box.scrollTop = 0;
+      render();
+    }
+
+    function select(i, fromList) {
+      if (active >= 0 && markers[active]) markers[active].setIcon(D[active].ap ? ICON_APPROX : ICON);
+      active = i;
+      var m = markers[i];
+      if (m) {
+        m.setIcon(ICON_ACTIVE);
+        if (fromList) cg.zoomToShowLayer(m, function () { m.openPopup(); });
+      }
+      if (!fromList) {
+        var k = filtered.indexOf(i);
+        if (k < 0) { input.value = ''; applyFilter(''); k = i; }
+        if (k * ROW < box.scrollTop || (k + 1) * ROW > box.scrollTop + box.clientHeight) {
+          box.scrollTop = Math.max(0, k * ROW - box.clientHeight / 2 + ROW / 2);
+        }
+      }
+      render();
+    }
+
+    box.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    inner.addEventListener('click', function (e) {
+      var c = e.target.closest('.card');
+      if (c) select(+c.getAttribute('data-i'), true);
+    });
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { applyFilter(input.value); }, 150);
+    });
+    applyFilter('');
+  })(D);
+</script></body></html>

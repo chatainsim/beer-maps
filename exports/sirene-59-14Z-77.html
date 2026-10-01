@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="sirene:count" content="45"/><meta name="sirene:geo" content="42"/><meta name="sirene:naf" content="59.14Z"/><meta name="sirene:dept" content="77"/><meta name="sirene:generated" content="2026-10-01T19:56:28.606Z"/><meta name="sirene:template" content="2"/><title>Sirene — 59.14Z · 77 — 45 établissements</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;background:#f5f3ef;color:#1a1a1a}header{background:#1a3a6b;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}h1{font-size:.95rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:.72rem;opacity:.65;margin-left:auto;white-space:nowrap}.body{display:flex;flex:1;min-height:0}.sb{width:340px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;min-height:0}.sbh{padding:9px 14px;border-bottom:1px solid #ddd;font-size:.72rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.05em}.search-box{padding:8px;border-bottom:1px solid #eee}.search-box input{width:100%;border:1px solid #ddd;border-radius:5px;padding:6px 10px;font-size:.82rem;outline:none;background:#f9f9f9}.search-box input:focus{border-color:#1a3a6b;background:#fff}.list{flex:1;overflow-y:auto;position:relative}#inner{position:relative}.no-results{padding:24px 14px;text-align:center;font-size:.8rem;color:#aaa}.card{position:absolute;left:8px;right:8px;height:80px;margin-top:6px;overflow:hidden;background:#fafaf8;border:1px solid #e5e2d9;border-left:3px solid transparent;border-radius:6px;padding:8px 12px;cursor:pointer;transition:border-color .15s}.card:hover{border-left-color:#1a3a6b}.card.active{border-left-color:#c8342a;background:#fff8f7}.card.nogeo{cursor:default;opacity:.8}.name{font-weight:600;font-size:.85rem;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.siret{font-family:monospace;font-size:.64rem;color:#888;margin-bottom:3px}.tags{display:flex;gap:4px;margin-bottom:4px}.tnaf,.tetat,.tpos{border-radius:3px;font-size:.65rem;padding:1px 6px;font-weight:600}.tnaf{background:#e8eef8;color:#1a3a6b}.tpos{background:#eee;color:#666}.actif{background:#e6f4ec;color:#2d7a50}.ferme{background:#fdecea;color:#c8342a}.addr{font-size:.75rem;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#map{flex:1;min-height:0}.leaflet-popup-content-wrapper{border-radius:6px!important;font-family:system-ui,sans-serif!important}.pname{font-weight:700;font-size:.85rem;margin-bottom:3px}.pnaf{font-family:monospace;font-size:.72rem;color:#1a3a6b;margin-bottom:4px}.paddr{font-size:.75rem;color:#777}.papprox{font-size:.7rem;color:#a06a00;margin-top:4px}.plink{display:inline-block;margin-top:6px;font-size:.72rem;color:#1a3a6b}@media (max-width:700px){.body{flex-direction:column-reverse}.sb{width:auto;height:42%;border-right:0;border-top:1px solid #ddd}header{padding:8px 12px}.meta{display:none}h1{font-size:.85rem}}</style></head><body><header><h1>&#128205; Sirene — 59.14Z · 77 — 45 établissements</h1><div class="meta">Exporté le 01 octobre 2026 — API Sirene INSEE</div></header><div class="body"><div class="sb"><div class="sbh" id="sbh">45 établissements</div><div class="search-box"><input id="search" type="search" placeholder="Rechercher nom, adresse, SIRET…"/></div><div class="list" id="list"><div id="inner"></div></div></div><div id="map"></div></div><script>
+const D=[{"name":"DACODOC","siret":"10231818500018","naf":"59.14Z","etat":"A","a1":"51 RUE VICTOR HUGO","a2":"77250 MORET-LOING-ET-ORVANNE","lat":48.385063,"lon":2.789096},{"name":"FONTAINEBLEAU 7EME ART","siret":"10616662200014","naf":"59.14Z","etat":"A","a1":"10 AVENUE DU MARECHAL VILLARS","a2":"77300 FONTAINEBLEAU","lat":48.400179,"lon":2.716174},{"name":"NEOLUX MOTION","siret":"10982309600010","naf":"59.14Z","etat":"A","a1":"13 CHEMIN DE LA NOIROLLE","a2":"77930 CELY","lat":48.459874,"lon":2.52247},{"name":"COMMUNE MELUN","siret":"21770288500419","naf":"59.14Z","etat":"A","a1":"20 BOULEVARD CHAMBLAIN","a2":"77000 MELUN","lat":48.533439,"lon":2.654794},{"name":"MEGARAMA BEAUX-ARTS","siret":"32112778900063","naf":"59.14Z","etat":"A","a1":"23 RUE DES FILOIRS","a2":"77480 BRAY-SUR-SEINE","lat":48.414238,"lon":3.239266},{"name":"AGORA CINEMAS","siret":"32625903300081","naf":"59.14Z","etat":"A","a1":"23 RUE DES FILOIRS","a2":"77480 BRAY-SUR-SEINE","lat":48.414238,"lon":3.239266},{"name":"FORUM INTERNATIONAL","siret":"32762879800065","naf":"59.14Z","etat":"A","a1":"23 RUE DES FILOIRS","a2":"77480 BRAY-SUR-SEINE","lat":48.414238,"lon":3.239266},{"name":"JEAN-MICHEL PEREZ","siret":"32784896600047","naf":"59.14Z","etat":"A","a1":"8 RUE DES TROIS MAILLETS","a2":"77300 FONTAINEBLEAU","lat":48.404696,"lon":2.699364},{"name":"LES MELIES","siret":"38949785000013","naf":"59.14Z","etat":"A","a1":"9 RUE BEZOUT","a2":"77140 NEMOURS","lat":48.265633,"lon":2.695397},{"name":"ASSO LE RENAISSANCE","siret":"39085411500016","naf":"59.14Z","etat":"A","a1":"16 RUE DE L'EGLISE","a2":"77480 BRAY-SUR-SEINE","lat":48.415246,"lon":3.237849},{"name":"MAUBIM","siret":"42453395800049","naf":"59.14Z","etat":"A","a1":"PROM DU 7 EME ART","a2":"77200 TORCY","lat":48.840661,"lon":2.654833},{"name":"KINEPOLIS PROSPECTION","siret":"42819205800033","naf":"59.14Z","etat":"A","a1":"RUE DU NOYER AUX PERDRIX","a2":"77170 SERVON","lat":48.708912,"lon":2.582345},{"name":"CINE DIEPPE","siret":"43786405100051","naf":"59.14Z","etat":"A","a1":"23 RUE DES FILOIRS","a2":"77480 BRAY-SUR-SEINE","lat":48.414238,"lon":3.239266},{"name":"CINE MONTEREAU POINT COM","siret":"44047683600026","naf":"59.14Z","etat":"A","a1":"RUE PIERRE DE COUBERTIN","a2":"77430 CHAMPAGNE-SUR-SEINE","lat":48.398754,"lon":2.805062},{"name":"CINE MONTEREAU POINT COM","siret":"44047683600034","naf":"59.14Z","etat":"A","a1":"LE MARAIS FONTAINE DE COEUR","a2":"77130 VARENNES-SUR-SEINE","lat":48.37383,"lon":2.935173},{"name":"PATHE CINEMAS FRANCE","siret":"44456712700063","naf":"59.14Z","etat":"A","a1":"824 AVENUE DU LYS","a2":"77190 DAMMARIE-LES-LYS","lat":48.516182,"lon":2.626078},{"name":"PATHE CINEMAS FRANCE","siret":"44456712700196","naf":"59.14Z","etat":"A","a1":"ESPLANADE FRANCOIS TRUFFAUT","a2":"77700 CHESSY","lat":48.868726,"lon":2.781261},{"name":"PATHE CINEMAS FRANCE","siret":"44456712700246","naf":"59.14Z","etat":"A","a1":"CENTRE COMMERCIAL CARRE SENART","a2":"77127 LIEUSAINT","lat":48.632684,"lon":2.549489},{"name":"CINEMA 11 X 20 + 14","siret":"44507026100018","naf":"59.14Z","etat":"A","a1":"21 RUE DE LA CROIX-ROUGE","a2":"77520 MONS-EN-MONTOIS","lat":48.490047,"lon":3.148415},{"name":"ZARATHUSHTRA","siret":"44939990600022","naf":"59.14Z","etat":"A","a1":"23 RUE MARCEL CLAVIER","a2":"77120 COULOMMIERS","lat":48.809696,"lon":3.090876},{"name":"ETOILE COSMOS","siret":"45101982200019","naf":"59.14Z","etat":"A","a1":"22 AVENUE DE LA RESISTANCE","a2":"77500 CHELLES","lat":48.877872,"lon":2.586341},{"name":"SARL LES CINEMAS DE LAGNY","siret":"49250732200013","naf":"59.14Z","etat":"A","a1":"5 RUE DELAMBRE","a2":"77400 LAGNY-SUR-MARNE","lat":48.879604,"lon":2.706124},{"name":"SARL CINEODE","siret":"49397742500401","naf":"59.14Z","etat":"A","a1":"RUE AMBROISE PRO","a2":"77000 VAUX-LE-PENIL","lat":48.527732,"lon":2.689568},{"name":"SOCIETE D'EXPLOITATION CINEMATOGRAPHIQUE DU PIC SAINT LOUP","siret":"49871438500040","naf":"59.14Z","etat":"A","a1":"23 RUE DES FILOIRS","a2":"77480 BRAY-SUR-SEINE","lat":48.414238,"lon":3.239266},{"name":"CS MULTIMEDIA","siret":"50147499300026","naf":"59.14Z","etat":"A","a1":"23 RUE DES FILOIRS","a2":"77480 BRAY-SUR-SEINE","lat":48.414238,"lon":3.239266},{"name":"BERNABE DESVIGNE","siret":"53047549000013","naf":"59.14Z","etat":"A","a1":"38 RUE DE LA MAIRIE","a2":"77660 CHANGIS-SUR-MARNE","lat":48.956962,"lon":3.014834},{"name":"LES IMAGES","siret":"77567066400090","naf":"59.14Z","etat":"A","a1":"23 RUE DES FILOIRS","a2":"77480 BRAY-SUR-SEINE","lat":48.414238,"lon":3.239266},{"name":"CINESCOP","siret":"79236780700023","naf":"59.14Z","etat":"A","a1":"23 RUE DES FILOIRS","a2":"77480 BRAY-SUR-SEINE","lat":48.414238,"lon":3.239266},{"name":"MITRY MORY EVENEMENTIEL","siret":"79477956100024","naf":"59.14Z","etat":"A","a1":"4 AVENUE DES BOSQUETS","a2":"77290 MITRY-MORY","lat":48.956882,"lon":2.603117},{"name":"[ND]","siret":"82018738300022","naf":"59.14Z","etat":"A","a1":"[ND] [ND] [ND]","a2":"[ND] LESIGNY","lat":null,"lon":null},{"name":"SOCIETE DES CINEMAS DE L'OUEST","siret":"82379537200023","naf":"59.14Z","etat":"A","a1":"11 PLACE HENRI IV","a2":"77100 MEAUX","lat":48.95945,"lon":2.882959},{"name":"LE CINEMA DE CHESSY","siret":"83352371500013","naf":"59.14Z","etat":"A","a1":"31 PLACE D'ARIANE","a2":"77700 CHESSY","lat":48.856641,"lon":2.773863},{"name":"CINEMAS GRAND FORUM DIEPPE","siret":"83377084500026","naf":"59.14Z","etat":"A","a1":"23 RUE DES FILOIRS","a2":"77480 BRAY-SUR-SEINE","lat":48.414238,"lon":3.239266},{"name":"[ND]","siret":"84819016100010","naf":"59.14Z","etat":"A","a1":"[ND] [ND] [ND]","a2":"[ND] MITRY-MORY","lat":null,"lon":null},{"name":"CINE CLAYE","siret":"85204023700020","naf":"59.14Z","etat":"A","a1":"3 RUE ROBERT SCHUMAN","a2":"77410 CLAYE-SOUILLY","lat":48.947175,"lon":2.658375},{"name":"APP","siret":"88362905700018","naf":"59.14Z","etat":"A","a1":"33 RUE DU GENERAL DELORT","a2":"77160 PROVINS","lat":48.56047,"lon":3.305688},{"name":"L'ERMITAGE","siret":"90675024500019","naf":"59.14Z","etat":"A","a1":"6 RUE DE FRANCE","a2":"77300 FONTAINEBLEAU","lat":48.404249,"lon":2.699488},{"name":"L'ERMITAGE","siret":"90675024500027","naf":"59.14Z","etat":"A","a1":"23 PLACE NAPOLEON BONAPARTE","a2":"77300 FONTAINEBLEAU","lat":48.403559,"lon":2.698749},{"name":"L'ERMITAGE","siret":"90675024500100","naf":"59.14Z","etat":"A","a1":"10 AVENUE DU MARECHAL VILLARS","a2":"77300 FONTAINEBLEAU","lat":48.400179,"lon":2.716174},{"name":"CLAIRE BOCQUET","siret":"91844738400010","naf":"59.14Z","etat":"A","a1":"24 AVENUE GERMAINE","a2":"77500 CHELLES","lat":48.879024,"lon":2.5834},{"name":"UMENSTUNT EQUIPMENT","siret":"92324227500017","naf":"59.14Z","etat":"A","a1":"25 ALLEE THIBAUD DE CHAMPAGNE","a2":"77600 GUERMANTES","lat":48.852431,"lon":2.7107},{"name":"BLOCINE","siret":"92857640400018","naf":"59.14Z","etat":"A","a1":"10 AVENUE DU MARECHAL VILLARS","a2":"77300 FONTAINEBLEAU","lat":48.400179,"lon":2.716174},{"name":"BLOCINE","siret":"92857640400026","naf":"59.14Z","etat":"A","a1":"6 RUE DE FRANCE","a2":"77300 FONTAINEBLEAU","lat":48.404249,"lon":2.699488},{"name":"[ND]","siret":"93316261200016","naf":"59.14Z","etat":"A","a1":"[ND] [ND] [ND]","a2":"[ND] MITRY-MORY","lat":null,"lon":null},{"name":"BALTHAZAR","siret":"98196556900024","naf":"59.14Z","etat":"A","a1":"23 RUE MARCEL CLAVIER","a2":"77120 COULOMMIERS","lat":48.809696,"lon":3.090876}];
+(function exportPageRuntime(D) {
+    var ROW = 86;
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    };
+    var map = L.map('map');
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '\u00a9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> \u00b7 donn\u00e9es INSEE SIRENE',
+      maxZoom: 19
+    }).addTo(map);
+    var cg = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 45 });
+    map.addLayer(cg);
+
+    function pin(color) {
+      return L.divIcon({
+        html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20S24 21 24 12C24 5.37 18.63 0 12 0z" fill="' + color + '"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>',
+        className: '', iconSize: [24, 32], iconAnchor: [12, 32], popupAnchor: [0, -34]
+      });
+    }
+    var ICON = pin('#1a3a6b'), ICON_APPROX = pin('#8a96a8'), ICON_ACTIVE = pin('#c8342a');
+
+    function popupHtml(d) {
+      return '<div class="pname">' + esc(d.name) + '</div>'
+        + '<div class="pnaf">' + esc(d.naf) + '</div>'
+        + '<div class="paddr">' + esc([d.a1, d.a2].filter(Boolean).join(', ')) + '</div>'
+        + (d.ap ? '<div class="papprox">Position approximative (centre de la commune)</div>' : '')
+        + (d.siret ? '<a class="plink" target="_blank" rel="noopener" href="https://annuaire-entreprises.data.gouv.fr/etablissement/' + esc(d.siret) + '">Fiche annuaire-entreprises \u2192</a>' : '');
+    }
+
+    var markers = [], layers = [], nogeo = 0;
+    D.forEach(function (d, i) {
+      if (d.lat == null) { nogeo++; return; }
+      var m = L.marker([d.lat, d.lon], { icon: d.ap ? ICON_APPROX : ICON });
+      m.bindPopup(function () { return popupHtml(d); });
+      m.on('click', function () { select(i, false); });
+      markers[i] = m;
+      layers.push(m);
+    });
+    if (layers.length) { cg.addLayers(layers); map.fitBounds(cg.getBounds().pad(0.12)); }
+    else map.setView([46.6, 2.5], 6);
+
+    var box = document.getElementById('list'), inner = document.getElementById('inner');
+    var head = document.getElementById('sbh'), input = document.getElementById('search');
+    var hay = null, filtered = D.map(function (_, i) { return i; }), active = -1, queued = false;
+
+    function label() {
+      var n = D.length.toLocaleString('fr-FR') + ' \u00e9tablissement' + (D.length > 1 ? 's' : '');
+      if (filtered.length !== D.length) return filtered.length.toLocaleString('fr-FR') + ' / ' + n;
+      return n + (nogeo ? ' \u00b7 ' + nogeo.toLocaleString('fr-FR') + ' sans position' : '');
+    }
+
+    function card(i, k) {
+      var d = D[i];
+      var tag = d.lat == null ? '<span class="tpos">sans position</span>' : (d.ap ? '<span class="tpos">\u2248 commune</span>' : '');
+      return '<div class="card' + (i === active ? ' active' : '') + (d.lat == null ? ' nogeo' : '') + '" data-i="' + i + '" style="top:' + (k * ROW) + 'px">'
+        + '<div class="name" title="' + esc(d.name) + '">' + esc(d.name) + '</div>'
+        + '<div class="siret">' + esc(d.siret) + '</div>'
+        + '<div class="tags"><span class="tnaf">' + esc(d.naf) + '</span>'
+        + '<span class="tetat ' + (d.etat === 'A' ? 'actif">Actif' : 'ferme">Ferm\u00e9') + '</span>' + tag + '</div>'
+        + '<div class="addr">' + esc([d.a1, d.a2].filter(Boolean).join(', ') || '\u2014') + '</div></div>';
+    }
+
+    function render() {
+      queued = false;
+      var top = box.scrollTop, h = box.clientHeight || 600;
+      var from = Math.max(0, Math.floor(top / ROW) - 5);
+      var to = Math.min(filtered.length, Math.ceil((top + h) / ROW) + 5);
+      var html = '';
+      for (var k = from; k < to; k++) html += card(filtered[k], k);
+      inner.innerHTML = filtered.length ? html : '<div class="no-results">Aucun r\u00e9sultat</div>';
+    }
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(render); } }
+
+    function applyFilter(q) {
+      var t = q.toLowerCase().trim();
+      if (!hay) hay = D.map(function (d) { return (d.name + ' ' + d.a1 + ' ' + d.a2 + ' ' + d.siret).toLowerCase(); });
+      filtered = [];
+      for (var i = 0; i < D.length; i++) if (!t || hay[i].indexOf(t) >= 0) filtered.push(i);
+      inner.style.height = (filtered.length * ROW + 8) + 'px';
+      head.textContent = label();
+      box.scrollTop = 0;
+      render();
+    }
+
+    function select(i, fromList) {
+      if (active >= 0 && markers[active]) markers[active].setIcon(D[active].ap ? ICON_APPROX : ICON);
+      active = i;
+      var m = markers[i];
+      if (m) {
+        m.setIcon(ICON_ACTIVE);
+        if (fromList) cg.zoomToShowLayer(m, function () { m.openPopup(); });
+      }
+      if (!fromList) {
+        var k = filtered.indexOf(i);
+        if (k < 0) { input.value = ''; applyFilter(''); k = i; }
+        if (k * ROW < box.scrollTop || (k + 1) * ROW > box.scrollTop + box.clientHeight) {
+          box.scrollTop = Math.max(0, k * ROW - box.clientHeight / 2 + ROW / 2);
+        }
+      }
+      render();
+    }
+
+    box.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    inner.addEventListener('click', function (e) {
+      var c = e.target.closest('.card');
+      if (c) select(+c.getAttribute('data-i'), true);
+    });
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { applyFilter(input.value); }, 150);
+    });
+    applyFilter('');
+  })(D);
+</script></body></html>
