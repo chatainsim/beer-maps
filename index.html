@@ -279,6 +279,7 @@
     <select id="modeSelect" onchange="updateMode()">
       <option value="count">Nombre d'établissements</option>
       <option value="hab">Pour 10 000 habitants</option>
+      <option value="new">Nouveaux depuis la dernière mise à jour</option>
     </select>
   </div>
 
@@ -303,10 +304,10 @@
 const { DEPT_NAMES, DEPT_CODES, DEPT_POPULATION, NAF_DICT, escHtml: esc, exportFileName } = SireneCore;
 
 let currentNaf = '11.05Z';
-let mode = 'count';    // 'count' | 'hab' (pour 10 000 habitants)
+let mode = 'count';    // 'count' | 'hab' (pour 10 000 habitants) | 'new' (nouveaux établissements)
 let geoLayer = null;
 let deptCounts = {};   // { "38": 12, "69": 5, ... } — null = pas d'export
-let deptInfo = {};     // { "38": { geo, total } } — détails du manifest, si connus
+let deptInfo = {};     // { "38": { geo, total, opened, closed, since } } — détails du manifest, si connus
 let deptLabels = [];   // L.marker label references
 let breaks = [];       // bornes des classes de couleur (quantiles)
 let cachedGeoJson = null;
@@ -321,8 +322,10 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   opacity: 0.6,
 }).addTo(map);
 
-// Fusionne les features 2A et 2B en un seul MultiPolygon "20"
+// Fusionne les features 2A et 2B en un seul MultiPolygon "20" (sans effet sur
+// data/departements.geojson, déjà fusionné ; conservé pour d'autres sources)
 function preprocessGeoJson(data) {
+  if (!data.features.some(f => f.properties.code === '2A')) return data;
   function toPolygons(feat) {
     if (!feat) return [];
     const g = feat.geometry;
@@ -357,7 +360,18 @@ function perHab(code) {
 function valueOf(code) {
   const c = deptCounts[code];
   if (c == null) return null;
+  if (mode === 'new') return deptInfo[code]?.opened ?? null;
   return mode === 'hab' ? perHab(code) : c;
+}
+
+// « +3 nouveaux · −1 disparu »
+function chgText(opened, closed) {
+  return '<b style="color:#2d7a50">+' + opened.toLocaleString('fr-FR') + '</b> nouveau' + (opened > 1 ? 'x' : '') + ' · '
+    + '<b style="color:#c8342a">−' + closed.toLocaleString('fr-FR') + '</b> disparu' + (closed > 1 ? 's' : '');
+}
+
+function frDate(iso) {
+  return iso ? new Date(iso).toLocaleDateString('fr-FR') : '';
 }
 
 function fmt(v) {
@@ -431,6 +445,10 @@ function tooltipHtml(code) {
   const ph = perHab(code);
   if (ph != null) html += '<span class="status">' + ph.toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' pour 10 000 hab. · '
     + DEPT_POPULATION[code].toLocaleString('fr-FR') + ' hab.</span>';
+  if (info.opened != null) {
+    html += '<span class="status">' + chgText(info.opened, info.closed)
+      + (info.since ? ' depuis le ' + frDate(info.since) : '') + '</span>';
+  }
   if (info.geo != null && info.geo < count) {
     const n = count - info.geo;
     html += '<span class="status">dont ' + n.toLocaleString('fr-FR') + ' sans position sur la carte</span>';
@@ -496,9 +514,22 @@ function updateInfoPanel() {
   const pop = withData.reduce((a, c) => a + (DEPT_POPULATION[c] || 0), 0);
   const nbDepts = withData.length;
   document.getElementById('totalCount').textContent = total.toLocaleString('fr-FR');
+  // Évolution depuis la mise à jour précédente (si le manifest la connaît)
+  const withChg = DEPT_CODES.filter(c => deptInfo[c]?.opened != null);
+  const opened = withChg.reduce((a, c) => a + deptInfo[c].opened, 0);
+  const closed = withChg.reduce((a, c) => a + deptInfo[c].closed, 0);
+  const since = withChg.map(c => deptInfo[c].since).filter(Boolean).sort()[0];
+  let chg = '';
+  if (withChg.length) {
+    chg = '<br/>' + chgText(opened, closed)
+      + (since ? ' depuis le ' + frDate(since) : '');
+  } else if (mode === 'new') {
+    chg = '<br/><span class="hint" style="display:inline">Pas encore d\'historique pour cette activité : disponible après la prochaine mise à jour.</span>';
+  }
   document.getElementById('infoDetails').innerHTML =
     '<strong>' + nbDepts + '</strong> département' + (nbDepts > 1 ? 's' : '') + ' avec données'
     + (pop ? ' · ' + (total / pop * 10000).toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' pour 10 000 hab.' : '')
+    + chg
     + '<br/><span class="hint">Cliquez sur un département pour ouvrir sa carte.</span>';
 }
 
@@ -506,7 +537,8 @@ function updateColorScale() {
   const scale = document.getElementById('colorScale');
   if (breaks.max == null) { scale.style.display = 'none'; return; }
   scale.style.display = '';
-  document.getElementById('scaleTitle').textContent = mode === 'hab' ? 'Pour 10 000 habitants' : 'Établissements';
+  document.getElementById('scaleTitle').textContent =
+    mode === 'hab' ? 'Pour 10 000 habitants' : mode === 'new' ? 'Nouveaux établissements' : 'Établissements';
   const bounds = [breaks.min].concat(breaks, [breaks.max]);
   let html = '';
   for (let i = breaks.length; i >= 0; i--) {
@@ -544,7 +576,7 @@ function countsFromManifest() {
   DEPT_CODES.forEach(code => {
     const d = entry.depts[code];
     deptCounts[code] = d ? d.count : null;
-    if (d) deptInfo[code] = { geo: d.geo, total: d.total };
+    if (d) deptInfo[code] = { geo: d.geo, total: d.total, opened: d.opened, closed: d.closed, since: d.since };
   });
   const found = DEPT_CODES.filter(c => deptCounts[c] > 0).length;
   const dates = Object.values(entry.depts).map(d => d.generated).filter(Boolean).sort();
@@ -621,7 +653,7 @@ async function scanExports() {
 function syncUrl() {
   const p = new URLSearchParams();
   p.set('naf', currentNaf);
-  if (mode === 'hab') p.set('mesure', 'hab');
+  if (mode !== 'count') p.set('mesure', mode);
   history.replaceState(null, '', '?' + p.toString());
 }
 
@@ -640,7 +672,7 @@ function updateMode() {
 (function restoreUrl() {
   const p = new URLSearchParams(location.search);
   if (p.get('naf')) currentNaf = p.get('naf').toUpperCase();
-  if (p.get('mesure') === 'hab') mode = 'hab';
+  if (['hab', 'new'].includes(p.get('mesure'))) mode = p.get('mesure');
   document.getElementById('modeSelect').value = mode;
 })();
 
@@ -650,7 +682,8 @@ const manifestReady = fetch('exports/manifest.json', { cache: 'no-cache' })
   .catch(() => null)
   .then(m => { manifest = m; populateNafSelect(); });
 
-fetch('https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements-version-simplifiee.geojson')
+// Contours hébergés dans le dépôt (voir data/README.md pour la source et la licence)
+fetch('data/departements.geojson')
   .then(r => r.json())
   .then(async data => {
     cachedGeoJson = preprocessGeoJson(data);

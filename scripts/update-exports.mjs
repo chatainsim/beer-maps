@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const core = createRequire(import.meta.url)('../lib/sirene-core.js');
-const { DEPT_CODES, DEPT_NAMES, NAF_DICT, resolveNaf, exportFileName, collectDept, manifestEntry, manifestChanged, mergeManifest, sameExport, buildExportHtml } = core;
+const { DEPT_CODES, DEPT_NAMES, NAF_DICT, resolveNaf, exportFileName, collectDept, manifestEntry, manifestChanged, mergeManifest, prepareExport } = core;
 
 function arg(name) {
   const i = process.argv.indexOf('--' + name);
@@ -63,7 +63,7 @@ let failures = 0;
 const t0 = Date.now();
 
 for (const naf of nafs) {
-  const s = { written: 0, unchanged: 0, removed: 0, empty: 0, errors: [], etabs: 0 };
+  const s = { written: 0, unchanged: 0, removed: 0, empty: 0, errors: [], etabs: 0, opened: 0, closed: 0 };
   const entries = {};
   console.log(`\n== ${naf} — ${NAF_DICT[naf] || ''} ==`);
 
@@ -74,21 +74,25 @@ for (const naf of nafs) {
         cache,
         onRetry: (att, wait) => console.log(`  ${dept} quota INSEE, tentative ${att}, attente ${wait}s`),
       });
-      entries[dept] = manifestEntry(rows, total);
       s.etabs += rows.length;
-      const geo = entries[dept].geo;
+      const geo = rows.filter(r => r.lat != null).length;
 
       if (!rows.length) {
+        entries[dept] = manifestEntry(rows, total);
         s.empty++;
         if (existsSync(file)) { unlinkSync(file); s.removed++; }
         console.log(`  ${dept} ${DEPT_NAMES[dept]} : vide`);
         continue;
       }
-      const html = buildExportHtml(rows, naf, dept);
+      // Évolution par rapport à la page précédente (nouveaux / disparus), puis écriture
       const old = existsSync(file) ? readFileSync(file, 'utf8') : null;
-      if (old && sameExport(old, html)) s.unchanged++;
+      const { html, changes, unchanged } = prepareExport(rows, naf, dept, old);
+      entries[dept] = manifestEntry(rows, total, undefined, changes);
+      if (changes) { s.opened += changes.opened; s.closed += changes.closed.length; }
+      if (unchanged) s.unchanged++;
       else { writeFileSync(file, html); s.written++; }
-      console.log(`  ${dept} ${DEPT_NAMES[dept]} : ${rows.length} (${rows.length - geo} sans position)`);
+      console.log(`  ${dept} ${DEPT_NAMES[dept]} : ${rows.length} (${rows.length - geo} sans position)`
+        + (changes ? ` +${changes.opened} / -${changes.closed.length}` : ''));
     } catch (err) {
       // L'entrée du manifest et la page existante sont conservées telles quelles
       s.errors.push(`${dept} : ${err.message}`);
@@ -105,6 +109,7 @@ for (const naf of nafs) {
   saveCache();
   failures += s.errors.length;
   summary.push(`- **${naf}** ${NAF_DICT[naf] || ''} : ${s.etabs.toLocaleString('fr-FR')} établissements · `
+    + `+${s.opened.toLocaleString('fr-FR')} nouveaux / −${s.closed.toLocaleString('fr-FR')} disparus · `
     + `${s.written} pages écrites · ${s.unchanged} inchangées · ${s.empty} vides (${s.removed} supprimées)`
     + (s.errors.length ? ` · **${s.errors.length} erreur(s)** : ${s.errors.join(' ; ')}` : ''));
 }

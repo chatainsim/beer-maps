@@ -114,11 +114,24 @@ Sans manifest, `index.html` retombe sur l'ancien mode : il scanne chaque page, d
 la balise `<meta name="sirene:count">` (+ `:geo`, `:naf`, `:dept`, `:generated`,
 `:template`) donne le décompte.
 
+**Évolution d'une mise à jour à l'autre.** À chaque régénération, la nouvelle liste
+d'un département est comparée à la page précédente, par SIRET :
+
+- les pages signalent les **nouveaux** établissements (badge et marqueur verts, filtre
+  « +N nouveaux ») et listent les **disparus** (fermeture, changement d'activité ou
+  déménagement), avec la date de la version de référence ;
+- le manifest enregistre `opened`, `closed` et `since` pour chaque département, et la
+  carte propose la mesure **« Nouveaux depuis la dernière mise à jour »** ;
+- si plus de la moitié d'une page disparaît d'un coup (changement de périmètre plutôt
+  qu'évolution réelle), aucune différence n'est calculée ;
+- un département sans aucun changement garde sa date de référence et sa page n'est
+  pas réécrite.
+
 **La carte** colore les départements par **quantiles** (chaque couleur regroupe à peu
 près autant de départements), pour qu'un département hors norme comme Paris n'écrase
 pas l'échelle. Le sélecteur **Mesure** bascule entre le nombre d'établissements et la
 densité **pour 10 000 habitants** (populations légales INSEE). La vue est partageable :
-`index.html?naf=56.10A&mesure=hab`.
+`index.html?naf=56.10A&mesure=hab` (ou `mesure=new`).
 
 ## Mise à jour automatique
 
@@ -148,8 +161,15 @@ données embarquées dans chaque page et la régénère.
 ## Déploiement
 
 Comme tout est statique, n'importe quel hébergement de fichiers convient
-(GitHub Pages, Gitea Pages, Netlify, un simple bucket…). En local, pour éviter les
-restrictions `file://` :
+(GitHub Pages, Gitea Pages, Netlify, un simple bucket…).
+
+**GitHub Pages** : *Settings → Pages → Build and deployment*, source *Deploy from a
+branch*, branche `main`, dossier `/ (root)`. Le site est alors servi à
+`https://<compte>.github.io/beer-maps/` (carte : `index.html`, outil :
+`sirene-explorer.html`) et republié automatiquement à chaque mise à jour mensuelle.
+Le fichier `.nojekyll` désactive le traitement Jekyll, inutile ici.
+
+En local, pour éviter les restrictions `file://` :
 
 ```bash
 python3 -m http.server 8000
@@ -158,6 +178,21 @@ python3 -m http.server 8000
 
 Les exports sont référencés en chemin **relatif** (`exports/…`), donc l'arborescence
 fonctionne telle quelle une fois servie.
+
+## Tests
+
+```bash
+node --test test/*.test.mjs
+```
+
+- `test/core.test.mjs` : module partagé (saisie NAF, requêtes et pagination SIRENE,
+  quota, géocodage en deux passes et `[ND]`, CSV, génération et relecture des pages,
+  échappement, déduplication, évolution, manifest), avec des API simulées.
+- `test/repo.test.mjs` : cohérence des données publiées (contours, manifest ↔ pages,
+  décomptes, gabarit à jour, chargement du module par les deux pages).
+
+Ils tournent à chaque push (`.github/workflows/tests.yml`), et la mise à jour mensuelle
+ne commite les pages régénérées que si ces tests passent.
 
 ## Architecture
 
@@ -192,5 +227,6 @@ fonctionne telle quelle une fois servie.
   [@etalab/decoupage-administratif](https://github.com/datagouv/decoupage-administratif)
   (somme des communes ; Corse = 2A + 2B).
 - Fonds de carte © [OpenStreetMap](https://www.openstreetmap.org/copyright).
-- Contours départementaux :
-  [france-geojson](https://github.com/gregoiredavid/france-geojson).
+- Contours départementaux : `data/departements.geojson`, d'après
+  [france-geojson](https://github.com/gregoiredavid/france-geojson) (IGN Admin Express,
+  Licence ouverte) — hébergés dans le dépôt, voir `data/README.md`.

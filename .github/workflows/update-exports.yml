@@ -50,9 +50,15 @@ jobs:
           DEPT: ${{ inputs.dept }}
         run: node scripts/update-exports.mjs --naf "$NAF" --dept "$DEPT"
 
+      # Les pages générées doivent passer les tests de cohérence avant d'être commitées
+      - name: Tests de cohérence
+        id: tests
+        if: ${{ !cancelled() && steps.update.outcome != 'skipped' }}
+        run: node --test test/*.test.mjs
+
       # Un seul commit pour toute l'exécution, même si certains départements ont échoué
       - name: Commit
-        if: ${{ !cancelled() && steps.update.outcome != 'skipped' }}
+        if: ${{ !cancelled() && steps.update.outcome != 'skipped' && steps.tests.outcome == 'success' }}
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'

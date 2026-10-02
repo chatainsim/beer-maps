@@ -11,7 +11,7 @@ import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const { rowsFromExportHtml, readMeta, buildExportHtml, sameExport } = createRequire(import.meta.url)('../lib/sirene-core.js');
+const { rowsFromExportHtml, changesFromExportHtml, readMeta, buildExportHtml, sameExport } = createRequire(import.meta.url)('../lib/sirene-core.js');
 
 const i = process.argv.indexOf('--dir');
 const dir = resolve(ROOT, i > 0 ? process.argv[i + 1] : 'exports');
@@ -31,7 +31,11 @@ for (const f of readdirSync(dir).filter(f => /^sirene-.+\.html$/.test(f)).sort()
 
   const entry = manifest.naf[naf]?.depts?.[dept];
   const generated = readMeta(old, 'generated') || entry?.generated;
-  const html = buildExportHtml(rows, readMeta(old, 'naf') || naf, dept, { generated: generated ? new Date(generated) : new Date() });
+  // L'évolution déjà calculée (nouveaux / disparus) est conservée telle quelle
+  const html = buildExportHtml(rows, readMeta(old, 'naf') || naf, dept, {
+    generated: generated ? new Date(generated) : new Date(),
+    changes: changesFromExportHtml(old),
+  });
   if (sameExport(old, html)) same++;
   else { writeFileSync(path, html); rebuilt++; }
 

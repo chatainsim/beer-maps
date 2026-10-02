@@ -711,7 +711,7 @@
 const {
   DEPT_NAMES, DEPT_CODES, NAF_DICT, escHtml: esc, resolveNaf, nafSlug, exportFileName, deptClause, isDeptCode,
   csvCell, fetchSirene, fetchAllSirene, filterEtabs, geoCacheKey, geocodeEtabs, toExportRow, collectDept,
-  manifestEntry, manifestChanged, mergeManifest, sameExport, buildExportHtml,
+  manifestEntry, manifestChanged, mergeManifest, prepareExport, buildExportHtml,
 } = SireneCore;
 
 // Populate datalist
@@ -1406,17 +1406,19 @@ async function autoUpdateAllDepts() {
           onGeoProgress: (n, t) => batchUi.step(`${label} — géocodage ${n.toLocaleString('fr-FR')} / ${t.toLocaleString('fr-FR')}`),
         });
         flushGeoCache();
-        manifestEntries[dept] = manifestEntry(rows, total);
         s.etabs += rows.length;
 
         if (!rows.length) {
+          manifestEntries[dept] = manifestEntry(rows, total);
           s.empty++;
         } else {
           batchUi.step(label + ' — envoi…');
           const filePath = ghDir() + exportFileName(naf, dept);
-          const html = buildExportHtml(rows, naf, dept);
+          // Évolution par rapport à la page publiée (nouveaux / disparus)
           const existing = await ghGetFile(token, repo, filePath, signal);
-          if (existing?.text && sameExport(existing.text, html)) s.unchanged++;
+          const { html, changes, unchanged } = prepareExport(rows, naf, dept, existing?.text || null);
+          manifestEntries[dept] = manifestEntry(rows, total, undefined, changes);
+          if (unchanged) s.unchanged++;
           else { await commit.addFile(filePath, html, signal); s.pushed++; }
         }
       } catch (err) {
