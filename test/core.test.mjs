@@ -69,6 +69,27 @@ test('buildAddr : les champs non diffusibles [ND] sont ignorés', () => {
   assert.deepEqual(C.buildAddr(etab(1)), { line1: '2 RUE HOCHE', line2: '38000 GRENOBLE' });
 });
 
+test('getName / cleanName : noms non diffusibles', () => {
+  const nd = { uniteLegale: { nomUniteLegale: '[ND]', prenom1UniteLegale: '[ND]' }, periodesEtablissement: [{}] };
+  assert.equal(C.getName(nd), C.ND_NAME);
+  const enseigne = { uniteLegale: { nomUniteLegale: '[ND]' }, periodesEtablissement: [{ enseigne1Etablissement: 'SALON BELLA' }] };
+  assert.equal(C.getName(enseigne), 'SALON BELLA');
+  assert.equal(C.getName({ uniteLegale: { denominationUniteLegale: 'BRASSERIE X' } }), 'BRASSERIE X');
+  assert.equal(C.getName({ uniteLegale: { prenom1UniteLegale: 'JEAN', nomUniteLegale: 'DUPONT' } }), 'JEAN DUPONT');
+  assert.equal(C.getName({ uniteLegale: {} }), '(sans dénomination)');
+  assert.equal(C.cleanName('[ND]'), C.ND_NAME);
+  assert.equal(C.cleanName('[ND] [ND]'), C.ND_NAME);
+  assert.equal(C.cleanName('JEAN [ND]'), 'JEAN');
+  assert.equal(C.cleanName('BRASSERIE X'), 'BRASSERIE X');
+});
+
+test('rowsFromExportHtml : nettoie les « [ND] » des pages existantes', () => {
+  const html = C.buildExportHtml([row(1, { name: '[ND]', addr: { line1: '[ND] [ND]', line2: '[ND] FARAMANS' } })], '86.21Z', '01');
+  const [r] = C.rowsFromExportHtml(html);
+  assert.equal(r.name, C.ND_NAME);
+  assert.deepEqual(r.addr, { line1: '', line2: 'FARAMANS' });
+});
+
 test('filterEtabs : NAF et état de la période en cours', () => {
   const list = [etab(1), etab(2, { periode: { activitePrincipaleEtablissement: '56.30Z' } }), etab(3, { periode: { etatAdministratifEtablissement: 'F' } })];
   assert.deepEqual(C.filterEtabs(list, '11.05Z', false).map(e => e.siret), [etab(1).siret]);

@@ -49,6 +49,7 @@ test('pages d\'export : lisibles, au gabarit actuel, décomptes exacts', () => {
     const entry = manifest.naf[m[1] + '.' + m[2]].depts[m[3]];
     assert.equal(entry.count, rows.length, `${f} : décompte du manifest`);
     if (C.readMeta(html, 'template') !== C.TEMPLATE_VERSION) stale.push(f);
+    assert.ok(!html.includes('[ND]'), `${f} : contient encore des marqueurs [ND]`);
   }
   assert.deepEqual(stale, [], 'pages à un ancien gabarit : lancez node scripts/rebuild-exports.mjs');
 });

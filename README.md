@@ -61,6 +61,11 @@ Les deux pages sont reliées par des liens croisés en en-tête.
 - Une adresse résolue seulement au niveau de la commune est marquée **« ≈ commune »**
   (marqueur gris). Les établissements introuvables restent dans la liste et les
   exports, signalés **« sans position »**, au lieu d'être supprimés.
+- **Données non diffusibles** : pour les entrepreneurs individuels qui l'ont demandé,
+  l'INSEE masque le nom et l'adresse (« [ND] »), seuls le SIRET et la commune restant
+  publics. Ces marqueurs sont retirés : l'établissement est placé au centre de sa
+  commune et affiché sous son enseigne si elle est publique, sinon sous
+  « Nom non diffusible ».
 - **Cache local** (`localStorage`) : les adresses déjà résolues ne sont pas
   re-interrogées, succès comme échecs.
 - Réessais automatiques avec backoff sur les quotas (HTTP 429 / 502 / 503).
